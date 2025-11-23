@@ -40,7 +40,7 @@ function ProductForm() {
       await productService.createProduct(product);
       showSnackbar('Product created successfully!', 'success');
       navigate('/');
-    } catch (e) => {
+    } catch (e) {
       setError(e.message);
       showSnackbar(e.message || 'Failed to create product.', 'error');
     } finally {
