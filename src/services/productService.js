@@ -16,8 +16,19 @@ const getAuthHeaders = () => {
   };
 };
 
-const getProducts = async (page = 1, limit = 10) => {
-  const response = await fetch(`${API_URL}?page=${page}&limit=${limit}`, {
+const getProducts = async (page = 1, limit = 10, search = '', category = '') => {
+  const query = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+  });
+  if (search) {
+    query.append('search', search);
+  }
+  if (category) {
+    query.append('category', category);
+  }
+
+  const response = await fetch(`${API_URL}?${query.toString()}`, {
     headers: getAuthHeaders(),
   });
   if (!response.ok) {
@@ -74,12 +85,90 @@ const deleteProduct = async (id) => {
   return { success: true };
 };
 
+const getProductBOM = async (productId) => {
+  const response = await fetch(`${API_URL}/${productId}/materials`, {
+    headers: getAuthHeaders(),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to fetch product BOM');
+  }
+  return await response.json();
+};
+
+const addMaterialToBOM = async (productId, materialId, quantity) => {
+  const response = await fetch(`${API_URL}/${productId}/materials`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ materialId, quantity }),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to add material to BOM');
+  }
+  return await response.json();
+};
+
+const updateBOMEntry = async (bomId, quantity) => {
+  const response = await fetch(`http://72.60.79.179/api/v1/bom/${bomId}`, { // Direct URL as API_URL is for /products
+    method: 'PUT',
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ quantity }),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to update BOM entry');
+  }
+  return await response.json();
+};
+
+const removeMaterialFromBOM = async (bomId) => {
+  const response = await fetch(`http://72.60.79.179/api/v1/bom/${bomId}`, { // Direct URL as API_URL is for /products
+    method: 'DELETE',
+    headers: getAuthHeaders(),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to remove material from BOM');
+  }
+  return { success: true };
+};
+
+const calculateProductCost = async (productId) => {
+  const response = await fetch(`${API_URL}/${productId}/cost`, {
+    headers: getAuthHeaders(),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to calculate product cost');
+  }
+  return await response.json();
+};
+
+const updateProductCost = async (productId) => {
+  const response = await fetch(`${API_URL}/${productId}/update-cost`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to update product cost');
+  }
+  return await response.json();
+};
+
 const productService = {
   getProducts,
   createProduct,
   getProductById,
   updateProduct,
   deleteProduct,
+  getProductBOM,
+  addMaterialToBOM,
+  updateBOMEntry,
+  removeMaterialFromBOM,
+  calculateProductCost,
+  updateProductCost,
 };
 
 export default productService;

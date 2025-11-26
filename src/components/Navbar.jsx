@@ -16,13 +16,22 @@ function Navbar() {
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1, cursor: 'pointer' }} onClick={() => navigate('/')}>
           UMKM Core
         </Typography>
         {user && (
-          <Button color="inherit" onClick={handleLogout}>
-            Logout
-          </Button>
+          <>
+            <Button color="inherit" onClick={() => navigate('/')}>Dashboard</Button>
+            <Button color="inherit" onClick={() => navigate('/products')}>Products</Button>
+            <Button color="inherit" onClick={() => navigate('/materials')}>Materials</Button>
+            <Button color="inherit" onClick={() => navigate('/reports')}>Reports</Button>
+            {user.role === 'admin' && (
+              <Button color="inherit" onClick={() => navigate('/users')}>User Management</Button>
+            )}
+            <Button color="inherit" onClick={handleLogout}>
+              Logout
+            </Button>
+          </>
         )}
       </Toolbar>
     </AppBar>

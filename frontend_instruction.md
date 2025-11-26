@@ -172,3 +172,4 @@ This section provides a complete list of all backend API endpoints that the fron
 - `GET /api/v1/reports/material-usage`: Analyze material consumption patterns.
 - `GET /api/v1/reports/product-profit`: Analyze profit margins for products.
 - `GET /api/v1/reports/forecast`: Get sales and inventory forecasts.
+

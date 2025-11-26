@@ -1,7 +1,7 @@
 // src/components/LoginPage.jsx
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import {
   Container,
   TextField,
@@ -9,9 +9,11 @@ import {
   Typography,
   Box,
   Alert,
+  Grid,
 } from '@mui/material';
 
 function LoginPage() {
+  const [storeId, setStoreId] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
@@ -22,7 +24,7 @@ function LoginPage() {
     event.preventDefault();
     setError(null);
     try {
-      await login(username, password);
+      await login(storeId, username, password);
       navigate('/'); // Redirect to home page on successful login
     } catch (e) {
       setError(e.message);
@@ -30,10 +32,18 @@ function LoginPage() {
   };
 
   return (
-    <Container maxWidth="xs">
+    <Container
+      maxWidth="xs"
+      sx={{
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
       <Box
         sx={{
-          marginTop: 8,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -51,11 +61,22 @@ function LoginPage() {
             margin="normal"
             required
             fullWidth
+            id="storeId"
+            label="Store ID"
+            name="storeId"
+            autoComplete="store-id"
+            autoFocus
+            value={storeId}
+            onChange={(e) => setStoreId(e.target.value)}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
             id="username"
             label="Username"
             name="username"
             autoComplete="username"
-            autoFocus
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
@@ -80,6 +101,13 @@ function LoginPage() {
             Sign In
           </Button>
           {error && <Alert severity="error">{error}</Alert>}
+          <Grid container justifyContent="flex-end">
+            <Grid item>
+              <Link to="/register" variant="body2">
+                Don't have an account? Sign Up
+              </Link>
+            </Grid>
+          </Grid>
         </Box>
       </Box>
     </Container>

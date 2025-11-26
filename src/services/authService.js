@@ -1,13 +1,13 @@
 // src/services/authService.js
 const API_URL = 'http://72.60.79.179/api/v1/auth';
 
-const login = async (username, password) => {
+const login = async (storeId, username, password) => {
   const response = await fetch(`${API_URL}/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ username, password }),
+    body: JSON.stringify({ storeId, username, password }),
   });
 
   if (!response.ok) {
@@ -22,6 +22,23 @@ const login = async (username, password) => {
   return data;
 };
 
+const register = async (storeName, storeId, username, email, password) => {
+  const response = await fetch(`${API_URL}/register`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ storeName, storeId, username, email, password }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Registration failed');
+  }
+
+  return response.json();
+};
+
 const logout = () => {
   localStorage.removeItem('user');
 };
@@ -32,6 +49,7 @@ const getCurrentUser = () => {
 
 const authService = {
   login,
+  register,
   logout,
   getCurrentUser,
 };
