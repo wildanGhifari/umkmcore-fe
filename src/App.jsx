@@ -11,6 +11,7 @@ import ProductForm from './components/ProductForm';
 import EditProduct from './components/EditProduct';
 import UserManagementPage from './components/UserManagementPage';
 import ReportsPage from './components/ReportsPage';
+import POSPage from './components/POSPage';
 import Layout from './components/Layout';
 import './App.css';
 
@@ -94,6 +95,14 @@ function App() {
         element={
           <ProtectedRoute>
             <ReportsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/pos"
+        element={
+          <ProtectedRoute>
+            <POSPage />
           </ProtectedRoute>
         }
       />

@@ -21,6 +21,14 @@ function Navbar() {
         </Typography>
         {user && (
           <>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => navigate('/pos')}
+              sx={{ mr: 2 }}
+            >
+              POS
+            </Button>
             <Button color="inherit" onClick={() => navigate('/')}>Dashboard</Button>
             <Button color="inherit" onClick={() => navigate('/products')}>Products</Button>
             <Button color="inherit" onClick={() => navigate('/materials')}>Materials</Button>
