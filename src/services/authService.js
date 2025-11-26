@@ -1,5 +1,5 @@
 // src/services/authService.js
-const API_URL = 'http://72.60.79.179/api/v1/auth';
+const API_URL = '/api/v1/auth';
 
 const login = async (storeId, username, password) => {
   const response = await fetch(`${API_URL}/login`, {

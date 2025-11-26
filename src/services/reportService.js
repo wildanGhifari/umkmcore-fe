@@ -1,7 +1,7 @@
 // src/services/reportService.js
 import authService from './authService';
 
-const API_URL = 'http://72.60.79.179/api/v1/reports';
+const API_URL = '/api/v1/reports';
 
 const getAuthHeaders = () => {
   const user = authService.getCurrentUser();

@@ -1,7 +1,4 @@
-// src/services/productService.js
-import authService from './authService';
-
-const API_URL = 'http://72.60.79.179/api/v1/products';
+const API_URL = '/api/v1/products';
 
 const getAuthHeaders = () => {
   const user = authService.getCurrentUser();
@@ -110,7 +107,7 @@ const addMaterialToBOM = async (productId, materialId, quantity) => {
 };
 
 const updateBOMEntry = async (bomId, quantity) => {
-  const response = await fetch(`http://72.60.79.179/api/v1/bom/${bomId}`, { // Direct URL as API_URL is for /products
+  const response = await fetch(`/api/v1/bom/${bomId}`, { // Direct URL as API_URL is for /products
     method: 'PUT',
     headers: getAuthHeaders(),
     body: JSON.stringify({ quantity }),
@@ -123,7 +120,7 @@ const updateBOMEntry = async (bomId, quantity) => {
 };
 
 const removeMaterialFromBOM = async (bomId) => {
-  const response = await fetch(`http://72.60.79.179/api/v1/bom/${bomId}`, { // Direct URL as API_URL is for /products
+  const response = await fetch(`/api/v1/bom/${bomId}`, { // Direct URL as API_URL is for /products
     method: 'DELETE',
     headers: getAuthHeaders(),
   });
