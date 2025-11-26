@@ -1,5 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { ThemeProvider, CssBaseline, useMediaQuery } from '@mui/material';
+import { lightTheme, darkTheme } from './theme';
 import { useAuth } from './context/AuthContext';
 import LoginPage from './components/LoginPage';
 import RegistrationPage from './components/RegistrationPage';
@@ -30,83 +32,92 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function App() {
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  const theme = React.useMemo(
+    () => (prefersDarkMode ? darkTheme : lightTheme),
+    [prefersDarkMode],
+  );
+
   return (
-    <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegistrationPage />} />
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute>
-            <DashboardPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/materials"
-        element={
-          <ProtectedRoute>
-            <MaterialsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/materials/:id"
-        element={
-          <ProtectedRoute>
-            <MaterialDetailPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/products"
-        element={
-          <ProtectedRoute>
-            <ProductList />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/products/new"
-        element={
-          <ProtectedRoute>
-            <ProductForm />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/products/edit/:id"
-        element={
-          <ProtectedRoute>
-            <EditProduct />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/users"
-        element={
-          <ProtectedRoute>
-            <UserManagementPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/reports"
-        element={
-          <ProtectedRoute>
-            <ReportsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/pos"
-        element={
-          <ProtectedRoute>
-            <POSPage />
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegistrationPage />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/materials"
+          element={
+            <ProtectedRoute>
+              <MaterialsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/materials/:id"
+          element={
+            <ProtectedRoute>
+              <MaterialDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/products"
+          element={
+            <ProtectedRoute>
+              <ProductList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/products/new"
+          element={
+            <ProtectedRoute>
+              <ProductForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/products/edit/:id"
+          element={
+            <ProtectedRoute>
+              <EditProduct />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/users"
+          element={
+            <ProtectedRoute>
+              <UserManagementPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reports"
+          element={
+            <ProtectedRoute>
+              <ReportsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/pos"
+          element={
+            <ProtectedRoute>
+              <POSPage />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </ThemeProvider>
   );
 }
 
