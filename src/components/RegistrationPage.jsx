@@ -13,7 +13,7 @@ import {
   Step,
   StepLabel,
 } from '@mui/material';
-import authService from '../../services/authService';
+import authService from '../services/authService';
 
 const steps = ['Store Information', 'Admin Information'];
 
