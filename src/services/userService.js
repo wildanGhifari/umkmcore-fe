@@ -97,10 +97,11 @@ const changeUserRole = async (id, role) => {
   return await response.json();
 };
 
-const resetUserPassword = async (id) => {
+const resetUserPassword = async (id, newPassword) => {
   const response = await fetch(`${API_URL}/${id}/password`, {
     method: 'PATCH',
     headers: getAuthHeaders(),
+    body: JSON.stringify({ newPassword }),
   });
   if (!response.ok) {
     const errorData = await response.json();
@@ -121,6 +122,18 @@ const activateUser = async (id) => {
   return { success: true };
 };
 
+const deactivateUser = async (id) => {
+  const response = await fetch(`${API_URL}/${id}/deactivate`, {
+    method: 'PATCH',
+    headers: getAuthHeaders(),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to deactivate user');
+  }
+  return { success: true };
+};
+
 const userService = {
   getUsers,
   createUser,
@@ -130,6 +143,7 @@ const userService = {
   changeUserRole,
   resetUserPassword,
   activateUser,
+  deactivateUser,
 };
 
 export default userService;

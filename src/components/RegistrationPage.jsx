@@ -20,7 +20,8 @@ const steps = ['Store Information', 'Admin Information'];
 function RegistrationPage() {
   const [activeStep, setActiveStep] = useState(0);
   const [storeName, setStoreName] = useState('');
-  const [storeId, setStoreId] = useState('');
+  const [storeCode, setStoreCode] = useState('');
+  const [fullName, setFullName] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -39,7 +40,7 @@ function RegistrationPage() {
     event.preventDefault();
     setError(null);
     try {
-      await authService.register(storeName, storeId, username, email, password);
+      await authService.register(storeName, storeCode, fullName, username, email, password);
       navigate('/login');
     } catch (e) {
       setError(e.message);
@@ -67,18 +68,29 @@ function RegistrationPage() {
               margin="normal"
               required
               fullWidth
-              id="storeId"
-              label="Store ID"
-              name="storeId"
-              autoComplete="store-id"
-              value={storeId}
-              onChange={(e) => setStoreId(e.target.value)}
+              id="storeCode"
+              label="Store Code"
+              name="storeCode"
+              autoComplete="store-code"
+              value={storeCode}
+              onChange={(e) => setStoreCode(e.target.value)}
             />
           </>
         );
       case 1:
         return (
           <>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="fullName"
+              label="Admin Full Name"
+              name="fullName"
+              autoComplete="name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+            />
             <TextField
               margin="normal"
               required

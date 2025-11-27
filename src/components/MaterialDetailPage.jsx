@@ -75,6 +75,14 @@ function MaterialDetailPage() {
           <Button variant="contained" color="primary" onClick={handleOpenTransactionForm}>
             Record Transaction
           </Button>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => navigate(`/materials/edit/${material.id}`)}
+            sx={{ ml: 2 }}
+          >
+            Edit Material
+          </Button>
         </Box>
 
         <Paper sx={{ p: 3, mt: 3 }}>
@@ -95,7 +103,7 @@ function MaterialDetailPage() {
               <Typography variant="subtitle1"><strong>Current Stock:</strong> {material.currentStock}</Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Typography variant="subtitle1"><strong>Minimum Stock:</strong> {material.minStock}</Typography>
+              <Typography variant="subtitle1"><strong>Minimum Stock:</strong> {material.minimumStock}</Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Typography variant="subtitle1"><strong>Unit:</strong> {material.unit || 'N/A'}</Typography>

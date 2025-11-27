@@ -16,10 +16,10 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const login = async (storeId, username, password) => {
+  const login = async (username, password) => {
     setLoading(true);
     try {
-      const userData = await authService.login(storeId, username, password);
+      const userData = await authService.login(username, password);
       setUser(userData);
       return userData;
     } catch (error) {

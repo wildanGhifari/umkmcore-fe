@@ -13,7 +13,6 @@ import {
 } from '@mui/material';
 
 function LoginPage() {
-  const [storeId, setStoreId] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
@@ -24,7 +23,7 @@ function LoginPage() {
     event.preventDefault();
     setError(null);
     try {
-      await login(storeId, username, password);
+      await login(username, password);
       navigate('/'); // Redirect to home page on successful login
     } catch (e) {
       setError(e.message);
@@ -61,22 +60,11 @@ function LoginPage() {
             margin="normal"
             required
             fullWidth
-            id="storeId"
-            label="Store ID"
-            name="storeId"
-            autoComplete="store-id"
-            autoFocus
-            value={storeId}
-            onChange={(e) => setStoreId(e.target.value)}
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
             id="username"
             label="Username"
             name="username"
             autoComplete="username"
+            autoFocus
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />

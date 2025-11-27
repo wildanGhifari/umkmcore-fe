@@ -31,9 +31,10 @@ import {
   MenuItem,
 } from '@mui/material';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Search as SearchIcon, AddCircle as AddIcon, RemoveCircle as RemoveIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { Search as SearchIcon, AddCircle as AddIcon, RemoveCircle as RemoveIcon, Delete as DeleteIcon, Person as PersonIcon } from '@mui/icons-material';
 import productService from '../services/productService';
 import salesOrderService from '../services/salesOrderService';
+import customerService from '../services/customerService';
 import { useSnackbar } from '../context/SnackbarContext';
 
 const POSPage = () => {
@@ -44,6 +45,9 @@ const POSPage = () => {
   const [isCheckoutModalOpen, setCheckoutModalOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('Cash');
   const [amountReceived, setAmountReceived] = useState('');
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [customerSearch, setCustomerSearch] = useState('');
+  const [isCustomerSearchOpen, setCustomerSearchOpen] = useState(false);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['products', 1, 50, search, ''], // Fetch up to 50 products for POS
@@ -51,7 +55,15 @@ const POSPage = () => {
     keepPreviousData: true,
   });
 
-  const products = data?.data || [];
+  const { data: customerData, isLoading: customersLoading, error: customersError } = useQuery({
+    queryKey: ['customers', 1, 10, customerSearch], // Fetch up to 10 customers for search
+    queryFn: () => customerService.getCustomers(1, 10, customerSearch),
+    enabled: isCustomerSearchOpen && customerSearch.length > 0, // Only fetch if search is open and term is entered
+    keepPreviousData: true,
+  });
+
+  const customers = customerData?.data || [];
+
 
   const createSalesOrderMutation = useMutation({
     mutationFn: salesOrderService.createSalesOrder,
@@ -119,14 +131,15 @@ const POSPage = () => {
 
   const handleCompleteSale = () => {
     const orderData = {
-      orderItems: cart.map(item => ({
+      items: cart.map(item => ({
         productId: item.id,
         quantity: item.quantity,
-        price: item.sellingPrice
+        unitPrice: item.sellingPrice
       })),
       totalAmount: total,
+      taxAmount: tax,
       paymentMethod,
-      // customerId: null, // TODO: Implement customer selection
+      customerId: selectedCustomer?.id || null,
     };
     createSalesOrderMutation.mutate(orderData);
   };
@@ -223,6 +236,22 @@ const POSPage = () => {
           <Typography variant="body1">Subtotal: Rp {subtotal.toFixed(2)}</Typography>
           <Typography variant="body1">Tax (10%): Rp {tax.toFixed(2)}</Typography>
           <Typography variant="h6" sx={{ mt: 1 }}>Total: Rp {total.toFixed(2)}</Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 2 }}>
+            {selectedCustomer ? (
+              <>
+                <Typography variant="body2">Customer: {selectedCustomer.name}</Typography>
+                <Button size="small" onClick={() => setSelectedCustomer(null)}>Clear</Button>
+              </>
+            ) : (
+              <Button
+                variant="outlined"
+                startIcon={<PersonIcon />}
+                onClick={() => setCustomerSearchOpen(true)}
+              >
+                Select Customer
+              </Button>
+            )}
+          </Box>
           <Button
             fullWidth
             variant="contained"
@@ -239,6 +268,11 @@ const POSPage = () => {
       <Dialog open={isCheckoutModalOpen} onClose={() => setCheckoutModalOpen(false)}>
         <DialogTitle>Complete Sale</DialogTitle>
         <DialogContent>
+          {selectedCustomer && (
+            <Typography variant="subtitle1" gutterBottom>
+              Customer: {selectedCustomer.name}
+            </Typography>
+          )}
           <Typography variant="h6" gutterBottom>Total: Rp {total.toFixed(2)}</Typography>
           <FormControl fullWidth margin="dense" required>
             <InputLabel>Payment Method</InputLabel>
@@ -271,6 +305,52 @@ const POSPage = () => {
           <Button onClick={handleCompleteSale} variant="contained" disabled={createSalesOrderMutation.isLoading}>
             {createSalesOrderMutation.isLoading ? <CircularProgress size={24} /> : 'Complete Sale'}
           </Button>
+        </DialogActions>
+      </Dialog>
+      {/* Customer Search Modal */}
+      <Dialog open={isCustomerSearchOpen} onClose={() => setCustomerSearchOpen(false)} fullWidth maxWidth="sm">
+        <DialogTitle>Select Customer</DialogTitle>
+        <DialogContent>
+          <TextField
+            fullWidth
+            label="Search Customers"
+            variant="outlined"
+            value={customerSearch}
+            onChange={(e) => setCustomerSearch(e.target.value)}
+            sx={{ mb: 2 }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+          {customersLoading && <CircularProgress />}
+          {customersError && <Alert severity="error">Error fetching customers: {customersError.message}</Alert>}
+          <List>
+            {customers.map((customer) => (
+              <ListItem
+                key={customer.id}
+                button
+                onClick={() => {
+                  setSelectedCustomer(customer);
+                  setCustomerSearchOpen(false);
+                  setCustomerSearch(''); // Clear search after selection
+                }}
+              >
+                <ListItemText primary={customer.name} secondary={customer.email} />
+              </ListItem>
+            ))}
+            {customers.length === 0 && customerSearch.length > 0 && !customersLoading && (
+              <ListItem>
+                <ListItemText primary="No customers found." />
+              </ListItem>
+            )}
+          </List>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setCustomerSearchOpen(false)}>Cancel</Button>
         </DialogActions>
       </Dialog>
     </Container>

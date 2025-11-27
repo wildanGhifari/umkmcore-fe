@@ -14,8 +14,9 @@ const getAuthHeaders = () => {
 };
 
 const getProducts = async (page = 1, limit = 10, search = '', category = '') => {
+  const offset = (page - 1) * limit;
   const query = new URLSearchParams({
-    page: page.toString(),
+    offset: offset.toString(),
     limit: limit.toString(),
   });
   if (search) {

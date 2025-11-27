@@ -13,6 +13,7 @@ import {
   TableRow,
   Paper,
   CircularProgress,
+  Alert,
   IconButton,
   Button,
   TablePagination,
@@ -23,13 +24,16 @@ import {
   FormControl,
   InputLabel,
 } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Edit as EditIcon, Delete as DeleteIcon, Search as SearchIcon } from '@mui/icons-material';
 import materialService from '../services/materialService';
 import StockTransactionForm from '../components/StockTransactionForm';
+import { useSnackbar } from '../context/SnackbarContext';
 
 function MaterialsPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { showSnackbar } = useSnackbar();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [search, setSearch] = useState('');
@@ -45,6 +49,17 @@ function MaterialsPage() {
 
   const materials = data?.data || [];
   const totalMaterials = data?.total || 0;
+
+  const deleteMaterialMutation = useMutation({
+    mutationFn: (id) => materialService.deleteMaterial(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['materials']);
+      showSnackbar('Material deleted successfully!', 'success');
+    },
+    onError: (err) => {
+      showSnackbar(err.message || 'Failed to delete material.', 'error');
+    },
+  });
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -80,6 +95,12 @@ function MaterialsPage() {
 
   const handleCloseTransactionForm = () => {
     setIsTransactionFormOpen(false);
+  };
+
+  const handleDelete = (id) => {
+    if (window.confirm('Are you sure you want to delete this material?')) {
+      deleteMaterialMutation.mutate(id);
+    }
   };
 
   if (isLoading) {
@@ -155,7 +176,7 @@ function MaterialsPage() {
             </FormControl>
           </Box>
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button variant="contained" color="primary">
+            <Button variant="contained" color="primary" onClick={() => navigate('/materials/new')}>
               Create Material
             </Button>
             <Button variant="outlined" color="primary" onClick={handleOpenTransactionForm}>
@@ -186,13 +207,27 @@ function MaterialsPage() {
                   <TableCell>{material.sku}</TableCell>
                   <TableCell>{material.name}</TableCell>
                   <TableCell align="right">{material.currentStock}</TableCell>
-                  <TableCell align="right">{material.minStock}</TableCell>
+                  <TableCell align="right">{material.minimumStock}</TableCell>
                   <TableCell>{material.status}</TableCell>
                   <TableCell align="center">
-                    <IconButton size="small" color="primary">
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent row click from firing
+                        navigate(`/materials/edit/${material.id}`);
+                      }}
+                    >
                       <EditIcon />
                     </IconButton>
-                    <IconButton size="small" color="error">
+                    <IconButton
+                      size="small"
+                      color="error"
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent row click from firing
+                        handleDelete(material.id);
+                      }}
+                    >
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>

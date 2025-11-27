@@ -1,13 +1,13 @@
 // src/services/authService.js
 const API_URL = '/api/v1/auth';
 
-const login = async (storeId, username, password) => {
+const login = async (username, password) => {
   const response = await fetch(`${API_URL}/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ storeId, username, password }),
+    body: JSON.stringify({ username, password }),
   });
 
   if (!response.ok) {
@@ -22,13 +22,13 @@ const login = async (storeId, username, password) => {
   return data;
 };
 
-const register = async (storeName, storeId, username, email, password) => {
+const register = async (storeName, storeCode, fullName, username, email, password) => {
   const response = await fetch(`${API_URL}/register`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ storeName, storeId, username, email, password }),
+    body: JSON.stringify({ storeName, storeCode, fullName, username, email, password }),
   });
 
   if (!response.ok) {

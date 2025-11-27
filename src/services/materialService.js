@@ -14,13 +14,23 @@ const getAuthHeaders = () => {
 };
 
 const getMaterials = async (page = 1, limit = 10, search = '', category = '', stockStatus = '') => {
-  const query = new URLSearchParams({
-    page: page.toString(),
+  const offset = (page - 1) * limit;
+  const queryParams = {
+    offset: offset.toString(),
     limit: limit.toString(),
-    search,
-    category,
-    stockStatus,
-  }).toString();
+  };
+
+  if (search) {
+    queryParams.search = search;
+  }
+  if (category) {
+    queryParams.category = category;
+  }
+  if (stockStatus === 'Low' || stockStatus === 'Out of Stock') {
+    queryParams.lowStockOnly = 'true';
+  }
+
+  const query = new URLSearchParams(queryParams).toString();
 
   const response = await fetch(`${API_URL}?${query}`, {
     headers: getAuthHeaders(),

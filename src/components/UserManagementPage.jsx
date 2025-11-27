@@ -139,13 +139,13 @@ const UserManagementPage = () => {
             <TableBody>
               {users.map((u) => (
                 <TableRow key={u.id}>
-                  <TableCell>{u.name}</TableCell>
+                  <TableCell>{u.fullName}</TableCell>
                   <TableCell>{u.email}</TableCell>
                   <TableCell>{u.role}</TableCell>
                   <TableCell>
                     <Chip
-                      label={u.deletedAt ? 'Inactive' : 'Active'}
-                      color={u.deletedAt ? 'default' : 'success'}
+                      label={u.isActive ? 'Active' : 'Inactive'}
+                      color={u.isActive ? 'success' : 'default'}
                       size="small"
                     />
                   </TableCell>
@@ -153,7 +153,7 @@ const UserManagementPage = () => {
                     <IconButton size="small" color="primary" /* onClick={() => handleEditUser(u)} */>
                       <EditIcon />
                     </IconButton>
-                    <IconButton size="small" color="error" onClick={() => handleDeleteUser(u.id)}>
+                    <IconButton size="small" color="error" onClick={() => handleDeactivateUser(u.id)}>
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>
