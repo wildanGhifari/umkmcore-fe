@@ -45,7 +45,7 @@ function ProductList() {
   });
 
   const products = data?.data || [];
-  const totalProducts = data?.total || 0;
+  const totalProducts = data?.pagination?.total || 0;
 
   const deleteProductMutation = useMutation({
     mutationFn: (id) => productService.deleteProduct(id),

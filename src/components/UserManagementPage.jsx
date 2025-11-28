@@ -42,7 +42,7 @@ const UserManagementPage = () => {
   });
 
   const users = data?.data || [];
-  const totalUsers = data?.total || 0;
+  const totalUsers = data?.pagination?.total || 0;
 
   const deleteUserMutation = useMutation({
     mutationFn: (id) => userService.deleteUser(id),

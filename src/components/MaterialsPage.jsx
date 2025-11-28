@@ -48,7 +48,7 @@ function MaterialsPage() {
   });
 
   const materials = data?.data || [];
-  const totalMaterials = data?.total || 0;
+  const totalMaterials = data?.pagination?.total || 0;
 
   const deleteMaterialMutation = useMutation({
     mutationFn: (id) => materialService.deleteMaterial(id),
