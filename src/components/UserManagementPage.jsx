@@ -1,7 +1,6 @@
 // src/components/UserManagementPage.jsx
 import React, { useState } from 'react';
 import {
-  Container,
   Typography,
   Box,
   Table,
@@ -23,6 +22,7 @@ import {
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Edit as EditIcon, Delete as DeleteIcon, Search as SearchIcon, PersonAdd as PersonAddIcon } from '@mui/icons-material';
 import userService from '../services/userService';
+import UserForm from '../components/UserForm';
 import { useAuth } from '../context/AuthContext';
 import { useSnackbar } from '../context/SnackbarContext';
 
@@ -34,6 +34,7 @@ const UserManagementPage = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [search, setSearch] = useState('');
+  const [isUserFormOpen, setIsUserFormOpen] = useState(false);
   
   const { data, isLoading, error } = useQuery({
     queryKey: ['users', page + 1, rowsPerPage, search],
@@ -77,16 +78,18 @@ const UserManagementPage = () => {
 
   if (user?.role !== 'admin') {
     return (
-      <Container>
-        <Alert severity="error" sx={{ mt: 4 }}>
-          You do not have permission to access this page.
-        </Alert>
-      </Container>
+      <Alert severity="error" sx={{ mt: 2 }}>
+        You do not have permission to access this page.
+      </Alert>
     );
   }
 
   if (isLoading) {
-    return <CircularProgress />;
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" sx={{ height: '80vh' }}>
+        <CircularProgress />
+      </Box>
+    );
   }
 
   if (error) {
@@ -94,8 +97,8 @@ const UserManagementPage = () => {
   }
 
   return (
-    <Container>
-      <Box sx={{ my: 4 }}>
+    <>
+      <Box sx={{ mb: 2 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Typography variant="h4" component="h1">
             User Management
@@ -103,7 +106,7 @@ const UserManagementPage = () => {
           <Button
             variant="contained"
             startIcon={<PersonAddIcon />}
-            // onClick={() => setCreateUserModalOpen(true)} // TODO: Implement Create User Modal
+            onClick={() => setIsUserFormOpen(true)}
           >
             Invite User
           </Button>
@@ -172,8 +175,8 @@ const UserManagementPage = () => {
           rowsPerPageOptions={[5, 10, 25]}
         />
       </Box>
-      {/* TODO: Add Create/Edit User Modal */}
-    </Container>
+      <UserForm open={isUserFormOpen} onClose={() => setIsUserFormOpen(false)} />
+    </>
   );
 };
 
