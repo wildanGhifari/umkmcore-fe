@@ -35,6 +35,7 @@ const UserManagementPage = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [search, setSearch] = useState('');
   const [isUserFormOpen, setIsUserFormOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
   
   const { data, isLoading, error } = useQuery({
     queryKey: ['users', page + 1, rowsPerPage, search],
@@ -74,6 +75,16 @@ const UserManagementPage = () => {
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
     setPage(0);
+  };
+
+  const handleEditUser = (userToEdit) => {
+    setEditingUser(userToEdit);
+    setIsUserFormOpen(true);
+  };
+
+  const handleCloseUserForm = () => {
+    setEditingUser(null);
+    setIsUserFormOpen(false);
   };
 
   if (user?.role !== 'admin') {
@@ -153,10 +164,10 @@ const UserManagementPage = () => {
                     />
                   </TableCell>
                   <TableCell align="center">
-                    <IconButton size="small" color="primary" /* onClick={() => handleEditUser(u)} */>
+                    <IconButton size="small" color="primary" onClick={() => handleEditUser(u)}>
                       <EditIcon />
                     </IconButton>
-                    <IconButton size="small" color="error" onClick={() => handleDeactivateUser(u.id)}>
+                    <IconButton size="small" color="error" onClick={() => handleDeleteUser(u.id)}>
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>
@@ -175,7 +186,7 @@ const UserManagementPage = () => {
           rowsPerPageOptions={[5, 10, 25]}
         />
       </Box>
-      <UserForm open={isUserFormOpen} onClose={() => setIsUserFormOpen(false)} />
+      <UserForm open={isUserFormOpen} onClose={handleCloseUserForm} user={editingUser} />
     </>
   );
 };
