@@ -68,7 +68,7 @@ function ProductDetail() {
   // Fetch all materials for the dropdown
   const { data: materialsData } = useQuery({
     queryKey: ['materials-all'],
-    queryFn: () => materialService.getMaterials(1, 1000, '', '', ''), // Get all materials with all params
+    queryFn: () => materialService.getMaterials(1, 100, '', '', ''), // Get all materials (max 100 per backend validation)
   });
 
   const product = productData?.data;
