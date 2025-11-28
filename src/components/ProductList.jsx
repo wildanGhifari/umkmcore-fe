@@ -27,6 +27,7 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useSnackbar } from '../context/SnackbarContext';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -173,6 +174,14 @@ function ProductList() {
                   <TableCell align="right">{product.costPrice || 'N/A'}</TableCell>
                   <TableCell align="right">
                     <Box>
+                      <IconButton
+                        aria-label="view"
+                        component={Link}
+                        to={`/products/${product.id}`}
+                        color="primary"
+                      >
+                        <VisibilityIcon />
+                      </IconButton>
                       <IconButton
                         aria-label="edit"
                         component={Link}

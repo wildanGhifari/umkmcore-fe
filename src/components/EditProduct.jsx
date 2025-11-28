@@ -168,7 +168,12 @@ function EditProduct() {
       updateProductCostMutation.mutate();
     }
   };
-  
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    updateProductMutation.mutate(localProduct);
+  };
+
   if (isProductLoading) {
     return <CircularProgress />;
   }

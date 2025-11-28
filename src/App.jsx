@@ -10,6 +10,7 @@ import MaterialsPage from './components/MaterialsPage';
 import MaterialDetailPage from './components/MaterialDetailPage';
 import ProductList from './components/ProductList';
 import ProductForm from './components/ProductForm';
+import ProductDetail from './components/ProductDetail';
 import EditProduct from './components/EditProduct';
 import UserManagementPage from './components/UserManagementPage';
 import ReportsPage from './components/ReportsPage';
@@ -81,6 +82,14 @@ function App() {
           element={
             <ProtectedRoute>
               <ProductForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/products/:id"
+          element={
+            <ProtectedRoute>
+              <ProductDetail />
             </ProtectedRoute>
           }
         />
