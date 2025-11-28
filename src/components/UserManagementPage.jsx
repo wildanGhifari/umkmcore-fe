@@ -20,7 +20,15 @@ import {
   Chip,
 } from '@mui/material';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Edit as EditIcon, Delete as DeleteIcon, Search as SearchIcon, PersonAdd as PersonAddIcon } from '@mui/icons-material';
+import {
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  Search as SearchIcon,
+  PersonAdd as PersonAddIcon,
+  CheckCircle as ActivateIcon,
+  Block as DeactivateIcon,
+  DeleteForever as DeleteForeverIcon,
+} from '@mui/icons-material';
 import userService from '../services/userService';
 import UserForm from '../components/UserForm';
 import { useAuth } from '../context/AuthContext';
@@ -50,6 +58,17 @@ const UserManagementPage = () => {
     mutationFn: (id) => userService.deleteUser(id),
     onSuccess: () => {
       queryClient.invalidateQueries(['users']);
+      showSnackbar('User deleted permanently!', 'success');
+    },
+    onError: (err) => {
+      showSnackbar(err.message || 'Failed to delete user.', 'error');
+    },
+  });
+
+  const deactivateUserMutation = useMutation({
+    mutationFn: (id) => userService.deactivateUser(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['users']);
       showSnackbar('User deactivated successfully!', 'success');
     },
     onError: (err) => {
@@ -57,8 +76,31 @@ const UserManagementPage = () => {
     },
   });
 
+  const activateUserMutation = useMutation({
+    mutationFn: (id) => userService.activateUser(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['users']);
+      showSnackbar('User activated successfully!', 'success');
+    },
+    onError: (err) => {
+      showSnackbar(err.message || 'Failed to activate user.', 'error');
+    },
+  });
+
+  const handleDeactivateUser = (id) => {
+    if (window.confirm('Are you sure you want to deactivate this user? They will not be able to login.')) {
+      deactivateUserMutation.mutate(id);
+    }
+  };
+
+  const handleActivateUser = (id) => {
+    if (window.confirm('Reactivate this user? They will be able to login again.')) {
+      activateUserMutation.mutate(id);
+    }
+  };
+
   const handleDeleteUser = (id) => {
-    if (window.confirm('Are you sure you want to deactivate this user?')) {
+    if (window.confirm('PERMANENTLY DELETE this user? This action cannot be undone!')) {
       deleteUserMutation.mutate(id);
     }
   };
@@ -164,11 +206,40 @@ const UserManagementPage = () => {
                     />
                   </TableCell>
                   <TableCell align="center">
-                    <IconButton size="small" color="primary" onClick={() => handleEditUser(u)}>
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() => handleEditUser(u)}
+                      title="Edit user"
+                    >
                       <EditIcon />
                     </IconButton>
-                    <IconButton size="small" color="error" onClick={() => handleDeleteUser(u.id)}>
-                      <DeleteIcon />
+                    {u.isActive ? (
+                      <IconButton
+                        size="small"
+                        color="warning"
+                        onClick={() => handleDeactivateUser(u.id)}
+                        title="Deactivate user"
+                      >
+                        <DeactivateIcon />
+                      </IconButton>
+                    ) : (
+                      <IconButton
+                        size="small"
+                        color="success"
+                        onClick={() => handleActivateUser(u.id)}
+                        title="Activate user"
+                      >
+                        <ActivateIcon />
+                      </IconButton>
+                    )}
+                    <IconButton
+                      size="small"
+                      color="error"
+                      onClick={() => handleDeleteUser(u.id)}
+                      title="Permanently delete user"
+                    >
+                      <DeleteForeverIcon />
                     </IconButton>
                   </TableCell>
                 </TableRow>
