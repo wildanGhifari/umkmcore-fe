@@ -77,8 +77,8 @@ function ProductDetail() {
 
   // Add material to BOM
   const addMaterialMutation = useMutation({
-    mutationFn: ({ materialId, quantity }) =>
-      productService.addMaterialToBOM(id, materialId, quantity),
+    mutationFn: ({ materialId, quantity, unit }) =>
+      productService.addMaterialToBOM(id, materialId, quantity, unit),
     onSuccess: () => {
       queryClient.invalidateQueries(['product-bom', id]);
       queryClient.invalidateQueries(['product', id]);
@@ -159,7 +159,14 @@ function ProductDetail() {
     if (editingBOM) {
       updateBOMMutation.mutate({ bomId: editingBOM.id, quantity: parseFloat(quantity) });
     } else {
-      addMaterialMutation.mutate({ materialId: selectedMaterial, quantity: parseFloat(quantity) });
+      // Get the unit from the selected material
+      const selectedMat = materials.find(m => m.id === selectedMaterial);
+      const unit = selectedMat?.unit || 'pcs';
+      addMaterialMutation.mutate({
+        materialId: selectedMaterial,
+        quantity: parseFloat(quantity),
+        unit: unit
+      });
     }
   };
 

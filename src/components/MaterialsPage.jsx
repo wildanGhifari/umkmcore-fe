@@ -186,6 +186,8 @@ function MaterialsPage() {
               <TableRow>
                 <TableCell>SKU</TableCell>
                 <TableCell>Name</TableCell>
+                <TableCell align="right">Unit Price</TableCell>
+                <TableCell>Unit</TableCell>
                 <TableCell align="right">Current Stock</TableCell>
                 <TableCell align="right">Minimum Stock</TableCell>
                 <TableCell>Status</TableCell>
@@ -201,6 +203,8 @@ function MaterialsPage() {
                 >
                   <TableCell>{material.sku}</TableCell>
                   <TableCell>{material.name}</TableCell>
+                  <TableCell align="right">Rp {material.unitPrice?.toLocaleString() || 0}</TableCell>
+                  <TableCell>{material.unit}</TableCell>
                   <TableCell align="right">{material.currentStock}</TableCell>
                   <TableCell align="right">{material.minimumStock}</TableCell>
                   <TableCell>{material.status}</TableCell>

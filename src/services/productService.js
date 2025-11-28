@@ -97,11 +97,11 @@ const getProductBOM = async (productId) => {
   return await response.json();
 };
 
-const addMaterialToBOM = async (productId, materialId, quantity) => {
+const addMaterialToBOM = async (productId, materialId, quantity, unit) => {
   const response = await fetch(`${API_URL}/${productId}/materials`, {
     method: 'POST',
     headers: getAuthHeaders(),
-    body: JSON.stringify({ materialId, quantity }),
+    body: JSON.stringify({ materialId, quantity, unit }),
   });
   if (!response.ok) {
     const errorData = await response.json();
