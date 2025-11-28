@@ -1,6 +1,7 @@
 import authService from './authService';
 
-const API_URL = '/api/v1/materials';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/v1';
+const API_URL = `${API_BASE_URL}/materials`;
 
 const getAuthHeaders = () => {
   const user = authService.getCurrentUser();
@@ -91,7 +92,7 @@ const deleteMaterial = async (id) => {
 };
 
 const createStockTransaction = async (transactionData) => {
-  const response = await fetch('/api/v1/stock-transactions', { // Using direct URL as API_URL is for /materials
+  const response = await fetch(`${API_BASE_URL}/stock-transactions`, { // Using direct URL as API_URL is for /materials
     method: 'POST',
     headers: getAuthHeaders(),
     body: JSON.stringify(transactionData),

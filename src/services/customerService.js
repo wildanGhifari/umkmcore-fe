@@ -1,6 +1,7 @@
 import authService from './authService';
 
-const API_URL = '/api/v1/customers';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/v1';
+const API_URL = `${API_BASE_URL}/customers`;
 
 const getAuthHeaders = () => {
   const user = authService.getCurrentUser();

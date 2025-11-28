@@ -1,5 +1,6 @@
 // src/services/authService.js
-const API_URL = '/api/v1/auth';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/v1';
+const API_URL = `${API_BASE_URL}/auth`;
 
 const login = async (username, password) => {
   const response = await fetch(`${API_URL}/login`, {

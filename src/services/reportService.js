@@ -1,7 +1,8 @@
 // src/services/reportService.js
 import authService from './authService';
 
-const API_URL = '/api/v1/reports';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/v1';
+const API_URL = `${API_BASE_URL}/reports`;
 
 const getAuthHeaders = () => {
   const user = authService.getCurrentUser();

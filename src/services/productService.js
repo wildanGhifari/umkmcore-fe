@@ -1,6 +1,7 @@
 import authService from './authService';
 
-const API_URL = '/api/v1/products';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/v1';
+const API_URL = `${API_BASE_URL}/products`;
 
 const getAuthHeaders = () => {
   const user = authService.getCurrentUser();
@@ -110,7 +111,7 @@ const addMaterialToBOM = async (productId, materialId, quantity) => {
 };
 
 const updateBOMEntry = async (bomId, quantity) => {
-  const response = await fetch(`/api/v1/bom/${bomId}`, { // Direct URL as API_URL is for /products
+  const response = await fetch(`${API_BASE_URL}/bom/${bomId}`, { // Direct URL as API_URL is for /products
     method: 'PUT',
     headers: getAuthHeaders(),
     body: JSON.stringify({ quantity }),
@@ -123,7 +124,7 @@ const updateBOMEntry = async (bomId, quantity) => {
 };
 
 const removeMaterialFromBOM = async (bomId) => {
-  const response = await fetch(`/api/v1/bom/${bomId}`, { // Direct URL as API_URL is for /products
+  const response = await fetch(`${API_BASE_URL}/bom/${bomId}`, { // Direct URL as API_URL is for /products
     method: 'DELETE',
     headers: getAuthHeaders(),
   });
