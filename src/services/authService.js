@@ -15,11 +15,16 @@ const login = async (username, password) => {
     throw new Error(errorData.message || 'Login failed');
   }
 
-  const data = await response.json();
-  if (data.token) {
-    localStorage.setItem('user', JSON.stringify(data));
+  const responseData = await response.json();
+  // Backend returns: { success: true, data: { user, token } }
+  const { data } = responseData;
+  if (data && data.token) {
+    // Store the flat structure: { ...user, token }
+    const userWithToken = { ...data.user, token: data.token };
+    localStorage.setItem('user', JSON.stringify(userWithToken));
+    return userWithToken;
   }
-  return data;
+  throw new Error('Invalid login response format');
 };
 
 const register = async (storeName, storeCode, fullName, username, email, password) => {
