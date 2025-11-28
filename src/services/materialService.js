@@ -1,3 +1,5 @@
+import authService from './authService';
+
 const API_URL = '/api/v1/materials';
 
 const getAuthHeaders = () => {
