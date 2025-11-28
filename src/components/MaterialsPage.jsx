@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Container,
   Typography,
   Box,
   Table,
@@ -28,6 +27,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Edit as EditIcon, Delete as DeleteIcon, Search as SearchIcon } from '@mui/icons-material';
 import materialService from '../services/materialService';
 import StockTransactionForm from '../components/StockTransactionForm';
+import MaterialForm from '../components/MaterialForm';
 import { useSnackbar } from '../context/SnackbarContext';
 
 function MaterialsPage() {
@@ -40,6 +40,7 @@ function MaterialsPage() {
   const [category, setCategory] = useState('');
   const [stockStatus, setStockStatus] = useState('');
   const [isTransactionFormOpen, setIsTransactionFormOpen] = useState(false);
+  const [isMaterialFormOpen, setIsMaterialFormOpen] = useState(false);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['materials', page + 1, rowsPerPage, search, category, stockStatus],
@@ -105,29 +106,23 @@ function MaterialsPage() {
 
   if (isLoading) {
     return (
-      <Container>
-        <Box display="flex" justifyContent="center" alignItems="center" sx={{ height: '80vh' }}>
-          <CircularProgress />
-        </Box>
-      </Container>
+      <Box display="flex" justifyContent="center" alignItems="center" sx={{ height: '80vh' }}>
+        <CircularProgress />
+      </Box>
     );
   }
 
   if (error) {
     return (
-      <Container>
-        <Box sx={{ my: 4 }}>
-          <Typography variant="h6" color="error">
-            Error loading materials: {error.message}
-          </Typography>
-        </Box>
-      </Container>
+      <Alert severity="error">
+        Error loading materials: {error.message}
+      </Alert>
     );
   }
 
   return (
-    <Container>
-      <Box sx={{ my: 4 }}>
+    <>
+      <Box sx={{ mb: 2 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Materials
         </Typography>
@@ -176,7 +171,7 @@ function MaterialsPage() {
             </FormControl>
           </Box>
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button variant="contained" color="primary" onClick={() => navigate('/materials/new')}>
+            <Button variant="contained" color="primary" onClick={() => setIsMaterialFormOpen(true)}>
               Create Material
             </Button>
             <Button variant="outlined" color="primary" onClick={handleOpenTransactionForm}>
@@ -254,7 +249,8 @@ function MaterialsPage() {
         />
       </Box>
       <StockTransactionForm open={isTransactionFormOpen} onClose={handleCloseTransactionForm} />
-    </Container>
+      <MaterialForm open={isMaterialFormOpen} onClose={() => setIsMaterialFormOpen(false)} />
+    </>
   );
 }
 

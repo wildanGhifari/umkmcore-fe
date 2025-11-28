@@ -16,9 +16,8 @@ const getAuthHeaders = () => {
 };
 
 const getMaterials = async (page = 1, limit = 10, search = '', category = '', stockStatus = '') => {
-  const offset = (page - 1) * limit;
   const queryParams = {
-    offset: offset.toString(),
+    page: page.toString(),
     limit: limit.toString(),
   };
 
