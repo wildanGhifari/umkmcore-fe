@@ -41,6 +41,7 @@ function MaterialsPage() {
   const [stockStatus, setStockStatus] = useState('');
   const [isTransactionFormOpen, setIsTransactionFormOpen] = useState(false);
   const [isMaterialFormOpen, setIsMaterialFormOpen] = useState(false);
+  const [editingMaterial, setEditingMaterial] = useState(null);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['materials', page + 1, rowsPerPage, search, category, stockStatus],
@@ -214,7 +215,8 @@ function MaterialsPage() {
                       color="primary"
                       onClick={(e) => {
                         e.stopPropagation(); // Prevent row click from firing
-                        navigate(`/materials/edit/${material.id}`);
+                        setEditingMaterial(material);
+                        setIsMaterialFormOpen(true);
                       }}
                     >
                       <EditIcon />
@@ -253,7 +255,14 @@ function MaterialsPage() {
         />
       </Box>
       <StockTransactionForm open={isTransactionFormOpen} onClose={handleCloseTransactionForm} />
-      <MaterialForm open={isMaterialFormOpen} onClose={() => setIsMaterialFormOpen(false)} />
+      <MaterialForm
+        open={isMaterialFormOpen}
+        onClose={() => {
+          setIsMaterialFormOpen(false);
+          setEditingMaterial(null);
+        }}
+        material={editingMaterial}
+      />
     </>
   );
 }
