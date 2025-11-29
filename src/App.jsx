@@ -16,6 +16,12 @@ import UserManagementPage from './components/UserManagementPage';
 import ReportsPage from './components/ReportsPage';
 import POSPage from './components/POSPage';
 import Layout from './components/Layout';
+import StockReport from './components/reports/StockReport';
+import LowStockReport from './components/reports/LowStockReport';
+import StockMovementReport from './components/reports/StockMovementReport';
+import MaterialUsageReport from './components/reports/MaterialUsageReport';
+import ProductProfitReport from './components/reports/ProductProfitReport';
+import ForecastReport from './components/reports/ForecastReport';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
@@ -122,6 +128,54 @@ function App() {
           element={
             <ProtectedRoute>
               <POSPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reports/stock"
+          element={
+            <ProtectedRoute>
+              <StockReport />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reports/low-stock"
+          element={
+            <ProtectedRoute>
+              <LowStockReport />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reports/stock-movement"
+          element={
+            <ProtectedRoute>
+              <StockMovementReport />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reports/material-usage"
+          element={
+            <ProtectedRoute>
+              <MaterialUsageReport />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reports/product-profit"
+          element={
+            <ProtectedRoute>
+              <ProductProfitReport />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reports/forecast"
+          element={
+            <ProtectedRoute>
+              <ForecastReport />
             </ProtectedRoute>
           }
         />
