@@ -50,7 +50,7 @@ function EditProduct() {
 
   const { data: materials, isLoading: areMaterialsLoading, error: materialsError } = useQuery({
     queryKey: ['allMaterials'],
-    queryFn: () => materialService.getMaterials(1, 9999, '', ''), // Fetch all materials
+    queryFn: () => materialService.getMaterials(1, 100, '', ''), // Fetch materials (max 100 per backend validation)
   });
 
   const updateProductMutation = useMutation({

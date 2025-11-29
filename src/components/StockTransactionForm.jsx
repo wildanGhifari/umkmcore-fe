@@ -30,7 +30,7 @@ function StockTransactionForm({ open, onClose, materialId: initialMaterialId = '
   // Fetch materials for dropdown
   const { data: materials, isLoading: materialsLoading, error: materialsError } = useQuery({
     queryKey: ['allMaterials'],
-    queryFn: () => materialService.getMaterials(1, 1000), // Fetch all for simplicity
+    queryFn: () => materialService.getMaterials(1, 100), // Fetch materials (max 100 per backend validation)
     select: (data) => data.data,
   });
 
