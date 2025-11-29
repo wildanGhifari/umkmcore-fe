@@ -8,6 +8,10 @@ import {
   TextField,
   Button,
   Grid,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import materialService from '../services/materialService';
@@ -22,7 +26,7 @@ function MaterialForm({ open, onClose, material = null }) {
     sku: material?.sku || '',
     name: material?.name || '',
     unit: material?.unit || '',
-    unitPrice: material?.unitPrice || '',
+    unitCost: material?.unitCost || '',
     minimumStock: material?.minimumStock || '',
     currentStock: material?.currentStock || 0,
   });
@@ -64,7 +68,7 @@ function MaterialForm({ open, onClose, material = null }) {
 
     const data = {
       ...formData,
-      unitPrice: parseFloat(formData.unitPrice),
+      unitCost: parseFloat(formData.unitCost),
       minimumStock: parseInt(formData.minimumStock, 10),
       currentStock: parseInt(formData.currentStock, 10),
     };
@@ -81,7 +85,7 @@ function MaterialForm({ open, onClose, material = null }) {
       sku: '',
       name: '',
       unit: '',
-      unitPrice: '',
+      unitCost: '',
       minimumStock: '',
       currentStock: 0,
     });
@@ -116,24 +120,34 @@ function MaterialForm({ open, onClose, material = null }) {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                required
-                label="Unit"
-                name="unit"
-                placeholder="kg, liter, pcs, etc."
-                value={formData.unit}
-                onChange={handleChange}
-              />
+              <FormControl fullWidth required>
+                <InputLabel>Unit</InputLabel>
+                <Select
+                  label="Unit"
+                  name="unit"
+                  value={formData.unit}
+                  onChange={handleChange}
+                >
+                  <MenuItem value="pcs">Pcs</MenuItem>
+                  <MenuItem value="cup">Cup</MenuItem>
+                  <MenuItem value="ml">Ml</MenuItem>
+                  <MenuItem value="liter">Liter</MenuItem>
+                  <MenuItem value="gram">Gram</MenuItem>
+                  <MenuItem value="kg">Kg</MenuItem>
+                  <MenuItem value="serving">Serving</MenuItem>
+                  <MenuItem value="bottle">Bottle</MenuItem>
+                  <MenuItem value="box">Box</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 required
                 type="number"
-                label="Unit Price"
-                name="unitPrice"
-                value={formData.unitPrice}
+                label="Unit Cost"
+                name="unitCost"
+                value={formData.unitCost}
                 onChange={handleChange}
                 inputProps={{ min: 0, step: 0.01 }}
               />

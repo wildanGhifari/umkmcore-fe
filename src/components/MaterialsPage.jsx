@@ -203,7 +203,7 @@ function MaterialsPage() {
                 >
                   <TableCell>{material.sku}</TableCell>
                   <TableCell>{material.name}</TableCell>
-                  <TableCell align="right">Rp {material.unitPrice?.toLocaleString() || 0}</TableCell>
+                  <TableCell align="right">Rp {material.unitCost?.toLocaleString() || 0}</TableCell>
                   <TableCell>{material.unit}</TableCell>
                   <TableCell align="right">{material.currentStock}</TableCell>
                   <TableCell align="right">{material.minimumStock}</TableCell>

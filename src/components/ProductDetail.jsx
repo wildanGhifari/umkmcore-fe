@@ -185,7 +185,7 @@ function ProductDetail() {
   // Calculate total material cost from BOM
   const calculateTotalMaterialCost = () => {
     return bomItems.reduce((total, item) => {
-      return total + (item.quantity * (item.Material?.unitPrice || 0));
+      return total + (item.quantity * (item.material?.unitCost || 0));
     }, 0);
   };
 
@@ -358,13 +358,13 @@ function ProductDetail() {
               ) : (
                 bomItems.map((item) => (
                   <TableRow key={item.id}>
-                    <TableCell>{item.Material?.name || 'N/A'}</TableCell>
-                    <TableCell>{item.Material?.sku || 'N/A'}</TableCell>
+                    <TableCell>{item.material?.name || 'N/A'}</TableCell>
+                    <TableCell>{item.material?.sku || 'N/A'}</TableCell>
                     <TableCell align="right">{item.quantity}</TableCell>
-                    <TableCell align="right">{item.Material?.unit || 'N/A'}</TableCell>
-                    <TableCell align="right">Rp {item.Material?.unitPrice?.toLocaleString() || 0}</TableCell>
+                    <TableCell align="right">{item.material?.unit || 'N/A'}</TableCell>
+                    <TableCell align="right">Rp {item.material?.unitCost?.toLocaleString() || 0}</TableCell>
                     <TableCell align="right">
-                      Rp {(item.quantity * (item.Material?.unitPrice || 0)).toLocaleString()}
+                      Rp {(item.quantity * (item.material?.unitCost || 0)).toLocaleString()}
                     </TableCell>
                     <TableCell align="center">
                       <IconButton
@@ -420,7 +420,7 @@ function ProductDetail() {
               >
                 {materials.map((material) => (
                   <MenuItem key={material.id} value={material.id}>
-                    {material.name} ({material.sku}) - Rp {material.unitPrice?.toLocaleString()}/{material.unit}
+                    {material.name} ({material.sku}) - Rp {material.unitCost?.toLocaleString()}/{material.unit}
                   </MenuItem>
                 ))}
               </Select>
@@ -436,7 +436,7 @@ function ProductDetail() {
             {selectedMaterial && quantity && (
               <Alert severity="info">
                 Estimated cost: Rp {(
-                  quantity * (materials.find(m => m.id === selectedMaterial)?.unitPrice || 0)
+                  quantity * (materials.find(m => m.id === parseInt(selectedMaterial))?.unitCost || 0)
                 ).toLocaleString()}
               </Alert>
             )}
