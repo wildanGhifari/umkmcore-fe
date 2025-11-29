@@ -71,10 +71,41 @@ function MaterialForm({ open, onClose, material = null }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
+
+    // Field length constraints (will be enforced in backend)
+    const MAX_NAME_LENGTH = 40;
+    const MAX_SKU_LENGTH = 20;
+
+    // Validate and truncate name if needed
+    if (name === 'name' && value.length > MAX_NAME_LENGTH) {
+      showSnackbar(`Name cannot exceed ${MAX_NAME_LENGTH} characters`, 'warning');
+      return;
+    }
+
+    // Validate and truncate SKU if needed
+    if (name === 'sku' && value.length > MAX_SKU_LENGTH) {
+      showSnackbar(`SKU cannot exceed ${MAX_SKU_LENGTH} characters`, 'warning');
+      return;
+    }
+
+    // Auto-generate SKU from name if creating new material and SKU hasn't been manually edited
+    if (name === 'name' && !isEdit) {
+      const autoSku = value
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g, '') // Remove non-alphanumeric characters
+        .substring(0, MAX_SKU_LENGTH); // Limit to max SKU length
+
+      setFormData(prev => ({
+        ...prev,
+        name: value,
+        sku: prev.sku || autoSku, // Only auto-fill if SKU is empty
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSubmit = (e) => {
@@ -121,6 +152,8 @@ function MaterialForm({ open, onClose, material = null }) {
                 value={formData.sku}
                 onChange={handleChange}
                 disabled={isEdit} // SKU shouldn't change
+                inputProps={{ maxLength: 20 }}
+                helperText={`${formData.sku.length}/20 characters`}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -131,6 +164,8 @@ function MaterialForm({ open, onClose, material = null }) {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
+                inputProps={{ maxLength: 40 }}
+                helperText={`${formData.name.length}/40 characters`}
               />
             </Grid>
             <Grid item xs={12} sm={6}>

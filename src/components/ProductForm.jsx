@@ -41,21 +41,21 @@ function ProductForm() {
     let errors = {};
     let isValid = true;
 
-    // SKU Validation
+    // SKU Validation (updated to match new constraint)
     if (!product.sku) {
       errors.sku = 'SKU is required.';
       isValid = false;
-    } else if (product.sku.length > 100) {
-      errors.sku = 'SKU cannot exceed 100 characters.';
+    } else if (product.sku.length > 20) {
+      errors.sku = 'SKU cannot exceed 20 characters.';
       isValid = false;
     }
 
-    // Name Validation
+    // Name Validation (updated to match new constraint)
     if (!product.name) {
       errors.name = 'Product Name is required.';
       isValid = false;
-    } else if (product.name.length > 255) {
-      errors.name = 'Product Name cannot exceed 255 characters.';
+    } else if (product.name.length > 40) {
+      errors.name = 'Product Name cannot exceed 40 characters.';
       isValid = false;
     }
 
@@ -99,10 +99,26 @@ function ProductForm() {
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
-    setProduct((prevProduct) => ({
-      ...prevProduct,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
+
+    // Auto-generate SKU from name if name field is changed and SKU is empty
+    if (name === 'name' && !product.sku) {
+      const autoSku = value
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g, '') // Remove non-alphanumeric characters
+        .substring(0, 20); // Limit to 20 characters
+
+      setProduct((prevProduct) => ({
+        ...prevProduct,
+        name: value,
+        sku: autoSku,
+      }));
+    } else {
+      setProduct((prevProduct) => ({
+        ...prevProduct,
+        [name]: type === 'checkbox' ? checked : value,
+      }));
+    }
+
     // Clear validation error for the changed field immediately
     setValidationErrors((prevErrors) => ({ ...prevErrors, [name]: undefined }));
   };
@@ -149,7 +165,8 @@ function ProductForm() {
             onChange={handleChange}
             disabled={loading}
             error={!!validationErrors.sku}
-            helperText={validationErrors.sku}
+            helperText={validationErrors.sku || `${product.sku.length}/20 characters`}
+            inputProps={{ maxLength: 20 }}
           />
           <TextField
             margin="normal"
@@ -162,7 +179,8 @@ function ProductForm() {
             onChange={handleChange}
             disabled={loading}
             error={!!validationErrors.name}
-            helperText={validationErrors.name}
+            helperText={validationErrors.name || `${product.name.length}/40 characters`}
+            inputProps={{ maxLength: 40 }}
           />
           <TextField
             margin="normal"
