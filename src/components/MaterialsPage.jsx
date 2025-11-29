@@ -1,5 +1,5 @@
 // src/components/MaterialsPage.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Typography,
@@ -36,12 +36,23 @@ function MaterialsPage() {
   const { showSnackbar } = useSnackbar();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [search, setSearch] = useState('');
+  const [searchInput, setSearchInput] = useState(''); // User input
+  const [search, setSearch] = useState(''); // Debounced search value
   const [category, setCategory] = useState('');
   const [stockStatus, setStockStatus] = useState('');
   const [isTransactionFormOpen, setIsTransactionFormOpen] = useState(false);
   const [isMaterialFormOpen, setIsMaterialFormOpen] = useState(false);
   const [editingMaterial, setEditingMaterial] = useState(null);
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearch(searchInput);
+      setPage(0); // Reset page when search changes
+    }, 500); // 500ms delay
+
+    return () => clearTimeout(timer);
+  }, [searchInput]);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['materials', page + 1, rowsPerPage, search, category, stockStatus],
@@ -73,8 +84,7 @@ function MaterialsPage() {
   };
 
   const handleSearchChange = (event) => {
-    setSearch(event.target.value);
-    setPage(0); // Reset page when search changes
+    setSearchInput(event.target.value);
   };
 
   const handleCategoryChange = (event) => {
@@ -134,7 +144,7 @@ function MaterialsPage() {
               label="Search"
               variant="outlined"
               size="small"
-              value={search}
+              value={searchInput}
               onChange={handleSearchChange}
               InputProps={{
                 startAdornment: (
