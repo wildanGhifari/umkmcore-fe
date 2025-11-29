@@ -17,6 +17,24 @@ const getAuthHeaders = () => {
   };
 };
 
+const getSalesOrders = async (page = 1, limit = 10, search = '') => {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...(search && { search }),
+  });
+
+  const response = await fetch(`${API_URL}?${params}`, {
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to fetch sales orders');
+  }
+  return await response.json();
+};
+
 const createSalesOrder = async (orderData) => {
   const response = await fetch(API_URL, {
     method: 'POST',
@@ -31,6 +49,7 @@ const createSalesOrder = async (orderData) => {
 };
 
 const salesOrderService = {
+  getSalesOrders,
   createSalesOrder,
 };
 

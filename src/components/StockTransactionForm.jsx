@@ -21,7 +21,7 @@ import materialService from '../services/materialService';
 
 function StockTransactionForm({ open, onClose, materialId: initialMaterialId = '' }) {
   const queryClient = useQueryClient();
-  const [transactionType, setTransactionType] = useState('IN');
+  const [transactionType, setTransactionType] = useState('in');
   const [selectedMaterial, setSelectedMaterial] = useState(initialMaterialId);
   const [quantity, setQuantity] = useState('');
   const [description, setDescription] = useState('');
@@ -56,7 +56,7 @@ function StockTransactionForm({ open, onClose, materialId: initialMaterialId = '
 
     const payload = {
       materialId: selectedMaterial,
-      type: transactionType,
+      transactionType: transactionType,
       quantity: parseFloat(quantity),
       description,
     };
@@ -65,7 +65,7 @@ function StockTransactionForm({ open, onClose, materialId: initialMaterialId = '
   };
 
   const resetForm = () => {
-    setTransactionType('IN');
+    setTransactionType('in');
     setSelectedMaterial(initialMaterialId);
     setQuantity('');
     setDescription('');
@@ -104,9 +104,9 @@ function StockTransactionForm({ open, onClose, materialId: initialMaterialId = '
             label="Transaction Type"
             onChange={(e) => setTransactionType(e.target.value)}
           >
-            <MenuItem value="IN">IN (Receive)</MenuItem>
-            <MenuItem value="OUT">OUT (Spoilage/Loss)</MenuItem>
-            <MenuItem value="ADJUSTMENT">ADJUSTMENT (Correction)</MenuItem>
+            <MenuItem value="in">IN (Receive)</MenuItem>
+            <MenuItem value="out">OUT (Spoilage/Loss)</MenuItem>
+            <MenuItem value="adjustment">ADJUSTMENT (Correction)</MenuItem>
           </Select>
         </FormControl>
 

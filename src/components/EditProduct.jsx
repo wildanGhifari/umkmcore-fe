@@ -5,7 +5,6 @@ import {
   TextField,
   Button,
   Typography,
-  Container,
   Paper,
   Alert,
   CircularProgress,
@@ -183,8 +182,8 @@ function EditProduct() {
   }
 
   return (
-    <Container maxWidth="md">
-      <Paper sx={{ p: 4, mt: 4 }}>
+    <Box>
+      <Paper sx={{ p: 4 }}>
         <Typography variant="h4" component="h2" sx={{ mb: 2 }}>
           Edit Product
         </Typography>
@@ -360,7 +359,7 @@ function EditProduct() {
           </Box>
         </Box>
       </Paper>
-    </Container>
+    </Box>
   );
 }
 
