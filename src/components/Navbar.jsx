@@ -32,6 +32,7 @@ function Navbar() {
             <Button color="inherit" onClick={() => navigate('/')}>Dashboard</Button>
             <Button color="inherit" onClick={() => navigate('/products')}>Products</Button>
             <Button color="inherit" onClick={() => navigate('/materials')}>Materials</Button>
+            <Button color="inherit" onClick={() => navigate('/categories')}>Categories</Button>
             <Button color="inherit" onClick={() => navigate('/reports')}>Reports</Button>
             {user.role === 'admin' && (
               <Button color="inherit" onClick={() => navigate('/users')}>User Management</Button>

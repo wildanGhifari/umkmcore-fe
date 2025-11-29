@@ -13,6 +13,7 @@ import ProductForm from './components/ProductForm';
 import ProductDetail from './components/ProductDetail';
 import EditProduct from './components/EditProduct';
 import UserManagementPage from './components/UserManagementPage';
+import CategoryManagement from './components/CategoryManagement';
 import ReportsPage from './components/ReportsPage';
 import POSPage from './components/POSPage';
 import Layout from './components/Layout';
@@ -112,6 +113,14 @@ function App() {
           element={
             <ProtectedRoute>
               <UserManagementPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/categories"
+          element={
+            <ProtectedRoute>
+              <CategoryManagement />
             </ProtectedRoute>
           }
         />
