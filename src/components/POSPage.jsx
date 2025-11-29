@@ -43,7 +43,7 @@ const POSPage = () => {
   const [search, setSearch] = useState('');
   const [cart, setCart] = useState([]);
   const [isCheckoutModalOpen, setCheckoutModalOpen] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('Cash');
+  const [paymentMethod, setPaymentMethod] = useState('cash');
   const [amountReceived, setAmountReceived] = useState('');
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [customerSearch, setCustomerSearch] = useState('');
@@ -138,9 +138,9 @@ const POSPage = () => {
         quantity: item.quantity,
         unitPrice: item.sellingPrice
       })),
-      totalAmount: total,
       taxAmount: tax,
       paymentMethod,
+      paidAmount: parseFloat(amountReceived) || total,
       customerId: selectedCustomer?.id || null,
     };
     createSalesOrderMutation.mutate(orderData);
@@ -283,9 +283,11 @@ const POSPage = () => {
               label="Payment Method"
               onChange={(e) => setPaymentMethod(e.target.value)}
             >
-              <MenuItem value="Cash">Cash</MenuItem>
-              <MenuItem value="Credit Card">Credit Card</MenuItem>
-              <MenuItem value="Digital Wallet">Digital Wallet</MenuItem>
+              <MenuItem value="cash">Cash</MenuItem>
+              <MenuItem value="card">Card</MenuItem>
+              <MenuItem value="ewallet">E-Wallet</MenuItem>
+              <MenuItem value="transfer">Bank Transfer</MenuItem>
+              <MenuItem value="qris">QRIS</MenuItem>
             </Select>
           </FormControl>
           <TextField
