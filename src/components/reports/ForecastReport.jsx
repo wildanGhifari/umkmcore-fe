@@ -1,7 +1,7 @@
 // src/components/reports/ForecastReport.jsx
 import React from 'react';
 import { Box, Typography, CircularProgress, Alert } from '@mui/material';
-import { useQuery } from '@tantml:query';
+import { useQuery } from '@tanstack/react-query';
 import reportService from '../../services/reportService';
 
 function ForecastReport() {
