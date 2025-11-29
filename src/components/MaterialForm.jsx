@@ -1,5 +1,5 @@
 // src/components/MaterialForm.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -30,6 +30,20 @@ function MaterialForm({ open, onClose, material = null }) {
     minimumStock: material?.minimumStock || '',
     currentStock: material?.currentStock || 0,
   });
+
+  // Update form data when material prop changes (for edit mode)
+  useEffect(() => {
+    if (material) {
+      setFormData({
+        sku: material.sku || '',
+        name: material.name || '',
+        unit: material.unit || '',
+        unitCost: material.unitCost || '',
+        minimumStock: material.minimumStock || '',
+        currentStock: material.currentStock || 0,
+      });
+    }
+  }, [material]);
 
   const createMutation = useMutation({
     mutationFn: materialService.createMaterial,
