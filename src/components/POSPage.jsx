@@ -55,6 +55,8 @@ const POSPage = () => {
     keepPreviousData: true,
   });
 
+  const products = data?.data || [];
+
   const { data: customerData, isLoading: customersLoading, error: customersError } = useQuery({
     queryKey: ['customers', 1, 10, customerSearch], // Fetch up to 10 customers for search
     queryFn: () => customerService.getCustomers(1, 10, customerSearch),
