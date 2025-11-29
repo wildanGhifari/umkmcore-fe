@@ -16,7 +16,9 @@ import {
   FormHelperText, // Added FormHelperText import
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import productService from '../services/productService';
+import categoryService from '../services/categoryService';
 import { useSnackbar } from '../context/SnackbarContext';
 
 function ProductForm() {
@@ -36,6 +38,15 @@ function ProductForm() {
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
   const [validationErrors, setValidationErrors] = useState({});
+
+  // Fetch product categories
+  const { data: categoriesData } = useQuery({
+    queryKey: ['categories', 'product'],
+    queryFn: () => categoryService.getCategories({ type: 'product', limit: 100 }),
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+  });
+
+  const categories = categoriesData?.data || [];
 
   const validateForm = () => {
     let errors = {};
@@ -194,16 +205,28 @@ function ProductForm() {
             onChange={handleChange}
             disabled={loading}
           />
-          <TextField
-            margin="normal"
-            fullWidth
-            id="category"
-            label="Category"
-            name="category"
-            value={product.category}
-            onChange={handleChange}
-            disabled={loading}
-          />
+          <FormControl fullWidth margin="normal" disabled={loading}>
+            <InputLabel id="category-label">Category</InputLabel>
+            <Select
+              labelId="category-label"
+              id="category"
+              name="category"
+              value={product.category}
+              label="Category"
+              onChange={handleChange}
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              {categories
+                .filter(cat => cat.isActive)
+                .map((category) => (
+                  <MenuItem key={category.id} value={category.name}>
+                    {category.name}
+                  </MenuItem>
+                ))}
+            </Select>
+          </FormControl>
           <FormControl fullWidth margin="normal" required disabled={loading} error={!!validationErrors.unit}>
             <InputLabel id="unit-label">Unit</InputLabel>
             <Select

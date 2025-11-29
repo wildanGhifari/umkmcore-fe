@@ -16,10 +16,15 @@ import {
   TableRow,
   IconButton,
   InputAdornment,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import productService from '../services/productService';
 import materialService from '../services/materialService'; // Import materialService
+import categoryService from '../services/categoryService';
 import { useSnackbar } from '../context/SnackbarContext';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Delete as DeleteIcon, Add as AddIcon } from '@mui/icons-material';
@@ -51,6 +56,14 @@ function EditProduct() {
     queryKey: ['allMaterials'],
     queryFn: () => materialService.getMaterials(1, 100, '', ''), // Fetch materials (max 100 per backend validation)
   });
+
+  const { data: categoriesData } = useQuery({
+    queryKey: ['categories', 'product'],
+    queryFn: () => categoryService.getCategories({ type: 'product', limit: 100 }),
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+  });
+
+  const categories = categoriesData?.data || [];
 
   const updateProductMutation = useMutation({
     mutationFn: (updatedProduct) => productService.updateProduct(id, updatedProduct),
@@ -114,6 +127,7 @@ function EditProduct() {
   const [localProduct, setLocalProduct] = useState({
     name: '',
     description: '',
+    category: '',
     price: '',
     stock: '',
   });
@@ -125,6 +139,7 @@ function EditProduct() {
       setLocalProduct({
         name: product.name || '',
         description: product.description || '',
+        category: product.category || '',
         price: product.price || '',
         stock: product.stock || '',
       });
@@ -211,6 +226,28 @@ function EditProduct() {
             onChange={handleChange}
             disabled={updateProductMutation.isLoading}
           />
+          <FormControl fullWidth margin="normal" disabled={updateProductMutation.isLoading}>
+            <InputLabel id="category-label">Category</InputLabel>
+            <Select
+              labelId="category-label"
+              id="category"
+              name="category"
+              value={localProduct.category}
+              label="Category"
+              onChange={handleChange}
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              {categories
+                .filter(cat => cat.isActive)
+                .map((category) => (
+                  <MenuItem key={category.id} value={category.name}>
+                    {category.name}
+                  </MenuItem>
+                ))}
+            </Select>
+          </FormControl>
           <TextField
             margin="normal"
             required

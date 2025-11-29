@@ -13,8 +13,9 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import materialService from '../services/materialService';
+import categoryService from '../services/categoryService';
 import { useSnackbar } from '../context/SnackbarContext';
 
 function MaterialForm({ open, onClose, material = null }) {
@@ -25,10 +26,18 @@ function MaterialForm({ open, onClose, material = null }) {
   const [formData, setFormData] = useState({
     sku: material?.sku || '',
     name: material?.name || '',
+    category: material?.category || '',
     unit: material?.unit || '',
     unitCost: material?.unitCost || '',
     minimumStock: material?.minimumStock || '',
     currentStock: material?.currentStock || 0,
+  });
+
+  // Fetch material categories
+  const { data: categoriesData } = useQuery({
+    queryKey: ['categories', 'material'],
+    queryFn: () => categoryService.getCategories({ type: 'material', limit: 100 }),
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
   });
 
   // Update form data when material prop changes (for edit mode)
@@ -37,6 +46,7 @@ function MaterialForm({ open, onClose, material = null }) {
       setFormData({
         sku: material.sku || '',
         name: material.name || '',
+        category: material.category || '',
         unit: material.unit || '',
         unitCost: material.unitCost || '',
         minimumStock: material.minimumStock || '',
@@ -129,6 +139,7 @@ function MaterialForm({ open, onClose, material = null }) {
     setFormData({
       sku: '',
       name: '',
+      category: '',
       unit: '',
       unitCost: '',
       minimumStock: '',
@@ -136,6 +147,8 @@ function MaterialForm({ open, onClose, material = null }) {
     });
     onClose();
   };
+
+  const categories = categoriesData?.data || [];
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
@@ -167,6 +180,28 @@ function MaterialForm({ open, onClose, material = null }) {
                 inputProps={{ maxLength: 40 }}
                 helperText={`${formData.name.length}/40 characters`}
               />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Category</InputLabel>
+                <Select
+                  label="Category"
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  {categories
+                    .filter(cat => cat.isActive)
+                    .map((category) => (
+                      <MenuItem key={category.id} value={category.name}>
+                        {category.name}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
             </Grid>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth required>
