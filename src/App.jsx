@@ -24,6 +24,8 @@ import MaterialUsageReport from './components/reports/MaterialUsageReport';
 import ProductProfitReport from './components/reports/ProductProfitReport';
 import ForecastReport from './components/reports/ForecastReport';
 import StoreManagementPage from './components/StoreManagementPage';
+import InventoryReportPage from './components/reports/InventoryReportPage';
+import RevenueReportPage from './components/reports/RevenueReportPage';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
@@ -194,6 +196,22 @@ function App() {
           element={
             <ProtectedRoute>
               <StoreManagementPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reports/inventory"
+          element={
+            <ProtectedRoute>
+              <InventoryReportPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reports/revenue"
+          element={
+            <ProtectedRoute>
+              <RevenueReportPage />
             </ProtectedRoute>
           }
         />
