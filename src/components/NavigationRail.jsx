@@ -114,11 +114,16 @@ const NavigationRail = () => {
         <Tooltip title="Point of Sale" placement="right">
           <Fab
             variant={open ? 'extended' : 'circular'}
-            color="primary"
             aria-label="pos"
             onClick={() => navigate('/pos')}
             sx={{
               width: open ? 'auto' : theme.spacing(7),
+              backgroundColor: theme.palette.primaryContainer.main,
+              color: theme.palette.primaryContainer.contrastText,
+              '&:hover': {
+                backgroundColor: theme.palette.primary.main,
+                color: theme.palette.primary.contrastText,
+              }
             }}
           >
             <PointOfSaleIcon sx={{ mr: open ? 1 : 0 }} />
@@ -146,6 +151,16 @@ const NavigationRail = () => {
                     mx: open ? 1 : 'auto',
                     justifyContent: open ? 'initial' : 'center',
                     px: 2.5,
+                    '&.Mui-selected': {
+                        backgroundColor: theme.palette.primaryContainer.main,
+                        color: theme.palette.primaryContainer.contrastText,
+                        '& .MuiListItemIcon-root': {
+                            color: theme.palette.primaryContainer.contrastText,
+                        },
+                        '&:hover': {
+                            backgroundColor: theme.palette.primary.main,
+                        }
+                    }
                   }}
                 >
                   <Tooltip title={item.text} placement="right" disableHoverListener={open}>
@@ -161,7 +176,18 @@ const NavigationRail = () => {
                         key={child.text}
                         selected={pathname === child.path}
                         onClick={() => navigate(child.path)}
-                        sx={{ pl: 4, borderRadius: 2, mx: 1 }}
+                        sx={{ 
+                            pl: 4, 
+                            borderRadius: 2, 
+                            mx: 1,
+                            '&.Mui-selected': {
+                                backgroundColor: theme.palette.primaryContainer.main,
+                                color: theme.palette.primaryContainer.contrastText,
+                                '&:hover': {
+                                    backgroundColor: theme.palette.primary.main,
+                                }
+                            }
+                        }}
                       >
                         {/* No Icon for report child items */}
                         <ListItemText primary={child.text} />
@@ -183,6 +209,16 @@ const NavigationRail = () => {
                     px: 2.5,
                     borderRadius: 2,
                     mx: open ? 1 : 'auto',
+                    '&.Mui-selected': {
+                        backgroundColor: theme.palette.primaryContainer.main,
+                        color: theme.palette.primaryContainer.contrastText,
+                        '& .MuiListItemIcon-root': {
+                            color: theme.palette.primaryContainer.contrastText,
+                        },
+                        '&:hover': {
+                           backgroundColor: theme.palette.primary.main,
+                        }
+                    }
                   }}
                   onClick={() => navigate(item.path)}
                 >

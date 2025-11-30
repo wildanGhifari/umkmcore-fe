@@ -1,7 +1,8 @@
 // src/theme.js
 import { createTheme } from '@mui/material/styles';
 
-const figmaColors = {
+// Full color scheme from Figma's Material Theme Builder
+const figmaSchemes = {
     "light": {
         "primary": "#7B5800",
         "surfaceTint": "#7B5800",
@@ -32,7 +33,14 @@ const figmaColors = {
         "scrim": "#000000",
         "inverseSurface": "#362F24",
         "inverseOnSurface": "#FCEFDE",
-        "inversePrimary": "#FFBB0C"
+        "inversePrimary": "#FFBB0C",
+        "surfaceDim": "#E5D8C8",
+        "surfaceBright": "#FFF8F3",
+        "surfaceContainerLowest": "#FFFFFF",
+        "surfaceContainerLow": "#FFF2E1",
+        "surfaceContainer": "#F9ECDB",
+        "surfaceContainerHigh": "#F3E6D6",
+        "surfaceContainerHighest": "#EDE1D0"
     },
     "dark": {
         "primary": "#FFBB0C",
@@ -64,7 +72,14 @@ const figmaColors = {
         "scrim": "#000000",
         "inverseSurface": "#EDE1D0",
         "inverseOnSurface": "#362F24",
-        "inversePrimary": "#7B5800"
+        "inversePrimary": "#7B5800",
+        "surfaceDim": "#181309",
+        "surfaceBright": "#3F382D",
+        "surfaceContainerLowest": "#120D05",
+        "surfaceContainerLow": "#211B11",
+        "surfaceContainer": "#251F14",
+        "surfaceContainerHigh": "#30291E",
+        "surfaceContainerHighest": "#3B3428"
     }
 };
 
@@ -72,34 +87,33 @@ const lightTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: figmaColors.light.primary,
-      contrastText: figmaColors.light.onPrimary,
+      main: figmaSchemes.light.primary,
+      contrastText: figmaSchemes.light.onPrimary,
     },
     secondary: {
-      main: figmaColors.light.secondary,
-      contrastText: figmaColors.light.onSecondary,
+      main: figmaSchemes.light.secondary,
+      contrastText: figmaSchemes.light.onSecondary,
     },
     error: {
-      main: figmaColors.light.error,
-      contrastText: figmaColors.light.onError,
+      main: figmaSchemes.light.error,
+      contrastText: figmaSchemes.light.onError,
     },
     background: {
-      default: figmaColors.light.background,
-      paper: figmaColors.light.surface,
+      default: figmaSchemes.light.surfaceContainerLowest, // Updated for body background
+      paper: figmaSchemes.light.surfaceBright, // Updated for NavRail background
     },
     text: {
-      primary: figmaColors.light.onSurface,
-      secondary: figmaColors.light.onSurfaceVariant,
+      primary: figmaSchemes.light.onSurface,
+      secondary: figmaSchemes.light.onSurfaceVariant,
     },
-    // You can add more mappings here if needed
-    // For example, for container colors
+    // Custom container colors
     primaryContainer: {
-      main: figmaColors.light.primaryContainer,
-      contrastText: figmaColors.light.onPrimaryContainer,
+      main: figmaSchemes.light.primaryContainer,
+      contrastText: figmaSchemes.light.onPrimaryContainer,
     },
     secondaryContainer: {
-      main: figmaColors.light.secondaryContainer,
-      contrastText: figmaColors.light.onSecondaryContainer,
+      main: figmaSchemes.light.secondaryContainer,
+      contrastText: figmaSchemes.light.onSecondaryContainer,
     },
   },
 });
@@ -108,32 +122,33 @@ const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: figmaColors.dark.primary,
-      contrastText: figmaColors.dark.onPrimary,
+      main: figmaSchemes.dark.primary,
+      contrastText: figmaSchemes.dark.onPrimary,
     },
     secondary: {
-      main: figmaColors.dark.secondary,
-      contrastText: figmaColors.dark.onSecondary,
+      main: figmaSchemes.dark.secondary,
+      contrastText: figmaSchemes.dark.onSecondary,
     },
     error: {
-      main: figmaColors.dark.error,
-      contrastText: figmaColors.dark.onError,
+      main: figmaSchemes.dark.error,
+      contrastText: figmaSchemes.dark.onError,
     },
     background: {
-      default: figmaColors.dark.background,
-      paper: figmaColors.dark.surface,
+      default: figmaSchemes.dark.surfaceContainerLowest, // Updated for body background
+      paper: figmaSchemes.dark.surfaceBright, // Updated for NavRail background
     },
     text: {
-      primary: figmaColors.dark.onSurface,
-      secondary: figmaColors.dark.onSurfaceVariant,
+      primary: figmaSchemes.dark.onSurface,
+      secondary: figmaSchemes.dark.onSurfaceVariant,
     },
+    // Custom container colors
     primaryContainer: {
-      main: figmaColors.dark.primaryContainer,
-      contrastText: figmaColors.dark.onPrimaryContainer,
+      main: figmaSchemes.dark.primaryContainer,
+      contrastText: figmaSchemes.dark.onPrimaryContainer,
     },
     secondaryContainer: {
-      main: figmaColors.dark.secondaryContainer,
-      contrastText: figmaColors.dark.onSecondaryContainer,
+      main: figmaSchemes.dark.secondaryContainer,
+      contrastText: figmaSchemes.dark.onSecondaryContainer,
     },
   },
 });
