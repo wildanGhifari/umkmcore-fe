@@ -1,26 +1,25 @@
 // src/theme.js
 import { createTheme } from '@mui/material/styles';
 
-// Full color scheme from Figma's Material Theme Builder
 const figmaSchemes = {
     "light": {
         "primary": "#4F5B92",
         "surfaceTint": "#4F5B92",
         "onPrimary": "#FFFFFF",
         "primaryContainer": "#DDE1FF",
-        "onPrimaryContainer": "#374379",
+        "onPrimaryContainer": "#07164B",
         "secondary": "#5A5D72",
         "onSecondary": "#FFFFFF",
         "secondaryContainer": "#DFE1F9",
-        "onSecondaryContainer": "#424659",
+        "onSecondaryContainer": "#171B2C",
         "tertiary": "#76546E",
         "onTertiary": "#FFFFFF",
         "tertiaryContainer": "#FFD7F3",
-        "onTertiaryContainer": "#5C3D56",
+        "onTertiaryContainer": "#2C1229",
         "error": "#BA1A1A",
         "onError": "#FFFFFF",
         "errorContainer": "#FFDAD6",
-        "onErrorContainer": "#93000A",
+        "onErrorContainer": "#410002",
         "background": "#FBF8FF",
         "onBackground": "#1B1B21",
         "surface": "#FBF8FF",
@@ -83,74 +82,62 @@ const figmaSchemes = {
     }
 };
 
-const lightTheme = createTheme({
+const createCustomTheme = (scheme) => createTheme({
   palette: {
-    mode: 'light',
+    mode: scheme === 'light' ? 'light' : 'dark',
     primary: {
-      main: figmaSchemes.light.primary,
-      contrastText: figmaSchemes.light.onPrimary,
+      main: figmaSchemes[scheme].primary,
+      contrastText: figmaSchemes[scheme].onPrimary,
     },
     secondary: {
-      main: figmaSchemes.light.secondary,
-      contrastText: figmaSchemes.light.onSecondary,
+      main: figmaSchemes[scheme].secondary,
+      contrastText: figmaSchemes[scheme].onSecondary,
     },
     error: {
-      main: figmaSchemes.light.error,
-      contrastText: figmaSchemes.light.onError,
+      main: figmaSchemes[scheme].error,
+      contrastText: figmaSchemes[scheme].onError,
     },
     background: {
-      default: figmaSchemes.light.surfaceContainerLowest, // Updated for body background
-      paper: figmaSchemes.light.surfaceBright, // Updated for NavRail background
+      default: figmaSchemes[scheme].surfaceVariant,
+      paper: figmaSchemes[scheme].surface,
     },
     text: {
-      primary: figmaSchemes.light.onSurface,
-      secondary: figmaSchemes.light.onSurfaceVariant,
+      primary: figmaSchemes[scheme].onSurface,
+      secondary: figmaSchemes[scheme].onSurfaceVariant,
     },
-    // Custom container colors
     primaryContainer: {
-      main: figmaSchemes.light.primaryContainer,
-      contrastText: figmaSchemes.light.onPrimaryContainer,
+      main: figmaSchemes[scheme].primaryContainer,
+      contrastText: figmaSchemes[scheme].onPrimaryContainer,
     },
     secondaryContainer: {
-      main: figmaSchemes.light.secondaryContainer,
-      contrastText: figmaSchemes.light.onSecondaryContainer,
+      main: figmaSchemes[scheme].secondaryContainer,
+      contrastText: figmaSchemes[scheme].onSecondaryContainer,
     },
+    surface: figmaSchemes[scheme],
   },
+  components: {
+    MuiList: {
+      styleOverrides: {
+        root: {
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '4px',
+        }
+      }
+    },
+    MuiListItem: {
+      styleOverrides: {
+        root: {
+          borderRadius: '16px',
+          paddingLeft: '12px',
+          paddingRight: '12px',
+        }
+      }
+    }
+  }
 });
 
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: figmaSchemes.dark.primary,
-      contrastText: figmaSchemes.dark.onPrimary,
-    },
-    secondary: {
-      main: figmaSchemes.dark.secondary,
-      contrastText: figmaSchemes.dark.onSecondary,
-    },
-    error: {
-      main: figmaSchemes.dark.error,
-      contrastText: figmaSchemes.dark.onError,
-    },
-    background: {
-      default: figmaSchemes.dark.surfaceContainerLowest, // Updated for body background
-      paper: figmaSchemes.dark.surfaceBright, // Updated for NavRail background
-    },
-    text: {
-      primary: figmaSchemes.dark.onSurface,
-      secondary: figmaSchemes.dark.onSurfaceVariant,
-    },
-    // Custom container colors
-    primaryContainer: {
-      main: figmaSchemes.dark.primaryContainer,
-      contrastText: figmaSchemes.dark.onPrimaryContainer,
-    },
-    secondaryContainer: {
-      main: figmaSchemes.dark.secondaryContainer,
-      contrastText: figmaSchemes.dark.onSecondaryContainer,
-    },
-  },
-});
+const lightTheme = createCustomTheme('light');
+const darkTheme = createCustomTheme('dark');
 
 export { lightTheme, darkTheme };

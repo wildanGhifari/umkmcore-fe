@@ -3,7 +3,6 @@ import {
   Box,
   Drawer,
   List,
-  ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
@@ -14,6 +13,7 @@ import {
   Tooltip,
   Collapse,
   Typography,
+  ListSubheader,
 } from '@mui/material';
 import {
   MenuRounded as MenuIcon,
@@ -26,236 +26,165 @@ import {
   LogoutRounded as LogoutIcon,
   PointOfSaleRounded as PointOfSaleIcon,
   ChevronLeftRounded as ChevronLeftIcon,
-  ChevronRightRounded as ChevronRightIcon,
   StyleRounded as StyleIcon,
   ExpandLessRounded as ExpandLess,
   ExpandMoreRounded as ExpandMore,
+  StoreRounded as StoreIcon,
+  AnalyticsRounded as AnalyticsIcon,
+  ReceiptLongRounded as ReceiptLongRoundedIcon,
+  TrendingUpRounded as TrendingUpRoundedIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-const drawerWidth = 240;
+const drawerWidth = 280;
 
 const NavigationRail = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { user, logout } = useAuth();
-  const [open, setOpen] = useState(false); // Re-introduce open state for rail
-  const [reportsOpen, setReportsOpen] = useState(false); // For internal reports collapse
-
-  const navItems = useMemo(() => [
-    { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
-    { text: 'Products', icon: <Inventory2Icon />, path: '/products' },
-    { text: 'Materials', icon: <CategoryIcon />, path: '/materials' },
-    { text: 'Categories', icon: <StyleIcon />, path: '/categories' },
-    {
-      text: 'Reports',
-      icon: <AssessmentIcon />,
-      children: [
-        { text: 'Stock Report', path: '/reports/stock' },
-        { text: 'Low Stock', path: '/reports/low-stock' },
-        { text: 'Stock Movement', path: '/reports/stock-movement' },
-        { text: 'Material Usage', path: '/reports/material-usage' },
-        { text: 'Product Profit', path: '/reports/product-profit' },
-        { text: 'Forecast', path: '/reports/forecast' },
-      ],
-    },
-    { text: 'Users', icon: <GroupIcon />, path: '/users', adminOnly: true },
-  ], []);
+  
+  const [open, setOpen] = useState(true);
+  const [analyticsOpen, setAnalyticsOpen] = useState(true);
+  const [inventoryOpen, setInventoryOpen] = useState(false);
+  const [revenueOpen, setRevenueOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
 
-  const handleDrawerToggle = () => { // Re-introduce toggle for main rail
+  const handleDrawerToggle = () => {
     setOpen(!open);
-    if (!open) {
-      setReportsOpen(false); // Collapse reports when closing the main rail
-    }
+  };
+  
+  const NavItem = ({ item, open, isChild = false }) => {
+    const isSelected = pathname === item.path;
+    if (item.adminOnly && user?.role !== 'admin') return null;
+
+    return (
+      <ListItemButton
+        selected={isSelected}
+        onClick={() => item.path && navigate(item.path)}
+        sx={{
+          justifyContent: open ? 'initial' : 'center',
+          px: 2.5,
+          pl: isChild ? 4 : 2.5,
+          '&.Mui-selected': {
+            backgroundColor: theme.palette.primaryContainer.main,
+            color: theme.palette.primaryContainer.contrastText,
+            '& .MuiListItemIcon-root': {
+              color: theme.palette.primaryContainer.contrastText,
+            },
+            '&:hover': {
+              backgroundColor: theme.palette.primary.main,
+            }
+          }
+        }}
+      >
+        {item.icon && (
+            <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
+                {item.icon}
+            </ListItemIcon>
+        )}
+        <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0 }} />
+      </ListItemButton>
+    );
+  };
+  
+  const CollapsibleNavItem = ({ item, open, toggleState, parentToggle }) => {
+    const hasActiveChild = useMemo(() => item.children.some(child => child.path === pathname || child.children?.some(c => c.path === pathname)), [item.children, pathname]);
+
+    return (
+        <>
+            <ListItemButton onClick={parentToggle} sx={{px: 2.5}}>
+                {item.icon && (
+                    <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
+                        {item.icon}
+                    </ListItemIcon>
+                )}
+                <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0 }} />
+                {open ? (toggleState ? <ExpandLess /> : <ExpandMore />) : null}
+            </ListItemButton>
+            <Collapse in={toggleState && open} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                    {item.children.map((child, index) => (
+                        child.children ? (
+                           <CollapsibleNavItem key={index} item={child} open={open} toggleState={child.text === 'Inventory' ? inventoryOpen : revenueOpen} parentToggle={() => child.text === 'Inventory' ? setInventoryOpen(!inventoryOpen) : setRevenueOpen(!revenueOpen)} />
+                        ) : (
+                           <NavItem key={index} item={child} open={open} isChild={true} />
+                        )
+                    ))}
+                </List>
+            </Collapse>
+        </>
+    );
   };
 
-  const handleReportsToggle = () => { // For internal reports collapse
-    if (!open) {
-      setOpen(true);
-      setReportsOpen(true);
-    } else {
-      setReportsOpen(!reportsOpen);
-    }
-  };
-
-  const isReportActive = navItems.find(item => item.text === 'Reports').children.some(child => child.path === pathname);
 
   const mainRailContent = (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      {/* Menu & Header */}
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: open ? 'space-between' : 'center',
-          px: open ? 2 : 0,
-          py: 1.5,
-        }}
-      >
-        {open && (
-          <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 'bold' }}>
-            UMKM Core
-          </Typography>
-        )}
-        <IconButton onClick={handleDrawerToggle}>
-          {open ? <ChevronLeftIcon /> : <MenuIcon />}
-        </IconButton>
-      </Box>
-
-      {/* POS FAB */}
-      <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
-        <Tooltip title="Point of Sale" placement="right">
-          <Fab
-            variant={open ? 'extended' : 'circular'}
-            aria-label="pos"
-            onClick={() => navigate('/pos')}
-            sx={{
-              width: open ? 'auto' : theme.spacing(7),
-              backgroundColor: theme.palette.primaryContainer.main,
-              color: theme.palette.primaryContainer.contrastText,
-              '&:hover': {
-                backgroundColor: theme.palette.primary.main,
-                color: theme.palette.primary.contrastText,
-              }
-            }}
-          >
-            <PointOfSaleIcon sx={{ mr: open ? 1 : 0 }} />
-            {open && <Typography variant="button">POS</Typography>}
-          </Fab>
-        </Tooltip>
-      </Box>
-
+        <Box sx={{ display: 'flex', alignItems: 'center', p: 2, justifyContent: open ? 'space-between' : 'center' }}>
+            {open && <Typography variant="h6" component="div">UMKM Core</Typography>}
+            <IconButton onClick={handleDrawerToggle}>
+                {open ? <ChevronLeftIcon /> : <MenuIcon />}
+            </IconButton>
+        </Box>
+        <Box sx={{ px: open ? 2 : 1, my: 1 }}>
+            <Fab variant="extended" color="primary" aria-label="pos" onClick={() => navigate('/pos')} sx={{ width: '100%' }}>
+                <PointOfSaleIcon sx={{ mr: open ? 1 : 0 }} />
+                {open && 'POS'}
+            </Fab>
+        </Box>
       <Divider sx={{ my: 1 }} />
-
-      {/* Navigation Items */}
-      <List sx={{ flexGrow: 1, p: open ? 1 : 0 }}>
-        {navItems.map((item) => {
-          if (item.adminOnly && user?.role !== 'admin') {
-            return null;
-          }
-          if (item.children) {
-            return (
-              <React.Fragment key={item.text}>
-                <ListItemButton
-                  onClick={handleReportsToggle}
-                  selected={isReportActive && !open}
-                  sx={{
-                    borderRadius: 2,
-                    mx: open ? 1 : 'auto',
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
-                    '&.Mui-selected': {
-                        backgroundColor: theme.palette.primaryContainer.main,
-                        color: theme.palette.primaryContainer.contrastText,
-                        '& .MuiListItemIcon-root': {
-                            color: theme.palette.primaryContainer.contrastText,
-                        },
-                        '&:hover': {
-                            backgroundColor: theme.palette.primary.main,
-                        }
-                    }
-                  }}
-                >
-                  <Tooltip title={item.text} placement="right" disableHoverListener={open}>
-                    <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>{item.icon}</ListItemIcon>
-                  </Tooltip>
-                  <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0 }} />
-                  {open ? (reportsOpen ? <ExpandLess /> : <ExpandMore />) : null}
-                </ListItemButton>
-                <Collapse in={reportsOpen && open} timeout="auto" unmountOnExit>
-                  <List component="div" disablePadding>
-                    {item.children.map(child => (
-                      <ListItemButton
-                        key={child.text}
-                        selected={pathname === child.path}
-                        onClick={() => navigate(child.path)}
-                        sx={{ 
-                            pl: 4, 
-                            borderRadius: 2, 
-                            mx: 1,
-                            '&.Mui-selected': {
-                                backgroundColor: theme.palette.primaryContainer.main,
-                                color: theme.palette.primaryContainer.contrastText,
-                                '&:hover': {
-                                    backgroundColor: theme.palette.primary.main,
-                                }
-                            }
-                        }}
-                      >
-                        {/* No Icon for report child items */}
-                        <ListItemText primary={child.text} />
-                      </ListItemButton>
-                    ))}
-                  </List>
-                </Collapse>
-              </React.Fragment>
-            );
-          }
-          return (
-            <ListItem key={item.text} disablePadding sx={{ display: 'block' }}>
-              <Tooltip title={item.text} placement="right" disableHoverListener={open}>
-                <ListItemButton
-                  selected={pathname === item.path}
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
-                    borderRadius: 2,
-                    mx: open ? 1 : 'auto',
-                    '&.Mui-selected': {
-                        backgroundColor: theme.palette.primaryContainer.main,
-                        color: theme.palette.primaryContainer.contrastText,
-                        '& .MuiListItemIcon-root': {
-                            color: theme.palette.primaryContainer.contrastText,
-                        },
-                        '&:hover': {
-                           backgroundColor: theme.palette.primary.main,
-                        }
-                    }
-                  }}
-                  onClick={() => navigate(item.path)}
-                >
-                  <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>{item.icon}</ListItemIcon>
-                  <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0 }} />
-                </ListItemButton>
-              </Tooltip>
-            </ListItem>
-          );
-        })}
+      
+      <List
+        sx={{ flexGrow: 1, p: open ? 1 : 0 }}
+        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem'}}>DASHBOARD</ListSubheader>}
+      >
+        <NavItem item={{ text: "Today's Sales", path: '/', icon: <DashboardIcon /> }} open={open} />
+        <CollapsibleNavItem item={{
+            text: 'Analytics',
+            icon: <AnalyticsIcon />,
+            children: [
+                { text: 'Inventory', icon: <Inventory2Icon/>, children: [
+                    { text: 'Stock', path: '/reports/stock' },
+                    { text: 'Low Stock', path: '/reports/low-stock' },
+                    { text: 'Stock Movement', path: '/reports/stock-movement' }
+                ]},
+                { text: 'Material Usage', path: '/reports/material-usage', icon: <StyleIcon /> },
+                { text: 'Revenue', icon: <ReceiptLongRoundedIcon />, children: [
+                     { text: 'Product Profit', path: '/reports/product-profit' },
+                ]},
+                { text: 'Forecast', path: '/reports/forecast', icon: <TrendingUpRoundedIcon /> }
+            ]
+        }} open={open} toggleState={analyticsOpen} parentToggle={() => setAnalyticsOpen(!analyticsOpen)} />
       </List>
 
       <Divider />
+      
+       <List
+        sx={{ p: open ? 1 : 0 }}
+        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem'}}>MANAGEMENT</ListSubheader>}
+      >
+        <NavItem item={{ text: 'Categories', path: '/categories', icon: <CategoryIcon /> }} open={open} />
+        <NavItem item={{ text: 'Materials', path: '/materials', icon: <StyleIcon /> }} open={open} />
+        <NavItem item={{ text: 'Products', path: '/products', icon: <Inventory2Icon /> }} open={open} />
+        <NavItem item={{ text: 'Stores', path: '/stores', icon: <StoreIcon /> }} open={open} />
+        <NavItem item={{ text: 'Users', path: '/users', icon: <GroupIcon />, adminOnly: true }} open={open} />
+      </List>
 
-      {/* Bottom Actions */}
+      <Box sx={{flexGrow: 1}} />
+
+      <Divider />
+
       <List sx={{ p: open ? 1 : 0 }}>
-        {[{text: 'Settings', icon: <SettingsIcon />, action: () => {} }, {text: 'Logout', icon: <LogoutIcon />, action: handleLogout }].map((item) => (
-          <ListItem key={item.text} disablePadding sx={{ display: 'block' }}>
-            <Tooltip title={item.text} placement="right" disableHoverListener={open}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                  borderRadius: 2,
-                  mx: open ? 1 : 'auto',
-                }}
-                onClick={item.action}
-              >
-                <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </Tooltip>
-          </ListItem>
-        ))}
+        <NavItem item={{ text: 'Settings', path: '#', icon: <SettingsIcon /> }} open={open} />
+        <ListItemButton onClick={handleLogout} sx={{px: 2.5}}>
+            <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}><LogoutIcon /></ListItemIcon>
+            <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0 }} />
+        </ListItemButton>
       </List>
     </Box>
   );
@@ -274,6 +203,7 @@ const NavigationRail = () => {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
           }),
+          backgroundColor: theme.palette.background.paper,
         },
       }}
       open={open}

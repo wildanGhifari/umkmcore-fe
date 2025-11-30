@@ -23,6 +23,7 @@ import StockMovementReport from './components/reports/StockMovementReport';
 import MaterialUsageReport from './components/reports/MaterialUsageReport';
 import ProductProfitReport from './components/reports/ProductProfitReport';
 import ForecastReport from './components/reports/ForecastReport';
+import StoreManagementPage from './components/StoreManagementPage';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
@@ -185,6 +186,14 @@ function App() {
           element={
             <ProtectedRoute>
               <ForecastReport />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/stores"
+          element={
+            <ProtectedRoute>
+              <StoreManagementPage />
             </ProtectedRoute>
           }
         />

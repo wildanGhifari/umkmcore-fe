@@ -24,9 +24,12 @@ import materialService from '../services/materialService';
 import productService from '../services/productService';
 import salesOrderService from '../services/salesOrderService';
 import userService from '../services/userService';
+import AbstractIconContainer from './AbstractIconContainer'; // Import the new component
+import { useTheme } from '@mui/material/styles';
 
 function DashboardPage() {
   const { user } = useAuth();
+  const theme = useTheme();
 
   // Fetch dashboard data
   const { data: stockReport, isLoading: stockLoading } = useQuery({
@@ -94,18 +97,11 @@ function DashboardPage() {
               </Typography>
             )}
           </Box>
-          <Box
-            sx={{
-              backgroundColor: `${color}.light`,
-              borderRadius: 2,
-              p: 1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Icon sx={{ color: `${color}.main`, fontSize: 32 }} />
-          </Box>
+          <AbstractIconContainer 
+            icon={Icon} 
+            bgColor={theme.palette.primaryContainer.main} 
+            iconColor={theme.palette.primary.main} 
+          />
         </Box>
       </CardContent>
     </Card>
