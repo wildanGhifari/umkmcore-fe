@@ -12,6 +12,7 @@ import {
   useTheme,
   Tooltip,
   Typography,
+  IconButton,
 } from '@mui/material';
 import {
   DashboardRounded as DashboardIcon,
