@@ -27,6 +27,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { alpha } from '@mui/material/styles';
 
 const railWidth = 80;
 
@@ -79,7 +80,7 @@ const NavigationRail = () => {
 
       <Divider sx={{ width: '56px' }} />
 
-      <List sx={{ flexGrow: 1 }}>
+      <List sx={{ flexGrow: 1, py: 1 }}>
         {navItems.map((item) => {
           if (item.adminOnly && user?.role !== 'admin') {
             return null;
@@ -89,44 +90,43 @@ const NavigationRail = () => {
             <ListItem key={item.text} disablePadding sx={{ display: 'flex', justifyContent: 'center', my: 1 }}>
               <Tooltip title={item.text} placement="right">
                 <ListItemButton
-                  selected={isSelected}
                   onClick={item.action ? item.action : () => navigate(item.path)}
                   sx={{
                     flexDirection: 'column',
                     justifyContent: 'center',
                     alignItems: 'center',
                     height: 56,
-                    width: 64,
-                    borderRadius: 5,
-                    px: 0,
-                    py: 1,
-                    '& .MuiListItemIcon-root': {
-                      minWidth: 0,
-                      height: 32,
+                    width: 72, 
+                    borderRadius: 2,
+                    py: '4px',
+                  }}
+                >
+                  <Box
+                    sx={{
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                    },
-                    '& .MuiListItemText-root': {
-                      mt: '4px',
-                    },
-                    '& .MuiTypography-root': {
-                      fontSize: '0.75rem',
-                      lineHeight: '1.33',
-                    },
-                    '&.Mui-selected': {
-                      backgroundColor: theme.palette.secondary.light, // Example color
-                      '&:hover': {
-                        backgroundColor: theme.palette.secondary.light,
+                      height: 32,
+                      width: 64,
+                      borderRadius: 4,
+                      backgroundColor: isSelected ? alpha(theme.palette.secondary.main, 0.3) : 'transparent',
+                    }}
+                  >
+                    <ListItemIcon sx={{ minWidth: 0, color: isSelected ? theme.palette.secondary.dark : 'inherit' }}>
+                      {item.icon}
+                    </ListItemIcon>
+                  </Box>
+                  <ListItemText
+                    primary={item.text}
+                    primaryTypographyProps={{
+                      variant: 'caption',
+                      sx: { 
+                        mt: '4px',
+                        fontWeight: isSelected ? 'bold' : 'normal',
+                        color: isSelected ? theme.palette.text.primary : theme.palette.text.secondary
                       },
-                      '& .MuiListItemIcon-root, & .MuiTypography-root': {
-                         color: theme.palette.secondary.contrastText,
-                      }
-                    }
-                  }}
-                >
-                  <ListItemIcon>{item.icon}</ListItemIcon>
-                  <ListItemText primary={item.text} />
+                    }}
+                  />
                 </ListItemButton>
               </Tooltip>
             </ListItem>
@@ -137,7 +137,7 @@ const NavigationRail = () => {
       <Divider sx={{ width: '56px' }} />
 
       {/* Bottom Actions */}
-      <List>
+      <List sx={{ py: 1 }}>
         {[{ text: 'Settings', icon: <SettingsIcon />, action: () => {} }, { text: 'Logout', icon: <LogoutIcon />, action: handleLogout }].map((item) => (
           <ListItem key={item.text} disablePadding sx={{ display: 'flex', justifyContent: 'center', my: 1 }}>
              <Tooltip title={item.text} placement="right">
@@ -161,6 +161,7 @@ const NavigationRail = () => {
           '& .MuiDrawer-paper': {
             width: railWidth,
             boxSizing: 'border-box',
+            borderRight: 'none'
           },
         }}
       >
@@ -171,6 +172,14 @@ const NavigationRail = () => {
         anchor="left"
         open={reportsDrawerOpen}
         onClose={() => setReportsDrawerOpen(false)}
+        variant="temporary"
+        sx={{
+          '& .MuiDrawer-paper': { 
+            marginLeft: `${railWidth}px`,
+            boxSizing: 'border-box',
+            boxShadow: theme.shadows[3],
+          },
+        }}
       >
         <Box
           sx={{ width: 250, p: 2 }}
@@ -183,7 +192,7 @@ const NavigationRail = () => {
                 <ListItemButton
                   selected={pathname === item.path}
                   onClick={() => handleReportItemClick(item.path)}
-                  sx={{ borderRadius: 5 }}
+                  sx={{ borderRadius: 2 }}
                 >
                   <ListItemText primary={item.text} sx={{ pl: 2 }}/>
                 </ListItemButton>
