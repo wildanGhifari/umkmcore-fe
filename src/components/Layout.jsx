@@ -12,7 +12,7 @@ const Layout = ({ children }) => {
         sx={{
           flexGrow: 1,
           p: 3,
-          width: 'calc(100% - 72px)', // 72px is the collapsed width of the rail
+          width: 'calc(100% - 80px)', // 80px is the new static width of the rail
         }}
       >
         {children}
