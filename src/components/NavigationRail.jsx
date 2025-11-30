@@ -50,7 +50,7 @@ const BulletIcon = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            p: '4px',
+            p: '1.2px',
             backgroundColor: bgColor,
             borderRadius: '50%',
             width: 24,
@@ -108,7 +108,7 @@ const NavigationRail = () => {
                 {item.icon === '•' ? <BulletIcon /> : item.icon}
             </ListItemIcon>
         )}
-        <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0 }} />
+        <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0, display: open ? 'block' : 'none' }} />
       </ListItemButton>
     );
   };
@@ -122,7 +122,7 @@ const NavigationRail = () => {
                         {item.icon}
                     </ListItemIcon>
                 )}
-                <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0, display: open ? 'block' : 'none' }} />
                 {open ? (toggleState ? <ExpandLess /> : <ExpandMore />) : null}
             </ListItemButton>
             <Collapse in={toggleState && open} timeout="auto" unmountOnExit>
@@ -190,7 +190,7 @@ const NavigationRail = () => {
         <NavItem item={{ text: 'Settings', path: '#', icon: <SettingsIcon /> }} open={open} />
         <ListItemButton onClick={handleLogout} sx={{px: 2.5}}>
             <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}><LogoutIcon /></ListItemIcon>
-            <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0 }} />
+            <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0, display: open ? 'block' : 'none' }} />
         </ListItemButton>
       </List>
     </Box>
