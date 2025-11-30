@@ -43,14 +43,14 @@ const drawerWidth = 280;
 const BulletIcon = () => {
     const theme = useTheme();
     const bulletColor = theme.palette.text.primary;
-    const bgColor = alpha(bulletColor, 0.4); // -40% opacity interpretation
+    const bgColor = alpha(bulletColor, 0.4);
 
     return (
         <Box sx={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            p: '1.2px',
+            p: '1.2px', // Adjusted padding
             backgroundColor: bgColor,
             borderRadius: '50%',
             width: 24,
@@ -84,36 +84,61 @@ const NavigationRail = () => {
     if (item.adminOnly && user?.role !== 'admin') return null;
 
     return (
-      <ListItemButton
-        selected={isSelected}
-        onClick={() => item.path && navigate(item.path)}
-        sx={{
-          justifyContent: open ? 'initial' : 'center',
-          px: 2.5,
-          pl: isChild ? 4 : 2.5,
-          '&.Mui-selected': {
-            backgroundColor: theme.palette.primaryContainer.main,
-            color: theme.palette.primaryContainer.contrastText,
-            '& .MuiListItemIcon-root, & .MuiTypography-root': {
-              color: theme.palette.primaryContainer.contrastText,
-            },
-            '&:hover': {
-              backgroundColor: theme.palette.primary.main,
-            }
-          }
-        }}
-      >
-        {item.icon && (
-            <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
-                {item.icon === '•' ? <BulletIcon /> : item.icon}
-            </ListItemIcon>
-        )}
-        <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0, display: open ? 'block' : 'none' }} />
-      </ListItemButton>
+        <Tooltip title={!open ? item.text : ''}>
+            <ListItemButton
+                selected={isSelected}
+                onClick={() => item.path && navigate(item.path)}
+                sx={{
+                    flexDirection: open ? 'row' : 'column',
+                    justifyContent: 'center',
+                    px: 2.5,
+                    pl: open && isChild ? 4 : 2.5,
+                    height: open ? 48 : 72,
+                    '&.Mui-selected': {
+                        backgroundColor: theme.palette.primaryContainer.main,
+                        color: theme.palette.primaryContainer.contrastText,
+                        '& .MuiListItemIcon-root, & .MuiTypography-root': {
+                        color: theme.palette.primaryContainer.contrastText,
+                        },
+                        '&:hover': {
+                        backgroundColor: theme.palette.primary.main,
+                        }
+                    }
+                }}
+            >
+                {item.icon && (
+                    <ListItemIcon sx={{ minWidth: 0, justifyContent: 'center', mb: open ? 0 : 1, mr: open ? 3 : 0 }}>
+                        {item.icon === '•' ? <BulletIcon /> : item.icon}
+                    </ListItemIcon>
+                )}
+                <ListItemText 
+                    primary={item.text} 
+                    sx={{ opacity: open ? 1 : 0, display: open ? 'block' : 'none' }} 
+                    primaryTypographyProps={{
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                    }}
+                />
+            </ListItemButton>
+        </Tooltip>
     );
   };
   
   const CollapsibleNavItem = ({ item, open, toggleState, parentToggle }) => {
+    if (!open) {
+        return (
+            <Tooltip title={item.text}>
+                 <ListItemButton sx={{justifyContent: 'center', flexDirection: 'column', height: 72}}>
+                    {item.icon && (
+                        <ListItemIcon sx={{ minWidth: 0, justifyContent: 'center', mb: 1, mr: 0 }}>
+                            {item.icon}
+                        </ListItemIcon>
+                    )}
+                </ListItemButton>
+            </Tooltip>
+        );
+    }
+
     return (
         <>
             <ListItemButton onClick={parentToggle} sx={{px: 2.5}}>
@@ -145,15 +170,17 @@ const NavigationRail = () => {
             </IconButton>
         </Box>
         <Box sx={{ px: open ? 2 : 1, my: 1 }}>
-            <Fab variant={open ? 'extended' : 'circular'} color="primary" aria-label="pos" onClick={() => navigate('/pos')} sx={{ width: '100%' }}>
-                <PointOfSaleIcon sx={{ mr: open ? 1 : 0 }} />
-                {open && 'POS'}
-            </Fab>
+            <Tooltip title={!open ? 'Point of Sale' : ''}>
+                <Fab variant={open ? 'extended' : 'circular'} color="primary" aria-label="pos" onClick={() => navigate('/pos')} sx={{ width: '100%' }}>
+                    <PointOfSaleIcon sx={{ mr: open ? 1 : 0 }} />
+                    {open && 'POS'}
+                </Fab>
+            </Tooltip>
         </Box>
       <Divider sx={{ my: 1 }} />
       
       <List
-        sx={{ flexGrow: 1, p: open ? 1 : 0, pt: open ? 0 : 1 }}
+        sx={{ flexGrow: 1, p: open ? 1 : 0, pt: 0}}
         subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal'}}>DASHBOARD</ListSubheader>}
       >
         <NavItem item={{ text: "Today's Sales", path: '/', icon: <DashboardIcon /> }} open={open} />
@@ -179,7 +206,7 @@ const NavigationRail = () => {
         <NavItem item={{ text: 'Materials', path: '/materials', icon: <StyleIcon /> }} open={open} />
         <NavItem item={{ text: 'Products', path: '/products', icon: <Inventory2Icon /> }} open={open} />
         <NavItem item={{ text: 'Stores', path: '/stores', icon: <StoreIcon /> }} open={open} />
-        <NavItem item={{ text: 'Users', path: '/users', icon: <GroupIcon />, adminOnly: true }} open={open} />
+        <NavItem item={{ text: 'Users', icon: <GroupIcon />, path: '/users', adminOnly: true }} open={open} />
       </List>
 
       <Box sx={{flexGrow: 1}} />
@@ -188,10 +215,12 @@ const NavigationRail = () => {
 
       <List sx={{ p: open ? 1 : 0 }}>
         <NavItem item={{ text: 'Settings', path: '#', icon: <SettingsIcon /> }} open={open} />
-        <ListItemButton onClick={handleLogout} sx={{px: 2.5}}>
-            <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}><LogoutIcon /></ListItemIcon>
-            <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0, display: open ? 'block' : 'none' }} />
-        </ListItemButton>
+         <Tooltip title={!open ? "Logout" : ''}>
+            <ListItemButton onClick={handleLogout} sx={{px: 2.5, justifyContent: 'center'}}>
+                <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}><LogoutIcon /></ListItemIcon>
+                <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0, display: open ? 'block' : 'none' }} />
+            </ListItemButton>
+        </Tooltip>
       </List>
     </Box>
   );
