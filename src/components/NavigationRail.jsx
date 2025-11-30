@@ -56,7 +56,7 @@ const BulletIcon = () => {
             width: 24,
             height: 24,
         }}>
-            <Typography sx={{ color: bulletColor, fontSize: '1.25rem', lineHeight: 0 }}>•</Typography>
+            <Box sx={{ width: '2px', height: '2px', bgcolor: bulletColor, borderRadius: '50%' }} />
         </Box>
     );
 }
@@ -180,7 +180,7 @@ const NavigationRail = () => {
       <Divider sx={{ my: 1 }} />
       
       <List
-        sx={{ flexGrow: 1, p: open ? 1 : 0, pt: 0}}
+        sx={{ flexGrow: 0, p: open ? 1 : 0, pt: 0}}
         subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal'}}>DASHBOARD</ListSubheader>}
       >
         <NavItem item={{ text: "Today's Sales", path: '/', icon: <DashboardIcon /> }} open={open} />
