@@ -14,7 +14,6 @@ import {
   Tooltip,
   Collapse,
   Typography,
-  IconButton,
 } from '@mui/material';
 import {
   MenuRounded as MenuIcon,
@@ -31,14 +30,9 @@ import {
   StyleRounded as StyleIcon,
   ExpandLessRounded as ExpandLess,
   ExpandMoreRounded as ExpandMore,
-  AnalyticsRounded as AnalyticsIcon,
-  ShowChartRounded as ShowChartIcon,
-  StackedBarChartRounded as StackedBarChartIcon,
-  WarningRounded as WarningIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { alpha } from '@mui/material/styles';
 
 const drawerWidth = 240;
 
@@ -83,7 +77,12 @@ const NavigationRail = () => {
   };
 
   const handleReportsToggle = () => { // For internal reports collapse
-    setReportsOpen(!reportsOpen);
+    if (!open) {
+      setOpen(true);
+      setReportsOpen(true);
+    } else {
+      setReportsOpen(!reportsOpen);
+    }
   };
 
   const isReportActive = navItems.find(item => item.text === 'Reports').children.some(child => child.path === pathname);
@@ -95,10 +94,9 @@ const NavigationRail = () => {
         sx={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: open ? 'space-between' : 'flex-end',
-          px: open ? 2 : 'auto',
+          justifyContent: open ? 'space-between' : 'center',
+          px: open ? 2 : 0,
           py: 1.5,
-          pl: 2.5,
         }}
       >
         {open && (
@@ -120,10 +118,6 @@ const NavigationRail = () => {
             aria-label="pos"
             onClick={() => navigate('/pos')}
             sx={{
-              transition: theme.transitions.create('width', {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.enteringScreen,
-              }),
               width: open ? 'auto' : theme.spacing(7),
             }}
           >
@@ -135,12 +129,8 @@ const NavigationRail = () => {
 
       <Divider sx={{ my: 1 }} />
 
-<<<<<<< HEAD
-      <List sx={{ flexGrow: 1, py: 1 }}>
-=======
       {/* Navigation Items */}
       <List sx={{ flexGrow: 1, p: open ? 1 : 0 }}>
->>>>>>> 164c681 (revert(NavigationRail): Undo M3 design and restore expandable rail)
         {navItems.map((item) => {
           if (item.adminOnly && user?.role !== 'admin') {
             return null;
@@ -149,53 +139,13 @@ const NavigationRail = () => {
             return (
               <React.Fragment key={item.text}>
                 <ListItemButton
-<<<<<<< HEAD
-                  onClick={item.action ? item.action : () => navigate(item.path)}
-                  sx={{
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: 56,
-                    width: 72, 
-                    borderRadius: 2,
-                    py: '4px',
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      height: 32,
-                      width: 64,
-                      borderRadius: 4,
-                      backgroundColor: isSelected ? alpha(theme.palette.secondary.main, 0.3) : 'transparent',
-                    }}
-                  >
-                    <ListItemIcon sx={{ minWidth: 0, color: isSelected ? theme.palette.secondary.dark : 'inherit' }}>
-                      {item.icon}
-                    </ListItemIcon>
-                  </Box>
-                  <ListItemText
-                    primary={item.text}
-                    primaryTypographyProps={{
-                      variant: 'caption',
-                      sx: { 
-                        mt: '4px',
-                        fontWeight: isSelected ? 'bold' : 'normal',
-                        color: isSelected ? theme.palette.text.primary : theme.palette.text.secondary
-                      },
-                    }}
-                  />
-=======
                   onClick={handleReportsToggle}
-                  selected={isReportActive} // Use selected for standard MUI active state
+                  selected={isReportActive && !open}
                   sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
                     borderRadius: 2,
                     mx: open ? 1 : 'auto',
+                    justifyContent: open ? 'initial' : 'center',
+                    px: 2.5,
                   }}
                 >
                   <Tooltip title={item.text} placement="right" disableHoverListener={open}>
@@ -238,7 +188,6 @@ const NavigationRail = () => {
                 >
                   <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>{item.icon}</ListItemIcon>
                   <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0 }} />
->>>>>>> 164c681 (revert(NavigationRail): Undo M3 design and restore expandable rail)
                 </ListItemButton>
               </Tooltip>
             </ListItem>
@@ -249,16 +198,6 @@ const NavigationRail = () => {
       <Divider />
 
       {/* Bottom Actions */}
-<<<<<<< HEAD
-      <List sx={{ py: 1 }}>
-        {[{ text: 'Settings', icon: <SettingsIcon />, action: () => {} }, { text: 'Logout', icon: <LogoutIcon />, action: handleLogout }].map((item) => (
-          <ListItem key={item.text} disablePadding sx={{ display: 'flex', justifyContent: 'center', my: 1 }}>
-             <Tooltip title={item.text} placement="right">
-              <IconButton onClick={item.action} sx={{ height: 40, width: 40 }}>
-                {item.icon}
-              </IconButton>
-             </Tooltip>
-=======
       <List sx={{ p: open ? 1 : 0 }}>
         {[{text: 'Settings', icon: <SettingsIcon />, action: () => {} }, {text: 'Logout', icon: <LogoutIcon />, action: handleLogout }].map((item) => (
           <ListItem key={item.text} disablePadding sx={{ display: 'block' }}>
@@ -279,7 +218,6 @@ const NavigationRail = () => {
                 <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </Tooltip>
->>>>>>> 164c681 (revert(NavigationRail): Undo M3 design and restore expandable rail)
           </ListItem>
         ))}
       </List>
@@ -287,58 +225,6 @@ const NavigationRail = () => {
   );
 
   return (
-<<<<<<< HEAD
-    <>
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: railWidth,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: railWidth,
-            boxSizing: 'border-box',
-            borderRight: 'none'
-          },
-        }}
-      >
-        {mainRailContent}
-      </Drawer>
-
-      <Drawer
-        anchor="left"
-        open={reportsDrawerOpen}
-        onClose={() => setReportsDrawerOpen(false)}
-        variant="temporary"
-        sx={{
-          '& .MuiDrawer-paper': { 
-            marginLeft: `${railWidth}px`,
-            boxSizing: 'border-box',
-            boxShadow: theme.shadows[3],
-          },
-        }}
-      >
-        <Box
-          sx={{ width: 250, p: 2 }}
-          role="presentation"
-        >
-          <Typography variant="h6" sx={{ mb: 2 }}>Reports</Typography>
-          <List>
-            {reportItems.map((item) => (
-              <ListItem key={item.text} disablePadding>
-                <ListItemButton
-                  selected={pathname === item.path}
-                  onClick={() => handleReportItemClick(item.path)}
-                  sx={{ borderRadius: 2 }}
-                >
-                  <ListItemText primary={item.text} sx={{ pl: 2 }}/>
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-        </Box>
-      </Drawer>
-    </>
-=======
     <Drawer
       variant="permanent"
       sx={{
@@ -358,7 +244,6 @@ const NavigationRail = () => {
     >
       {mainRailContent}
     </Drawer>
->>>>>>> 164c681 (revert(NavigationRail): Undo M3 design and restore expandable rail)
   );
 };
 
