@@ -50,13 +50,12 @@ const BulletIcon = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            p: '1.2px', // Adjusted padding
-            backgroundColor: bgColor,
+            p: '4px', // Wrapper padding changed to 4px
+            backgroundColor: 'rgba(27, 27, 33, 0.2)', // New background color
             borderRadius: '50%',
-            width: 24,
-            height: 24,
+            // width and height removed
         }}>
-            <Box sx={{ width: '2px', height: '2px', bgcolor: bulletColor, borderRadius: '50%' }} />
+            <Box sx={{ width: '4px', height: '4px', bgcolor: bulletColor, borderRadius: '50%' }} />
         </Box>
     );
 }
