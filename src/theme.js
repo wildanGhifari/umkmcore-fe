@@ -128,7 +128,7 @@ const createCustomTheme = (scheme) => createTheme({
     MuiListItem: {
       styleOverrides: {
         root: {
-          borderRadius: '16px',
+          borderRadius: '999px',
           paddingLeft: '12px',
           paddingRight: '12px',
         }

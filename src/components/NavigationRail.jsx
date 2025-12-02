@@ -60,22 +60,17 @@ const BulletIcon = () => {
     );
 }
 
-const NavigationRail = () => {
+const NavigationRail = ({ open, handleDrawerToggle }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { user, logout } = useAuth();
   
-  const [open, setOpen] = useState(true);
   const [analyticsOpen, setAnalyticsOpen] = useState(true);
 
   const handleLogout = () => {
     logout();
     navigate('/login');
-  };
-
-  const handleDrawerToggle = () => {
-    setOpen(!open);
   };
   
   const NavItem = ({ item, open, isChild = false }) => {
@@ -162,15 +157,12 @@ const NavigationRail = () => {
 
   const mainRailContent = (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', p: 2, justifyContent: open ? 'space-between' : 'center' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', p: 2, justifyContent: 'center' }}>
             {open && <Typography variant="h6" component="div">UMKM Core</Typography>}
-            <IconButton onClick={handleDrawerToggle}>
-                {open ? <ChevronLeftIcon /> : <MenuIcon />}
-            </IconButton>
         </Box>
         <Box sx={{ px: open ? 2 : 1, my: 1 }}>
             <Tooltip title={!open ? 'Point of Sale' : ''}>
-                <Fab variant={open ? 'extended' : 'circular'} color="primary" aria-label="pos" onClick={() => navigate('/pos')} sx={{ width: '100%' }}>
+                <Fab variant={open ? 'extended' : 'circular'} color="primary" aria-label="pos" onClick={() => navigate('/pos')}>
                     <PointOfSaleIcon sx={{ mr: open ? 1 : 0 }} />
                     {open && 'POS'}
                 </Fab>

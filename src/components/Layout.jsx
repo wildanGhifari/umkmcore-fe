@@ -1,21 +1,32 @@
 // src/components/Layout.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import NavigationRail from './NavigationRail';
+import TopAppBar from './AppBar'; // Assuming AppBar will be created
 
 const Layout = ({ children }) => {
+  const [open, setOpen] = useState(true);
+
+  const handleDrawerToggle = () => {
+    setOpen(!open);
+  };
+
   return (
     <Box sx={{ display: 'flex' }}>
-      <NavigationRail />
+      <NavigationRail open={open} handleDrawerToggle={handleDrawerToggle} />
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
-          width: 'calc(100% - 72px)', // 72px is the collapsed width of the rail
+          width: `calc(100% - ${open ? 280 : 72}px)`, // Adjust width based on rail state
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
-        {children}
+        <TopAppBar handleDrawerToggle={handleDrawerToggle} />
+        <Box sx={{ p: 3, flexGrow: 1 }}>
+          {children}
+        </Box>
       </Box>
     </Box>
   );
