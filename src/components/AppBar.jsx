@@ -8,25 +8,32 @@ import {
   Box,
   Avatar,
   Badge,
+  Button,
 } from '@mui/material';
 import {
   MenuRounded as MenuIcon,
   SearchRounded as SearchIcon,
   NotificationsNoneRounded as NotificationsIcon,
+  PointOfSaleRounded as PointOfSaleIcon,
 } from '@mui/icons-material';
-import { alpha } from '@mui/material/styles';
+import { alpha, useTheme } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
 
 const TopAppBar = ({ handleDrawerToggle }) => {
+  const theme = useTheme();
+  const navigate = useNavigate();
+
   return (
-    <AppBar 
-        position="sticky" 
+    <AppBar
+        position="sticky"
         elevation={0}
-        sx={{ 
-            backgroundColor: 'transparent', 
-            backdropFilter: 'blur(8px)',
+        sx={{
+            backgroundColor: theme.palette.background.paper,
             color: 'text.primary',
             top: 0,
             zIndex: (theme) => theme.zIndex.drawer - 1,
+            borderBottom: 1,
+            borderColor: 'divider',
          }}
     >
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -58,6 +65,15 @@ const TopAppBar = ({ handleDrawerToggle }) => {
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<PointOfSaleIcon />}
+            onClick={() => navigate('/pos')}
+            sx={{ borderRadius: '24px' }}
+          >
+            Point of Sale
+          </Button>
           <IconButton color="inherit">
             <Badge badgeContent={4} color="primary">
               <NotificationsIcon />

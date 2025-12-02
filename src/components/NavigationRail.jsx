@@ -7,7 +7,6 @@ import {
   ListItemIcon,
   ListItemText,
   IconButton,
-  Fab,
   Divider,
   useTheme,
   Tooltip,
@@ -24,7 +23,6 @@ import {
   GroupRounded as GroupIcon,
   SettingsRounded as SettingsIcon,
   LogoutRounded as LogoutIcon,
-  PointOfSaleRounded as PointOfSaleIcon,
   ChevronLeftRounded as ChevronLeftIcon,
   StyleRounded as StyleIcon,
   ExpandLessRounded as ExpandLess,
@@ -90,7 +88,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
                     height: 'auto',
                     minHeight: open ? 48 : 'auto',
                     py: open ? 1.5 : 2,
-                    borderRadius: 2,
+                    borderRadius: '24px',
                     mx: open ? 0 : 0.5,
                     '&.Mui-selected': {
                         backgroundColor: theme.palette.primaryContainer.main,
@@ -131,7 +129,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
                      flexDirection: 'column',
                      height: 'auto',
                      py: 2,
-                     borderRadius: 2,
+                     borderRadius: '24px',
                      mx: 0.5,
                  }}>
                     {item.icon && (
@@ -150,7 +148,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
                 px: 2.5,
                 py: 1.5,
                 height: 'auto',
-                borderRadius: 2,
+                borderRadius: '24px',
             }}>
                 {item.icon && (
                     <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
@@ -174,37 +172,21 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
   const mainRailContent = (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         {/* Logo Section - visible in both states */}
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', p: 2, pl: open ? 2 : 1.5 }}>
             <Box sx={{
-                width: open ? 48 : 40,
-                height: open ? 48 : 40,
+                width: 40,
+                height: 40,
                 borderRadius: '50%',
                 backgroundColor: theme.palette.primary.main,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontWeight: 'bold',
-                fontSize: open ? '1.5rem' : '1.25rem',
+                fontSize: '1.25rem',
                 color: theme.palette.primary.contrastText,
-                transition: theme.transitions.create(['width', 'height', 'fontSize'], {
-                    duration: theme.transitions.duration.short,
-                }),
             }}>
                 U
             </Box>
-            {open && (
-                <Typography variant="h6" component="div" sx={{ ml: 1.5 }}>
-                    UMKM Core
-                </Typography>
-            )}
-        </Box>
-        <Box sx={{ px: open ? 2 : 1, my: 1 }}>
-            <Tooltip title={!open ? 'Point of Sale' : ''} placement="right" arrow>
-                <Fab variant={open ? 'extended' : 'circular'} color="primary" aria-label="pos" onClick={() => navigate('/pos')}>
-                    <PointOfSaleIcon sx={{ mr: open ? 1 : 0 }} />
-                    {open && 'POS'}
-                </Fab>
-            </Tooltip>
         </Box>
       <Divider sx={{ my: 1 }} />
 
@@ -250,7 +232,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
                 py: open ? 1.5 : 2,
                 justifyContent: 'center',
                 height: 'auto',
-                borderRadius: 2,
+                borderRadius: '24px',
                 mx: open ? 0 : 0.5,
             }}>
                 <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}><LogoutIcon /></ListItemIcon>
