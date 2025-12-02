@@ -20,14 +20,26 @@ import { useQuery } from '@tanstack/react-query';
 import reportService from '../../services/reportService';
 
 function StockMovementReport() {
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [params, setParams] = useState({});
+  // Set default dates: 7 days back to today
+  const getDefaultDates = () => {
+    const today = new Date();
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(today.getDate() - 7);
+
+    return {
+      startDate: sevenDaysAgo.toISOString().split('T')[0],
+      endDate: today.toISOString().split('T')[0],
+    };
+  };
+
+  const defaultDates = getDefaultDates();
+  const [startDate, setStartDate] = useState(defaultDates.startDate);
+  const [endDate, setEndDate] = useState(defaultDates.endDate);
+  const [params, setParams] = useState(defaultDates);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['stockMovementReport', params],
     queryFn: () => reportService.getStockMovementReport(params),
-    enabled: Object.keys(params).length > 0,
   });
 
   const handleApplyFilter = () => {

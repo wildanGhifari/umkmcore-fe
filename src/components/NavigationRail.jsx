@@ -78,7 +78,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
     if (item.adminOnly && user?.role !== 'admin') return null;
 
     return (
-        <Tooltip title={!open ? item.text : ''}>
+        <Tooltip title={!open ? item.text : ''} placement="right" arrow>
             <ListItemButton
                 selected={isSelected}
                 onClick={() => item.path && navigate(item.path)}
@@ -87,7 +87,11 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
                     justifyContent: 'center',
                     px: 2.5,
                     pl: open && isChild ? 4 : 2.5,
-                    height: open ? 48 : 72,
+                    height: 'auto',
+                    minHeight: open ? 48 : 'auto',
+                    py: open ? 1.5 : 2,
+                    borderRadius: '50%',
+                    mx: open ? 0 : 0.5,
                     '&.Mui-selected': {
                         backgroundColor: theme.palette.primaryContainer.main,
                         color: theme.palette.primaryContainer.contrastText,
@@ -121,8 +125,15 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
   const CollapsibleNavItem = ({ item, open, toggleState, parentToggle }) => {
     if (!open) {
         return (
-            <Tooltip title={item.text}>
-                 <ListItemButton sx={{justifyContent: 'center', flexDirection: 'column', height: 72}}>
+            <Tooltip title={item.text} placement="right" arrow>
+                 <ListItemButton sx={{
+                     justifyContent: 'center',
+                     flexDirection: 'column',
+                     height: 'auto',
+                     py: 2,
+                     borderRadius: '50%',
+                     mx: 0.5,
+                 }}>
                     {item.icon && (
                         <ListItemIcon sx={{ minWidth: 0, justifyContent: 'center', mb: 1, mr: 0 }}>
                             {item.icon}
@@ -135,7 +146,12 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
 
     return (
         <>
-            <ListItemButton onClick={parentToggle} sx={{px: 2.5}}>
+            <ListItemButton onClick={parentToggle} sx={{
+                px: 2.5,
+                py: 1.5,
+                height: 'auto',
+                borderRadius: '50%',
+            }}>
                 {item.icon && (
                     <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
                         {item.icon}
@@ -157,11 +173,33 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
 
   const mainRailContent = (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', p: 2, justifyContent: 'center' }}>
-            {open && <Typography variant="h6" component="div">UMKM Core</Typography>}
+        {/* Logo Section - visible in both states */}
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 2 }}>
+            <Box sx={{
+                width: open ? 48 : 40,
+                height: open ? 48 : 40,
+                borderRadius: '50%',
+                backgroundColor: theme.palette.primary.main,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 'bold',
+                fontSize: open ? '1.5rem' : '1.25rem',
+                color: theme.palette.primary.contrastText,
+                transition: theme.transitions.create(['width', 'height', 'fontSize'], {
+                    duration: theme.transitions.duration.short,
+                }),
+            }}>
+                U
+            </Box>
+            {open && (
+                <Typography variant="h6" component="div" sx={{ ml: 1.5 }}>
+                    UMKM Core
+                </Typography>
+            )}
         </Box>
         <Box sx={{ px: open ? 2 : 1, my: 1 }}>
-            <Tooltip title={!open ? 'Point of Sale' : ''}>
+            <Tooltip title={!open ? 'Point of Sale' : ''} placement="right" arrow>
                 <Fab variant={open ? 'extended' : 'circular'} color="primary" aria-label="pos" onClick={() => navigate('/pos')}>
                     <PointOfSaleIcon sx={{ mr: open ? 1 : 0 }} />
                     {open && 'POS'}
@@ -169,9 +207,9 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
             </Tooltip>
         </Box>
       <Divider sx={{ my: 1 }} />
-      
+
       <List
-        sx={{ flexGrow: 0, p: open ? 1 : 0, pt: 0}}
+        sx={{ flexGrow: 0, p: open ? 1 : 0, px: open ? 1 : 1, pt: 0}}
         subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal'}}>DASHBOARD</ListSubheader>}
       >
         <NavItem item={{ text: "Today's Sales", path: '/', icon: <DashboardIcon /> }} open={open} />
@@ -188,9 +226,9 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
       </List>
 
       <Divider />
-      
+
        <List
-        sx={{ p: open ? 1 : 0 }}
+        sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}
         subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal'}}>MANAGEMENT</ListSubheader>}
       >
         <NavItem item={{ text: 'Categories', path: '/categories', icon: <CategoryIcon /> }} open={open} />
@@ -204,10 +242,17 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
 
       <Divider />
 
-      <List sx={{ p: open ? 1 : 0 }}>
+      <List sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}>
         <NavItem item={{ text: 'Settings', path: '#', icon: <SettingsIcon /> }} open={open} />
-         <Tooltip title={!open ? "Logout" : ''}>
-            <ListItemButton onClick={handleLogout} sx={{px: 2.5, justifyContent: 'center'}}>
+         <Tooltip title={!open ? "Logout" : ''} placement="right" arrow>
+            <ListItemButton onClick={handleLogout} sx={{
+                px: 2.5,
+                py: open ? 1.5 : 2,
+                justifyContent: 'center',
+                height: 'auto',
+                borderRadius: '50%',
+                mx: open ? 0 : 0.5,
+            }}>
                 <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}><LogoutIcon /></ListItemIcon>
                 <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0, display: open ? 'block' : 'none' }} />
             </ListItemButton>
