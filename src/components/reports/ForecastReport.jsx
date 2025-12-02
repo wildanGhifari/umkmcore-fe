@@ -24,11 +24,8 @@ function ForecastReport() {
 
   return (
     <Box>
-      <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 3 }}>
-        Sales & Inventory Forecast
-      </Typography>
-      <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-        Future predictions for sales and inventory needs
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+        Future predictions for sales and inventory needs based on historical data
       </Typography>
       <Alert severity="info">Sales and inventory forecasting coming soon!</Alert>
     </Box>

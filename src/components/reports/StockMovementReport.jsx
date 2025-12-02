@@ -15,15 +15,11 @@ import {
   TextField,
   Button,
   Grid,
-  IconButton,
 } from '@mui/material';
-import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
 import reportService from '../../services/reportService';
 
 function StockMovementReport() {
-  const navigate = useNavigate();
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [params, setParams] = useState({});
@@ -43,16 +39,7 @@ function StockMovementReport() {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-        <IconButton onClick={() => navigate('/reports')} sx={{ mr: 2 }}>
-          <ArrowBackIcon />
-        </IconButton>
-        <Typography variant="h4" component="h1">
-          Stock Movement Report
-        </Typography>
-      </Box>
-
-      <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
         Analysis of stock IN, OUT, and ADJUSTMENT transactions over a period
       </Typography>
 

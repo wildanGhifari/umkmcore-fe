@@ -24,10 +24,7 @@ function MaterialUsageReport() {
 
   return (
     <Box>
-      <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 3 }}>
-        Material Usage Report
-      </Typography>
-      <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
         Consumption patterns of materials used in products
       </Typography>
       <Alert severity="info">Material usage analytics coming soon!</Alert>

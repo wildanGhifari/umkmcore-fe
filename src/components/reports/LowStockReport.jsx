@@ -40,11 +40,7 @@ function LowStockReport() {
 
   return (
     <Box>
-      <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 3 }}>
-        Low Stock Report
-      </Typography>
-
-      <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
         Materials that are below their minimum stock threshold
       </Typography>
 

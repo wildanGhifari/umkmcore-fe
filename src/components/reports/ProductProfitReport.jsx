@@ -1,13 +1,10 @@
 // src/components/reports/ProductProfitReport.jsx
 import React from 'react';
-import { Box, Typography, CircularProgress, Alert, IconButton } from '@mui/material';
-import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
+import { Box, Typography, CircularProgress, Alert } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
 import reportService from '../../services/reportService';
 
 function ProductProfitReport() {
-  const navigate = useNavigate();
   const { data, isLoading, error } = useQuery({
     queryKey: ['productProfitReport'],
     queryFn: () => reportService.getProductProfitReport({}),
@@ -27,15 +24,7 @@ function ProductProfitReport() {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-        <IconButton onClick={() => navigate('/reports')} sx={{ mr: 2 }}>
-          <ArrowBackIcon />
-        </IconButton>
-        <Typography variant="h4" component="h1">
-          Product Profit Report
-        </Typography>
-      </Box>
-      <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
         Analysis of profit margins for each product sold
       </Typography>
       <Alert severity="info">Product profit analytics coming soon!</Alert>
