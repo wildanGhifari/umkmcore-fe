@@ -1,5 +1,5 @@
 // src/components/UserManagementPage.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Typography,
   Box,
@@ -41,10 +41,21 @@ const UserManagementPage = () => {
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [search, setSearch] = useState('');
+  const [searchInput, setSearchInput] = useState(''); // User input
+  const [search, setSearch] = useState(''); // Debounced search value
   const [isUserFormOpen, setIsUserFormOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
-  
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearch(searchInput);
+      setPage(0); // Reset page when search changes
+    }, 500); // 500ms delay
+
+    return () => clearTimeout(timer);
+  }, [searchInput]);
+
   const { data, isLoading, error } = useQuery({
     queryKey: ['users', page + 1, rowsPerPage, search],
     queryFn: () => userService.getUsers(page + 1, rowsPerPage, search),
@@ -115,8 +126,7 @@ const UserManagementPage = () => {
   };
 
   const handleSearchChange = (event) => {
-    setSearch(event.target.value);
-    setPage(0);
+    setSearchInput(event.target.value);
   };
 
   const handleEditUser = (userToEdit) => {
@@ -169,7 +179,7 @@ const UserManagementPage = () => {
           label="Search Users"
           variant="outlined"
           size="small"
-          value={search}
+          value={searchInput}
           onChange={handleSearchChange}
           InputProps={{
             startAdornment: (

@@ -3,7 +3,8 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/v1';
 const API_URL = `${API_BASE_URL}/categories`;
 
 const getAuthHeaders = () => {
-  const token = localStorage.getItem('authToken');
+  const user = JSON.parse(localStorage.getItem('user'));
+  const token = user?.token;
   return {
     'Content-Type': 'application/json',
     ...(token && { Authorization: `Bearer ${token}` }),
