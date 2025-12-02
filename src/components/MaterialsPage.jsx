@@ -115,22 +115,6 @@ function MaterialsPage() {
     }
   };
 
-  if (isLoading) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" sx={{ height: '80vh' }}>
-        <CircularProgress />
-      </Box>
-    );
-  }
-
-  if (error) {
-    return (
-      <Alert severity="error">
-        Error loading materials: {error.message}
-      </Alert>
-    );
-  }
-
   return (
     <>
       <Box sx={{ mb: 2 }}>
@@ -206,50 +190,65 @@ function MaterialsPage() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {materials.map((material) => (
-                <TableRow
-                  key={material.id}
-                  onClick={() => handleRowClick(material.id)}
-                  sx={{ cursor: 'pointer' }}
-                >
-                  <TableCell>{material.sku}</TableCell>
-                  <TableCell>{material.name}</TableCell>
-                  <TableCell align="right">Rp {material.unitCost?.toLocaleString() || 0}</TableCell>
-                  <TableCell>{material.unit}</TableCell>
-                  <TableCell align="right">{material.currentStock}</TableCell>
-                  <TableCell align="right">{material.minimumStock}</TableCell>
-                  <TableCell>{material.status}</TableCell>
-                  <TableCell align="center">
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={(e) => {
-                        e.stopPropagation(); // Prevent row click from firing
-                        setEditingMaterial(material);
-                        setIsMaterialFormOpen(true);
-                      }}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      color="error"
-                      onClick={(e) => {
-                        e.stopPropagation(); // Prevent row click from firing
-                        handleDelete(material.id);
-                      }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {materials.length === 0 && !isLoading && (
+              {error ? (
                 <TableRow>
-                  <TableCell colSpan={6} align="center">
-                    No materials found.
+                  <TableCell colSpan={8} align="center">
+                    <Alert severity="error" sx={{ m: 2 }}>
+                      Error loading materials: {error.message}
+                    </Alert>
                   </TableCell>
                 </TableRow>
+              ) : isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={8} align="center" sx={{ py: 8 }}>
+                    <CircularProgress />
+                  </TableCell>
+                </TableRow>
+              ) : materials.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={8} align="center" sx={{ py: 4 }}>
+                    <Typography color="text.secondary">No materials found.</Typography>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                materials.map((material) => (
+                  <TableRow
+                    key={material.id}
+                    onClick={() => handleRowClick(material.id)}
+                    sx={{ cursor: 'pointer' }}
+                  >
+                    <TableCell>{material.sku}</TableCell>
+                    <TableCell>{material.name}</TableCell>
+                    <TableCell align="right">Rp {material.unitCost?.toLocaleString() || 0}</TableCell>
+                    <TableCell>{material.unit}</TableCell>
+                    <TableCell align="right">{material.currentStock}</TableCell>
+                    <TableCell align="right">{material.minimumStock}</TableCell>
+                    <TableCell>{material.status}</TableCell>
+                    <TableCell align="center">
+                      <IconButton
+                        size="small"
+                        color="primary"
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent row click from firing
+                          setEditingMaterial(material);
+                          setIsMaterialFormOpen(true);
+                        }}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        color="error"
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent row click from firing
+                          handleDelete(material.id);
+                        }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
               )}
             </TableBody>
           </Table>

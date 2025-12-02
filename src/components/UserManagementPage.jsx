@@ -147,18 +147,6 @@ const UserManagementPage = () => {
     );
   }
 
-  if (isLoading) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" sx={{ height: '80vh' }}>
-        <CircularProgress />
-      </Box>
-    );
-  }
-
-  if (error) {
-    return <Alert severity="error">Error fetching users: {error.message}</Alert>;
-  }
-
   return (
     <>
       <Box sx={{ mb: 2 }}>
@@ -203,57 +191,79 @@ const UserManagementPage = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {users.map((u) => (
-                <TableRow key={u.id}>
-                  <TableCell>{u.fullName}</TableCell>
-                  <TableCell>{u.email}</TableCell>
-                  <TableCell>{u.role}</TableCell>
-                  <TableCell>
-                    <Chip
-                      label={u.isActive ? 'Active' : 'Inactive'}
-                      color={u.isActive ? 'success' : 'default'}
-                      size="small"
-                    />
-                  </TableCell>
-                  <TableCell align="center">
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={() => handleEditUser(u)}
-                      title="Edit user"
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    {u.isActive ? (
-                      <IconButton
-                        size="small"
-                        color="warning"
-                        onClick={() => handleDeactivateUser(u.id)}
-                        title="Deactivate user"
-                      >
-                        <DeactivateIcon />
-                      </IconButton>
-                    ) : (
-                      <IconButton
-                        size="small"
-                        color="success"
-                        onClick={() => handleActivateUser(u.id)}
-                        title="Activate user"
-                      >
-                        <ActivateIcon />
-                      </IconButton>
-                    )}
-                    <IconButton
-                      size="small"
-                      color="error"
-                      onClick={() => handleDeleteUser(u.id)}
-                      title="Permanently delete user"
-                    >
-                      <DeleteForeverIcon />
-                    </IconButton>
+              {error ? (
+                <TableRow>
+                  <TableCell colSpan={5} align="center">
+                    <Alert severity="error" sx={{ m: 2 }}>
+                      Error fetching users: {error.message}
+                    </Alert>
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={5} align="center" sx={{ py: 8 }}>
+                    <CircularProgress />
+                  </TableCell>
+                </TableRow>
+              ) : users.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
+                    <Typography color="text.secondary">No users found.</Typography>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                users.map((u) => (
+                  <TableRow key={u.id}>
+                    <TableCell>{u.fullName}</TableCell>
+                    <TableCell>{u.email}</TableCell>
+                    <TableCell>{u.role}</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={u.isActive ? 'Active' : 'Inactive'}
+                        color={u.isActive ? 'success' : 'default'}
+                        size="small"
+                      />
+                    </TableCell>
+                    <TableCell align="center">
+                      <IconButton
+                        size="small"
+                        color="primary"
+                        onClick={() => handleEditUser(u)}
+                        title="Edit user"
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      {u.isActive ? (
+                        <IconButton
+                          size="small"
+                          color="warning"
+                          onClick={() => handleDeactivateUser(u.id)}
+                          title="Deactivate user"
+                        >
+                          <DeactivateIcon />
+                        </IconButton>
+                      ) : (
+                        <IconButton
+                          size="small"
+                          color="success"
+                          onClick={() => handleActivateUser(u.id)}
+                          title="Activate user"
+                        >
+                          <ActivateIcon />
+                        </IconButton>
+                      )}
+                      <IconButton
+                        size="small"
+                        color="error"
+                        onClick={() => handleDeleteUser(u.id)}
+                        title="Permanently delete user"
+                      >
+                        <DeleteForeverIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>
