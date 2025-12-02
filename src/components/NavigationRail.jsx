@@ -90,7 +90,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
                     height: 'auto',
                     minHeight: open ? 48 : 'auto',
                     py: open ? 1.5 : 2,
-                    borderRadius: '50%',
+                    borderRadius: 2,
                     mx: open ? 0 : 0.5,
                     '&.Mui-selected': {
                         backgroundColor: theme.palette.primaryContainer.main,
@@ -131,7 +131,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
                      flexDirection: 'column',
                      height: 'auto',
                      py: 2,
-                     borderRadius: '50%',
+                     borderRadius: 2,
                      mx: 0.5,
                  }}>
                     {item.icon && (
@@ -150,7 +150,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
                 px: 2.5,
                 py: 1.5,
                 height: 'auto',
-                borderRadius: '50%',
+                borderRadius: 2,
             }}>
                 {item.icon && (
                     <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
@@ -250,7 +250,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
                 py: open ? 1.5 : 2,
                 justifyContent: 'center',
                 height: 'auto',
-                borderRadius: '50%',
+                borderRadius: 2,
                 mx: open ? 0 : 0.5,
             }}>
                 <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}><LogoutIcon /></ListItemIcon>
