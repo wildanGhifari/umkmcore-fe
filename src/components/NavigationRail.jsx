@@ -85,7 +85,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
                     justifyContent: 'center',
                     alignItems: 'center',
                     px: open ? 2.5 : 0,
-                    ...(open && isChild && { pl: 3 }),
+                    ...(open && isChild && { pl: 4 }),
                     height: open ? 'auto' : 56,
                     width: open ? 'auto' : 56,
                     minHeight: open ? 48 : 56,
