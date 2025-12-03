@@ -31,10 +31,12 @@ import {
   AnalyticsRounded as AnalyticsIcon,
   TrendingUpRounded as TrendingUpRoundedIcon,
   ShoppingCartRounded as ShoppingCartIcon,
-  LocalShippingRounded as ProcurementIcon,
-  AccountBalanceRounded as FinanceIcon,
-  FactoryRounded as ProductionIcon,
+  AccountBalanceWalletRounded as MoneyIcon,
+  TrendingUpRounded as ReportsIcon,
   SecurityRounded as RolesIcon,
+  BusinessRounded as BusinessIcon,
+  NotificationsRounded as NotificationsIcon,
+  WarningRounded as AlertIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -69,12 +71,6 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
   const { pathname } = useLocation();
   const { user, logout } = useAuth();
 
-  const [analyticsOpen, setAnalyticsOpen] = useState(true);
-  const [salesOpen, setSalesOpen] = useState(true);
-  const [financeOpen, setFinanceOpen] = useState(true);
-  const [procurementOpen, setProcurementOpen] = useState(true);
-  const [productionOpen, setProductionOpen] = useState(true);
-  const [managementOpen, setManagementOpen] = useState(true);
 
   const handleLogout = () => {
     logout();
@@ -255,80 +251,68 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
 
       <Divider sx={{ my: 1 }} />
 
-      {/* ANALYTICS */}
+      {/* POS (Point of Sale) */}
+      <List sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}>
+        <NavItem item={{ text: 'POS', path: '/pos', icon: <ShoppingCartIcon /> }} open={open} />
+      </List>
+
+      <Divider sx={{ my: 1 }} />
+
+      {/* STOCK MANAGEMENT */}
       <List
         sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}
-        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal', px: 0}}>ANALYTICS</ListSubheader>}
+        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal', px: 0}}>STOCK MANAGEMENT</ListSubheader>}
       >
-        <NavItem item={{ text: 'Inventory', path: '/reports/inventory', icon: '•' }} open={open} isChild={true} />
+        <NavItem item={{ text: 'Materials', path: '/materials', icon: <StyleIcon /> }} open={open} />
+        <NavItem item={{ text: 'Products', path: '/products', icon: <Inventory2Icon /> }} open={open} />
+        <NavItem item={{ text: 'Categories', path: '/categories', icon: <CategoryIcon /> }} open={open} />
+        <NavItem item={{ text: 'Low Stock Alerts', path: '/stock/alerts', icon: <AlertIcon /> }} open={open} />
+      </List>
+
+      <Divider sx={{ my: 1 }} />
+
+      {/* MONEY TRACKER */}
+      <List
+        sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}
+        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal', px: 0}}>MONEY TRACKER</ListSubheader>}
+      >
+        <NavItem item={{ text: 'Cash In', path: '/money/cash-in', icon: '•' }} open={open} isChild={true} />
+        <NavItem item={{ text: 'Cash Out', path: '/money/cash-out', icon: '•' }} open={open} isChild={true} />
+        <NavItem item={{ text: 'Balance', path: '/money/balance', icon: '•' }} open={open} isChild={true} />
+      </List>
+
+      <Divider sx={{ my: 1 }} />
+
+      {/* REPORTS */}
+      <List
+        sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}
+        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal', px: 0}}>REPORTS</ListSubheader>}
+      >
+        <NavItem item={{ text: 'Daily Sales', path: '/reports/daily-sales', icon: '•' }} open={open} isChild={true} />
+        <NavItem item={{ text: 'Stock Levels', path: '/reports/stock-levels', icon: '•' }} open={open} isChild={true} />
         <NavItem item={{ text: 'Material Usage', path: '/reports/material-usage', icon: '•' }} open={open} isChild={true} />
-        <NavItem item={{ text: 'Revenue', path: '/reports/revenue', icon: '•' }} open={open} isChild={true} />
-        <NavItem item={{ text: 'Forecast', path: '/reports/forecast', icon: '•' }} open={open} isChild={true} />
-      </List>
-
-      {/* SALES */}
-      <List
-        sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}
-        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal', px: 0}}>SALES</ListSubheader>}
-      >
-        <NavItem item={{ text: 'Sales Orders', path: '/sales/orders', icon: '•' }} open={open} isChild={true} />
-        <NavItem item={{ text: 'Invoices', path: '/sales/invoices', icon: '•' }} open={open} isChild={true} />
-        <NavItem item={{ text: 'Customers', path: '/sales/customers', icon: '•' }} open={open} isChild={true} />
-      </List>
-
-      {/* FINANCE */}
-      <List
-        sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}
-        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal', px: 0}}>FINANCE</ListSubheader>}
-      >
-        <NavItem item={{ text: 'Chart of Accounts', path: '/finance/accounts', icon: '•' }} open={open} isChild={true} />
-        <NavItem item={{ text: 'Payments', path: '/finance/payments', icon: '•' }} open={open} isChild={true} />
-        <NavItem item={{ text: 'Expenses', path: '/finance/expenses', icon: '•' }} open={open} isChild={true} />
-        <NavItem item={{ text: 'Journal Entries', path: '/finance/journals', icon: '•' }} open={open} isChild={true} />
-        <NavItem item={{ text: 'Financial Reports', path: '/finance/reports', icon: '•' }} open={open} isChild={true} />
-      </List>
-
-      {/* PROCUREMENT */}
-      <List
-        sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}
-        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal', px: 0}}>PROCUREMENT</ListSubheader>}
-      >
-        <NavItem item={{ text: 'Purchase Orders', path: '/procurement/orders', icon: '•' }} open={open} isChild={true} />
-        <NavItem item={{ text: 'Suppliers', path: '/procurement/suppliers', icon: '•' }} open={open} isChild={true} />
-        <NavItem item={{ text: 'Goods Receipt', path: '/procurement/receipts', icon: '•' }} open={open} isChild={true} />
-        <NavItem item={{ text: 'Purchase Requests', path: '/procurement/requests', icon: '•' }} open={open} isChild={true} />
-        <NavItem item={{ text: 'Supplier Invoices', path: '/procurement/invoices', icon: '•' }} open={open} isChild={true} />
-      </List>
-
-      {/* PRODUCTION */}
-      <List
-        sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}
-        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal', px: 0}}>PRODUCTION</ListSubheader>}
-      >
-        <NavItem item={{ text: 'Work Orders', path: '/production/work-orders', icon: '•' }} open={open} isChild={true} />
-        <NavItem item={{ text: 'Production Planning', path: '/production/planning', icon: '•' }} open={open} isChild={true} />
-        <NavItem item={{ text: 'Manufacturing', path: '/production/manufacturing', icon: '•' }} open={open} isChild={true} />
-        <NavItem item={{ text: 'Quality Control', path: '/production/quality', icon: '•' }} open={open} isChild={true} />
-      </List>
-
-      {/* MANAGEMENT */}
-      <List
-        sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}
-        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal', px: 0}}>MANAGEMENT</ListSubheader>}
-      >
-        <NavItem item={{ text: 'Categories', path: '/categories', icon: '•' }} open={open} isChild={true} />
-        <NavItem item={{ text: 'Materials', path: '/materials', icon: '•' }} open={open} isChild={true} />
-        <NavItem item={{ text: 'Products', path: '/products', icon: '•' }} open={open} isChild={true} />
-        <NavItem item={{ text: 'Roles', path: '/roles', icon: '•' }} open={open} isChild={true} />
-        <NavItem item={{ text: 'Users', path: '/users', icon: '•', adminOnly: true }} open={open} isChild={true} />
+        <NavItem item={{ text: 'Best Sellers', path: '/reports/best-sellers', icon: '•' }} open={open} isChild={true} />
       </List>
 
       <Box sx={{flexGrow: 1}} />
 
       <Divider sx={{ my: 1 }} />
 
+      {/* SETTINGS */}
+      <List
+        sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}
+        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal', px: 0}}>SETTINGS</ListSubheader>}
+      >
+        <NavItem item={{ text: 'Users', path: '/users', icon: <GroupIcon />, adminOnly: true }} open={open} />
+        <NavItem item={{ text: 'Roles', path: '/roles', icon: <RolesIcon />, adminOnly: true }} open={open} />
+        <NavItem item={{ text: 'Business Info', path: '/settings/business', icon: <BusinessIcon /> }} open={open} />
+        <NavItem item={{ text: 'Notifications', path: '/settings/notifications', icon: <NotificationsIcon /> }} open={open} />
+      </List>
+
+      <Divider sx={{ my: 1 }} />
+
+      {/* LOGOUT */}
       <List sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}>
-        <NavItem item={{ text: 'Settings', path: '#', icon: <SettingsIcon /> }} open={open} />
          <Tooltip title={!open ? "Logout" : ''} placement="right" arrow>
             <ListItemButton onClick={handleLogout} sx={{
                 px: open ? 2 : 0,
