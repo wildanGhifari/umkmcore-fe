@@ -30,6 +30,10 @@ import {
   StoreRounded as StoreIcon,
   AnalyticsRounded as AnalyticsIcon,
   TrendingUpRounded as TrendingUpRoundedIcon,
+  ShoppingCartRounded as ShoppingCartIcon,
+  LocalShippingRounded as ProcurementIcon,
+  PersonRounded as CRMIcon,
+  AccountBalanceRounded as FinanceIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -63,8 +67,12 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { user, logout } = useAuth();
-  
+
   const [analyticsOpen, setAnalyticsOpen] = useState(true);
+  const [salesOpen, setSalesOpen] = useState(true);
+  const [procurementOpen, setProcurementOpen] = useState(true);
+  const [crmOpen, setCrmOpen] = useState(true);
+  const [financeOpen, setFinanceOpen] = useState(true);
 
   const handleLogout = () => {
     logout();
@@ -229,6 +237,82 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
         <NavItem item={{ text: 'Products', path: '/products', icon: <Inventory2Icon /> }} open={open} />
         <NavItem item={{ text: 'Stores', path: '/stores', icon: <StoreIcon /> }} open={open} />
         <NavItem item={{ text: 'Users', icon: <GroupIcon />, path: '/users', adminOnly: true }} open={open} />
+      </List>
+
+      <Divider sx={{ mb: 1 }} />
+
+      <List
+        sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}
+        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal'}}>SALES</ListSubheader>}
+      >
+        <CollapsibleNavItem item={{
+            text: 'Sales',
+            icon: <ShoppingCartIcon />,
+            children: [
+                { text: 'Sales Orders', path: '/sales/orders', icon: '•' },
+                { text: 'Invoices', path: '/sales/invoices', icon: '•' },
+                { text: 'Customers', path: '/sales/customers', icon: '•' },
+                { text: 'Quotations', path: '/sales/quotations', icon: '•' },
+                { text: 'Sales Returns', path: '/sales/returns', icon: '•' }
+            ]
+        }} open={open} toggleState={salesOpen} parentToggle={() => setSalesOpen(!salesOpen)} />
+      </List>
+
+      <Divider sx={{ mb: 1 }} />
+
+      <List
+        sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}
+        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal'}}>PROCUREMENT</ListSubheader>}
+      >
+        <CollapsibleNavItem item={{
+            text: 'Procurement',
+            icon: <ProcurementIcon />,
+            children: [
+                { text: 'Purchase Orders', path: '/procurement/orders', icon: '•' },
+                { text: 'Suppliers', path: '/procurement/suppliers', icon: '•' },
+                { text: 'Goods Receipt', path: '/procurement/receipts', icon: '•' },
+                { text: 'Purchase Requests', path: '/procurement/requests', icon: '•' },
+                { text: 'Supplier Invoices', path: '/procurement/invoices', icon: '•' }
+            ]
+        }} open={open} toggleState={procurementOpen} parentToggle={() => setProcurementOpen(!procurementOpen)} />
+      </List>
+
+      <Divider sx={{ mb: 1 }} />
+
+      <List
+        sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}
+        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal'}}>CRM</ListSubheader>}
+      >
+        <CollapsibleNavItem item={{
+            text: 'CRM',
+            icon: <CRMIcon />,
+            children: [
+                { text: 'Contacts', path: '/crm/contacts', icon: '•' },
+                { text: 'Leads', path: '/crm/leads', icon: '•' },
+                { text: 'Opportunities', path: '/crm/opportunities', icon: '•' },
+                { text: 'Customer Notes', path: '/crm/notes', icon: '•' },
+                { text: 'Follow-ups', path: '/crm/followups', icon: '•' }
+            ]
+        }} open={open} toggleState={crmOpen} parentToggle={() => setCrmOpen(!crmOpen)} />
+      </List>
+
+      <Divider sx={{ mb: 1 }} />
+
+      <List
+        sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}
+        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal'}}>FINANCE</ListSubheader>}
+      >
+        <CollapsibleNavItem item={{
+            text: 'Finance',
+            icon: <FinanceIcon />,
+            children: [
+                { text: 'Chart of Accounts', path: '/finance/accounts', icon: '•' },
+                { text: 'Payments', path: '/finance/payments', icon: '•' },
+                { text: 'Expenses', path: '/finance/expenses', icon: '•' },
+                { text: 'Journal Entries', path: '/finance/journals', icon: '•' },
+                { text: 'Financial Reports', path: '/finance/reports', icon: '•' }
+            ]
+        }} open={open} toggleState={financeOpen} parentToggle={() => setFinanceOpen(!financeOpen)} />
       </List>
 
       <Box sx={{flexGrow: 1}} />
