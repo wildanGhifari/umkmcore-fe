@@ -97,7 +97,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
                     height: open ? 'auto' : 56,
                     width: open ? 'auto' : 56,
                     minHeight: open ? 48 : 56,
-                    py: open ? 1.25 : 0,
+                    py: open ? 1 : 0,
                     borderRadius: '24px',
                     mx: open ? 0 : 'auto',
                     '&.Mui-selected': {
@@ -174,7 +174,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
         <>
             <ListItemButton onClick={parentToggle} sx={{
                 px: 2.5,
-                py: 1.25,
+                py: 1,
                 height: 'auto',
                 borderRadius: '24px',
             }}>
@@ -209,7 +209,28 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
   };
 
   const mainRailContent = (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <Box sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        overflowY: 'auto',
+        '&::-webkit-scrollbar': {
+            width: '4px',
+        },
+        '&::-webkit-scrollbar-track': {
+            backgroundColor: 'transparent',
+        },
+        '&::-webkit-scrollbar-thumb': {
+            backgroundColor: theme.palette.text.secondary,
+            borderRadius: '2px',
+        },
+        '&::-webkit-scrollbar-thumb:hover': {
+            backgroundColor: theme.palette.text.primary,
+        },
+        '&:not(:hover)::-webkit-scrollbar-thumb': {
+            backgroundColor: 'transparent',
+        },
+    }}>
         {/* Logo Section - visible in both states, height matches AppBar */}
         <Box sx={{
             display: 'flex',
@@ -217,7 +238,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
             justifyContent: 'flex-start',
             height: 64, // Match AppBar Toolbar height
             px: open ? 2 : 1.5,
-            py: open ? 2 : 0,
+            py: 2, // Always have vertical padding
         }}>
             <Box sx={{
                 width: 40,
@@ -351,7 +372,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
          <Tooltip title={!open ? "Logout" : ''} placement="right" arrow>
             <ListItemButton onClick={handleLogout} sx={{
                 px: open ? 2.5 : 0,
-                py: open ? 1.25 : 0,
+                py: open ? 1 : 0,
                 justifyContent: 'center',
                 alignItems: 'center',
                 height: open ? 'auto' : 56,
