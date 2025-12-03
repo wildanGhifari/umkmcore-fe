@@ -85,7 +85,8 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
                     justifyContent: 'center',
                     alignItems: 'center',
                     px: open ? 2.5 : 0,
-                    pl: open && isChild ? 4 : 0,
+                    pl: open && isChild ? 3 : 0,
+                    pr: open ? 2.5 : 0,
                     height: open ? 'auto' : 56,
                     width: open ? 'auto' : 56,
                     minHeight: open ? 48 : 56,
@@ -182,7 +183,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
             justifyContent: 'flex-start',
             height: 64, // Match AppBar Toolbar height
             px: open ? 2 : 1.5,
-            py: open ? 1 : 0,
+            py: open ? 2 : 0,
         }}>
             <Box sx={{
                 width: 40,
