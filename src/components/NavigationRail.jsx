@@ -32,14 +32,15 @@ import {
   TrendingUpRounded as TrendingUpRoundedIcon,
   ShoppingCartRounded as ShoppingCartIcon,
   LocalShippingRounded as ProcurementIcon,
-  PersonRounded as CRMIcon,
   AccountBalanceRounded as FinanceIcon,
+  FactoryRounded as ProductionIcon,
+  SecurityRounded as RolesIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { alpha } from '@mui/material/styles';
 
-const drawerWidth = 280;
+const drawerWidth = 260;
 
 // Custom "•" icon component
 const BulletIcon = () => {
@@ -70,9 +71,10 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
 
   const [analyticsOpen, setAnalyticsOpen] = useState(true);
   const [salesOpen, setSalesOpen] = useState(true);
-  const [procurementOpen, setProcurementOpen] = useState(true);
-  const [crmOpen, setCrmOpen] = useState(true);
   const [financeOpen, setFinanceOpen] = useState(true);
+  const [procurementOpen, setProcurementOpen] = useState(true);
+  const [productionOpen, setProductionOpen] = useState(true);
+  const [managementOpen, setManagementOpen] = useState(true);
 
   const handleLogout = () => {
     logout();
@@ -92,12 +94,12 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
                     flexDirection: open ? 'row' : 'column',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    px: open ? 2.5 : 0,
-                    ...(open && isChild && { pl: 4 }),
+                    px: open ? 2 : 0,
+                    ...(open && isChild && { pl: 3.5 }),
                     height: open ? 'auto' : 56,
                     width: open ? 'auto' : 56,
                     minHeight: open ? 48 : 56,
-                    py: open ? 1 : 0,
+                    py: open ? 0.75 : 0,
                     borderRadius: '24px',
                     mx: open ? 0 : 'auto',
                     '&.Mui-selected': {
@@ -117,7 +119,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
                         minWidth: 0,
                         justifyContent: 'center',
                         mb: 0,
-                        mr: open ? 3 : 0,
+                        mr: open ? 2 : 0,
                         '& .MuiSvgIcon-root': {
                             fontSize: isChild ? '1.25rem' : '1.1rem'
                         }
@@ -173,15 +175,15 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
     return (
         <>
             <ListItemButton onClick={parentToggle} sx={{
-                px: 2.5,
-                py: 1,
+                px: 2,
+                py: 0.75,
                 height: 'auto',
                 borderRadius: '24px',
             }}>
                 {item.icon && (
                     <ListItemIcon sx={{
                         minWidth: 0,
-                        mr: open ? 3 : 'auto',
+                        mr: open ? 2 : 'auto',
                         justifyContent: 'center',
                         '& .MuiSvgIcon-root': {
                             fontSize: '1.1rem'
@@ -226,6 +228,8 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
             position: 'sticky',
             top: 0,
             backgroundColor: theme.palette.background.paper,
+            borderBottom: 1,
+            borderColor: 'divider',
             zIndex: 1,
         }}>
             <Box sx={{
@@ -243,124 +247,92 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
                 U
             </Box>
         </Box>
-      <Divider sx={{ mb: 1 }} />
 
-      <List
-        sx={{ flexGrow: 0, p: open ? 1 : 0, px: open ? 1 : 1, pt: 0}}
-        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal'}}>DASHBOARD</ListSubheader>}
-      >
-        <NavItem item={{ text: "Today's Sales", path: '/', icon: <DashboardIcon /> }} open={open} />
-        <CollapsibleNavItem item={{
-            text: 'Analytics',
-            icon: <AnalyticsIcon />,
-            children: [
-                { text: 'Inventory', path: '/reports/inventory', icon: '•' },
-                { text: 'Material Usage', path: '/reports/material-usage', icon: '•' },
-                { text: 'Revenue', path: '/reports/revenue', icon: '•' },
-                { text: 'Forecast', path: '/reports/forecast', icon: '•' }
-            ]
-        }} open={open} toggleState={analyticsOpen} parentToggle={() => setAnalyticsOpen(!analyticsOpen)} />
+      {/* Dashboard */}
+      <List sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}>
+        <NavItem item={{ text: 'Dashboard', path: '/', icon: <DashboardIcon /> }} open={open} />
       </List>
 
-      <Divider sx={{ mb: 1 }} />
+      <Divider sx={{ my: 1 }} />
 
-       <List
-        sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}
-        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal'}}>MANAGEMENT</ListSubheader>}
-      >
-        <NavItem item={{ text: 'Categories', path: '/categories', icon: <CategoryIcon /> }} open={open} />
-        <NavItem item={{ text: 'Materials', path: '/materials', icon: <StyleIcon /> }} open={open} />
-        <NavItem item={{ text: 'Products', path: '/products', icon: <Inventory2Icon /> }} open={open} />
-        <NavItem item={{ text: 'Stores', path: '/stores', icon: <StoreIcon /> }} open={open} />
-        <NavItem item={{ text: 'Users', icon: <GroupIcon />, path: '/users', adminOnly: true }} open={open} />
-      </List>
-
-      <Divider sx={{ mb: 1 }} />
-
+      {/* ANALYTICS */}
       <List
         sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}
-        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal'}}>SALES</ListSubheader>}
+        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal', px: 0}}>ANALYTICS</ListSubheader>}
       >
-        <CollapsibleNavItem item={{
-            text: 'Sales',
-            icon: <ShoppingCartIcon />,
-            children: [
-                { text: 'Sales Orders', path: '/sales/orders', icon: '•' },
-                { text: 'Invoices', path: '/sales/invoices', icon: '•' },
-                { text: 'Customers', path: '/sales/customers', icon: '•' },
-                { text: 'Quotations', path: '/sales/quotations', icon: '•' },
-                { text: 'Sales Returns', path: '/sales/returns', icon: '•' }
-            ]
-        }} open={open} toggleState={salesOpen} parentToggle={() => setSalesOpen(!salesOpen)} />
+        <NavItem item={{ text: 'Inventory', path: '/reports/inventory', icon: '•' }} open={open} isChild={true} />
+        <NavItem item={{ text: 'Material Usage', path: '/reports/material-usage', icon: '•' }} open={open} isChild={true} />
+        <NavItem item={{ text: 'Revenue', path: '/reports/revenue', icon: '•' }} open={open} isChild={true} />
+        <NavItem item={{ text: 'Forecast', path: '/reports/forecast', icon: '•' }} open={open} isChild={true} />
       </List>
 
-      <Divider sx={{ mb: 1 }} />
-
+      {/* SALES */}
       <List
         sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}
-        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal'}}>PROCUREMENT</ListSubheader>}
+        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal', px: 0}}>SALES</ListSubheader>}
       >
-        <CollapsibleNavItem item={{
-            text: 'Procurement',
-            icon: <ProcurementIcon />,
-            children: [
-                { text: 'Purchase Orders', path: '/procurement/orders', icon: '•' },
-                { text: 'Suppliers', path: '/procurement/suppliers', icon: '•' },
-                { text: 'Goods Receipt', path: '/procurement/receipts', icon: '•' },
-                { text: 'Purchase Requests', path: '/procurement/requests', icon: '•' },
-                { text: 'Supplier Invoices', path: '/procurement/invoices', icon: '•' }
-            ]
-        }} open={open} toggleState={procurementOpen} parentToggle={() => setProcurementOpen(!procurementOpen)} />
+        <NavItem item={{ text: 'Sales Orders', path: '/sales/orders', icon: '•' }} open={open} isChild={true} />
+        <NavItem item={{ text: 'Invoices', path: '/sales/invoices', icon: '•' }} open={open} isChild={true} />
+        <NavItem item={{ text: 'Customers', path: '/sales/customers', icon: '•' }} open={open} isChild={true} />
       </List>
 
-      <Divider sx={{ mb: 1 }} />
-
+      {/* FINANCE */}
       <List
         sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}
-        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal'}}>CRM</ListSubheader>}
+        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal', px: 0}}>FINANCE</ListSubheader>}
       >
-        <CollapsibleNavItem item={{
-            text: 'CRM',
-            icon: <CRMIcon />,
-            children: [
-                { text: 'Contacts', path: '/crm/contacts', icon: '•' },
-                { text: 'Leads', path: '/crm/leads', icon: '•' },
-                { text: 'Opportunities', path: '/crm/opportunities', icon: '•' },
-                { text: 'Customer Notes', path: '/crm/notes', icon: '•' },
-                { text: 'Follow-ups', path: '/crm/followups', icon: '•' }
-            ]
-        }} open={open} toggleState={crmOpen} parentToggle={() => setCrmOpen(!crmOpen)} />
+        <NavItem item={{ text: 'Chart of Accounts', path: '/finance/accounts', icon: '•' }} open={open} isChild={true} />
+        <NavItem item={{ text: 'Payments', path: '/finance/payments', icon: '•' }} open={open} isChild={true} />
+        <NavItem item={{ text: 'Expenses', path: '/finance/expenses', icon: '•' }} open={open} isChild={true} />
+        <NavItem item={{ text: 'Journal Entries', path: '/finance/journals', icon: '•' }} open={open} isChild={true} />
+        <NavItem item={{ text: 'Financial Reports', path: '/finance/reports', icon: '•' }} open={open} isChild={true} />
       </List>
 
-      <Divider sx={{ mb: 1 }} />
-
+      {/* PROCUREMENT */}
       <List
         sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}
-        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal'}}>FINANCE</ListSubheader>}
+        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal', px: 0}}>PROCUREMENT</ListSubheader>}
       >
-        <CollapsibleNavItem item={{
-            text: 'Finance',
-            icon: <FinanceIcon />,
-            children: [
-                { text: 'Chart of Accounts', path: '/finance/accounts', icon: '•' },
-                { text: 'Payments', path: '/finance/payments', icon: '•' },
-                { text: 'Expenses', path: '/finance/expenses', icon: '•' },
-                { text: 'Journal Entries', path: '/finance/journals', icon: '•' },
-                { text: 'Financial Reports', path: '/finance/reports', icon: '•' }
-            ]
-        }} open={open} toggleState={financeOpen} parentToggle={() => setFinanceOpen(!financeOpen)} />
+        <NavItem item={{ text: 'Purchase Orders', path: '/procurement/orders', icon: '•' }} open={open} isChild={true} />
+        <NavItem item={{ text: 'Suppliers', path: '/procurement/suppliers', icon: '•' }} open={open} isChild={true} />
+        <NavItem item={{ text: 'Goods Receipt', path: '/procurement/receipts', icon: '•' }} open={open} isChild={true} />
+        <NavItem item={{ text: 'Purchase Requests', path: '/procurement/requests', icon: '•' }} open={open} isChild={true} />
+        <NavItem item={{ text: 'Supplier Invoices', path: '/procurement/invoices', icon: '•' }} open={open} isChild={true} />
+      </List>
+
+      {/* PRODUCTION */}
+      <List
+        sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}
+        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal', px: 0}}>PRODUCTION</ListSubheader>}
+      >
+        <NavItem item={{ text: 'Work Orders', path: '/production/work-orders', icon: '•' }} open={open} isChild={true} />
+        <NavItem item={{ text: 'Production Planning', path: '/production/planning', icon: '•' }} open={open} isChild={true} />
+        <NavItem item={{ text: 'Manufacturing', path: '/production/manufacturing', icon: '•' }} open={open} isChild={true} />
+        <NavItem item={{ text: 'Quality Control', path: '/production/quality', icon: '•' }} open={open} isChild={true} />
+      </List>
+
+      {/* MANAGEMENT */}
+      <List
+        sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}
+        subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal', px: 0}}>MANAGEMENT</ListSubheader>}
+      >
+        <NavItem item={{ text: 'Categories', path: '/categories', icon: '•' }} open={open} isChild={true} />
+        <NavItem item={{ text: 'Materials', path: '/materials', icon: '•' }} open={open} isChild={true} />
+        <NavItem item={{ text: 'Products', path: '/products', icon: '•' }} open={open} isChild={true} />
+        <NavItem item={{ text: 'Roles', path: '/roles', icon: '•' }} open={open} isChild={true} />
+        <NavItem item={{ text: 'Users', path: '/users', icon: '•', adminOnly: true }} open={open} isChild={true} />
       </List>
 
       <Box sx={{flexGrow: 1}} />
 
-      <Divider sx={{ mb: 1 }} />
+      <Divider sx={{ my: 1 }} />
 
       <List sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}>
         <NavItem item={{ text: 'Settings', path: '#', icon: <SettingsIcon /> }} open={open} />
          <Tooltip title={!open ? "Logout" : ''} placement="right" arrow>
             <ListItemButton onClick={handleLogout} sx={{
-                px: open ? 2.5 : 0,
-                py: open ? 1 : 0,
+                px: open ? 2 : 0,
+                py: open ? 0.75 : 0,
                 justifyContent: 'center',
                 alignItems: 'center',
                 height: open ? 'auto' : 56,
@@ -371,7 +343,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
             }}>
                 <ListItemIcon sx={{
                     minWidth: 0,
-                    mr: open ? 3 : 0,
+                    mr: open ? 2 : 0,
                     justifyContent: 'center',
                     mb: 0,
                     '& .MuiSvgIcon-root': {
@@ -411,10 +383,10 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
             borderRadius: '16px',
           },
           '&:hover::-webkit-scrollbar-thumb': {
-            backgroundColor: theme.palette.text.secondary,
+            backgroundColor: theme.palette.primary.main,
           },
           '&:hover::-webkit-scrollbar-thumb:hover': {
-            backgroundColor: theme.palette.text.primary,
+            backgroundColor: theme.palette.primary.dark,
           },
         },
       }}

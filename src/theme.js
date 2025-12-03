@@ -98,7 +98,7 @@ const createCustomTheme = (scheme) => createTheme({
       contrastText: figmaSchemes[scheme].onError,
     },
     background: {
-      default: figmaSchemes[scheme].surfaceVariant,
+      default: figmaSchemes[scheme].surfaceContainerLow,
       paper: figmaSchemes[scheme].surface,
     },
     text: {
