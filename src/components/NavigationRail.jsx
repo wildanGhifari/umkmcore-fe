@@ -97,7 +97,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
                     height: open ? 'auto' : 56,
                     width: open ? 'auto' : 56,
                     minHeight: open ? 48 : 56,
-                    py: open ? 1.5 : 0,
+                    py: open ? 1.25 : 0,
                     borderRadius: '24px',
                     mx: open ? 0 : 'auto',
                     '&.Mui-selected': {
@@ -113,7 +113,15 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
                 }}
             >
                 {item.icon && (
-                    <ListItemIcon sx={{ minWidth: 0, justifyContent: 'center', mb: 0, mr: open ? 3 : 0 }}>
+                    <ListItemIcon sx={{
+                        minWidth: 0,
+                        justifyContent: 'center',
+                        mb: 0,
+                        mr: open ? 3 : 0,
+                        '& .MuiSvgIcon-root': {
+                            fontSize: isChild ? '1.25rem' : '1.1rem'
+                        }
+                    }}>
                         {item.icon === '•' ? <BulletIcon /> : item.icon}
                     </ListItemIcon>
                 )}
@@ -145,7 +153,15 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
                      mx: 'auto',
                  }}>
                     {item.icon && (
-                        <ListItemIcon sx={{ minWidth: 0, justifyContent: 'center', mb: 0, mr: 0 }}>
+                        <ListItemIcon sx={{
+                            minWidth: 0,
+                            justifyContent: 'center',
+                            mb: 0,
+                            mr: 0,
+                            '& .MuiSvgIcon-root': {
+                                fontSize: '1.1rem'
+                            }
+                        }}>
                             {item.icon}
                         </ListItemIcon>
                     )}
@@ -158,17 +174,28 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
         <>
             <ListItemButton onClick={parentToggle} sx={{
                 px: 2.5,
-                py: 1.5,
+                py: 1.25,
                 height: 'auto',
                 borderRadius: '24px',
             }}>
                 {item.icon && (
-                    <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
+                    <ListItemIcon sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : 'auto',
+                        justifyContent: 'center',
+                        '& .MuiSvgIcon-root': {
+                            fontSize: '1.1rem'
+                        }
+                    }}>
                         {item.icon}
                     </ListItemIcon>
                 )}
                 <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0, display: open ? 'block' : 'none' }} />
-                {open ? (toggleState ? <ExpandLess /> : <ExpandMore />) : null}
+                {open ? (
+                    <Box sx={{ '& .MuiSvgIcon-root': { fontSize: '1.1rem' } }}>
+                        {toggleState ? <ExpandLess /> : <ExpandMore />}
+                    </Box>
+                ) : null}
             </ListItemButton>
             <Collapse in={toggleState && open} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
@@ -324,7 +351,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
          <Tooltip title={!open ? "Logout" : ''} placement="right" arrow>
             <ListItemButton onClick={handleLogout} sx={{
                 px: open ? 2.5 : 0,
-                py: open ? 1.5 : 0,
+                py: open ? 1.25 : 0,
                 justifyContent: 'center',
                 alignItems: 'center',
                 height: open ? 'auto' : 56,
@@ -333,7 +360,15 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
                 borderRadius: '24px',
                 mx: open ? 0 : 'auto',
             }}>
-                <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 0, justifyContent: 'center', mb: 0 }}><LogoutIcon /></ListItemIcon>
+                <ListItemIcon sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : 0,
+                    justifyContent: 'center',
+                    mb: 0,
+                    '& .MuiSvgIcon-root': {
+                        fontSize: '1.1rem'
+                    }
+                }}><LogoutIcon /></ListItemIcon>
                 <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0, display: open ? 'block' : 'none' }} />
             </ListItemButton>
         </Tooltip>
