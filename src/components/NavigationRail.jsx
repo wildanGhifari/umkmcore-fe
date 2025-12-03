@@ -182,6 +182,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
             justifyContent: 'flex-start',
             height: 64, // Match AppBar Toolbar height
             px: 2,
+            py: open ? 1 : 0,
             pl: open ? 2 : 1.5
         }}>
             <Box sx={{
@@ -199,7 +200,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
                 U
             </Box>
         </Box>
-      <Divider sx={{ my: 1 }} />
+      <Divider sx={{ mb: 1 }} />
 
       <List
         sx={{ flexGrow: 0, p: open ? 1 : 0, px: open ? 1 : 1, pt: 0}}
@@ -218,7 +219,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
         }} open={open} toggleState={analyticsOpen} parentToggle={() => setAnalyticsOpen(!analyticsOpen)} />
       </List>
 
-      <Divider sx={{ my: 1 }} />
+      <Divider sx={{ mb: 1 }} />
 
        <List
         sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}
@@ -233,7 +234,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
 
       <Box sx={{flexGrow: 1}} />
 
-      <Divider sx={{ my: 1 }} />
+      <Divider sx={{ mb: 1 }} />
 
       <List sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}>
         <NavItem item={{ text: 'Settings', path: '#', icon: <SettingsIcon /> }} open={open} />
