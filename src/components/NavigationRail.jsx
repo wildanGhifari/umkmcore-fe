@@ -221,14 +221,14 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
             backgroundColor: 'transparent',
         },
         '&::-webkit-scrollbar-thumb': {
-            backgroundColor: theme.palette.text.secondary,
-            borderRadius: '2px',
-        },
-        '&::-webkit-scrollbar-thumb:hover': {
-            backgroundColor: theme.palette.text.primary,
-        },
-        '&:not(:hover)::-webkit-scrollbar-thumb': {
             backgroundColor: 'transparent',
+            borderRadius: '16px',
+        },
+        '&:hover::-webkit-scrollbar-thumb': {
+            backgroundColor: theme.palette.text.secondary,
+        },
+        '&:hover::-webkit-scrollbar-thumb:hover': {
+            backgroundColor: theme.palette.text.primary,
         },
     }}>
         {/* Logo Section - visible in both states, height matches AppBar */}
