@@ -203,7 +203,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
       <Divider sx={{ mb: 1 }} />
 
       <List
-        sx={{ flexGrow: 0, p: open ? 1 : 0, px: open ? 1 : 1, pt: 0}}
+        sx={{ flexGrow: 0, p: open ? 1 : 0, px: open ? 0 : 1, pt: 0}}
         subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal'}}>DASHBOARD</ListSubheader>}
       >
         <NavItem item={{ text: "Today's Sales", path: '/', icon: <DashboardIcon /> }} open={open} />
@@ -222,7 +222,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
       <Divider sx={{ mb: 1 }} />
 
        <List
-        sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}
+        sx={{ p: open ? 1 : 0, px: open ? 0 : 1 }}
         subheader={open && <ListSubheader sx={{bgcolor: 'transparent', fontSize: '0.75rem', lineHeight: 'normal'}}>MANAGEMENT</ListSubheader>}
       >
         <NavItem item={{ text: 'Categories', path: '/categories', icon: <CategoryIcon /> }} open={open} />
@@ -236,7 +236,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
 
       <Divider sx={{ mb: 1 }} />
 
-      <List sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}>
+      <List sx={{ p: open ? 1 : 0, px: open ? 0 : 1 }}>
         <NavItem item={{ text: 'Settings', path: '#', icon: <SettingsIcon /> }} open={open} />
          <Tooltip title={!open ? "Logout" : ''} placement="right" arrow>
             <ListItemButton onClick={handleLogout} sx={{
