@@ -26,6 +26,19 @@ import ForecastReport from './components/reports/ForecastReport';
 import StoreManagementPage from './components/StoreManagementPage';
 import InventoryReportPage from './components/reports/InventoryReportPage';
 import RevenueReportPage from './components/reports/RevenueReportPage';
+// Money Tracker Pages
+import CashInPage from './components/money/CashInPage';
+import CashOutPage from './components/money/CashOutPage';
+import BalancePage from './components/money/BalancePage';
+// Stock Alerts
+import LowStockAlertsPage from './components/stock/LowStockAlertsPage';
+// Simplified Reports
+import DailySalesReport from './components/reports/DailySalesReport';
+import StockLevelsReport from './components/reports/StockLevelsReport';
+import BestSellersReport from './components/reports/BestSellersReport';
+// Settings Pages
+import BusinessInfoPage from './components/settings/BusinessInfoPage';
+import NotificationsPage from './components/settings/NotificationsPage';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
@@ -212,6 +225,94 @@ function App() {
           element={
             <ProtectedRoute>
               <RevenueReportPage />
+            </ProtectedRoute>
+          }
+        />
+        {/* Money Tracker Routes */}
+        <Route
+          path="/money/cash-in"
+          element={
+            <ProtectedRoute>
+              <CashInPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/money/cash-out"
+          element={
+            <ProtectedRoute>
+              <CashOutPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/money/balance"
+          element={
+            <ProtectedRoute>
+              <BalancePage />
+            </ProtectedRoute>
+          }
+        />
+        {/* Stock Alerts Route */}
+        <Route
+          path="/stock/alerts"
+          element={
+            <ProtectedRoute>
+              <LowStockAlertsPage />
+            </ProtectedRoute>
+          }
+        />
+        {/* Simplified Report Routes */}
+        <Route
+          path="/reports/daily-sales"
+          element={
+            <ProtectedRoute>
+              <DailySalesReport />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reports/stock-levels"
+          element={
+            <ProtectedRoute>
+              <StockLevelsReport />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reports/best-sellers"
+          element={
+            <ProtectedRoute>
+              <BestSellersReport />
+            </ProtectedRoute>
+          }
+        />
+        {/* Settings Routes */}
+        <Route
+          path="/settings/business"
+          element={
+            <ProtectedRoute>
+              <BusinessInfoPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings/notifications"
+          element={
+            <ProtectedRoute>
+              <NotificationsPage />
+            </ProtectedRoute>
+          }
+        />
+        {/* Roles Page - Placeholder */}
+        <Route
+          path="/roles"
+          element={
+            <ProtectedRoute>
+              <div style={{ padding: '24px' }}>
+                <h1>Roles Management</h1>
+                <p>This page is coming soon.</p>
+              </div>
             </ProtectedRoute>
           }
         />
