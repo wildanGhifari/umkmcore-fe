@@ -214,22 +214,6 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
         flexDirection: 'column',
         height: '100%',
         overflowY: 'auto',
-        '&::-webkit-scrollbar': {
-            width: '4px',
-        },
-        '&::-webkit-scrollbar-track': {
-            backgroundColor: 'transparent',
-        },
-        '&::-webkit-scrollbar-thumb': {
-            backgroundColor: 'transparent',
-            borderRadius: '16px',
-        },
-        '&:hover::-webkit-scrollbar-thumb': {
-            backgroundColor: theme.palette.text.secondary,
-        },
-        '&:hover::-webkit-scrollbar-thumb:hover': {
-            backgroundColor: theme.palette.text.primary,
-        },
     }}>
         {/* Logo Section - visible in both states, height matches AppBar */}
         <Box sx={{
@@ -239,6 +223,10 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
             height: 64, // Match AppBar Toolbar height
             px: open ? 2 : 1.5,
             py: 2, // Always have vertical padding
+            position: 'sticky',
+            top: 0,
+            backgroundColor: theme.palette.background.paper,
+            zIndex: 1,
         }}>
             <Box sx={{
                 width: 40,
@@ -412,6 +400,22 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
             duration: theme.transitions.duration.enteringScreen,
           }),
           backgroundColor: theme.palette.background.paper,
+          '&::-webkit-scrollbar': {
+            width: '4px',
+          },
+          '&::-webkit-scrollbar-track': {
+            backgroundColor: 'transparent',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'transparent',
+            borderRadius: '16px',
+          },
+          '&:hover::-webkit-scrollbar-thumb': {
+            backgroundColor: theme.palette.text.secondary,
+          },
+          '&:hover::-webkit-scrollbar-thumb:hover': {
+            backgroundColor: theme.palette.text.primary,
+          },
         },
       }}
       open={open}
