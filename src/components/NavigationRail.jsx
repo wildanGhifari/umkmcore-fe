@@ -83,13 +83,15 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
                 sx={{
                     flexDirection: open ? 'row' : 'column',
                     justifyContent: 'center',
-                    px: 2.5,
-                    pl: open && isChild ? 4 : 2.5,
-                    height: 'auto',
-                    minHeight: open ? 48 : 'auto',
-                    py: open ? 1.5 : 2,
+                    alignItems: 'center',
+                    px: open ? 2.5 : 0,
+                    pl: open && isChild ? 4 : 0,
+                    height: open ? 'auto' : 56,
+                    width: open ? 'auto' : 56,
+                    minHeight: open ? 48 : 56,
+                    py: open ? 1.5 : 0,
                     borderRadius: '24px',
-                    mx: open ? 0 : 0.5,
+                    mx: open ? 0 : 'auto',
                     '&.Mui-selected': {
                         backgroundColor: theme.palette.primaryContainer.main,
                         color: theme.palette.primaryContainer.contrastText,
@@ -103,7 +105,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
                 }}
             >
                 {item.icon && (
-                    <ListItemIcon sx={{ minWidth: 0, justifyContent: 'center', mb: open ? 0 : 1, mr: open ? 3 : 0 }}>
+                    <ListItemIcon sx={{ minWidth: 0, justifyContent: 'center', mb: 0, mr: open ? 3 : 0 }}>
                         {item.icon === '•' ? <BulletIcon /> : item.icon}
                     </ListItemIcon>
                 )}
@@ -126,14 +128,16 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
             <Tooltip title={item.text} placement="right" arrow>
                  <ListItemButton sx={{
                      justifyContent: 'center',
+                     alignItems: 'center',
                      flexDirection: 'column',
-                     height: 'auto',
-                     py: 2,
+                     height: 56,
+                     width: 56,
+                     p: 0,
                      borderRadius: '24px',
-                     mx: 0.5,
+                     mx: 'auto',
                  }}>
                     {item.icon && (
-                        <ListItemIcon sx={{ minWidth: 0, justifyContent: 'center', mb: 1, mr: 0 }}>
+                        <ListItemIcon sx={{ minWidth: 0, justifyContent: 'center', mb: 0, mr: 0 }}>
                             {item.icon}
                         </ListItemIcon>
                     )}
@@ -171,8 +175,15 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
 
   const mainRailContent = (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        {/* Logo Section - visible in both states */}
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', p: 2, pl: open ? 2 : 1.5 }}>
+        {/* Logo Section - visible in both states, height matches AppBar */}
+        <Box sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+            height: 64, // Match AppBar Toolbar height
+            px: 2,
+            pl: open ? 2 : 1.5
+        }}>
             <Box sx={{
                 width: 40,
                 height: 40,
@@ -207,7 +218,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
         }} open={open} toggleState={analyticsOpen} parentToggle={() => setAnalyticsOpen(!analyticsOpen)} />
       </List>
 
-      <Divider />
+      <Divider sx={{ my: 1 }} />
 
        <List
         sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}
@@ -222,20 +233,23 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
 
       <Box sx={{flexGrow: 1}} />
 
-      <Divider />
+      <Divider sx={{ my: 1 }} />
 
       <List sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}>
         <NavItem item={{ text: 'Settings', path: '#', icon: <SettingsIcon /> }} open={open} />
          <Tooltip title={!open ? "Logout" : ''} placement="right" arrow>
             <ListItemButton onClick={handleLogout} sx={{
-                px: 2.5,
-                py: open ? 1.5 : 2,
+                px: open ? 2.5 : 0,
+                py: open ? 1.5 : 0,
                 justifyContent: 'center',
-                height: 'auto',
+                alignItems: 'center',
+                height: open ? 'auto' : 56,
+                width: open ? 'auto' : 56,
+                minHeight: open ? 48 : 56,
                 borderRadius: '24px',
-                mx: open ? 0 : 0.5,
+                mx: open ? 0 : 'auto',
             }}>
-                <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}><LogoutIcon /></ListItemIcon>
+                <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 0, justifyContent: 'center', mb: 0 }}><LogoutIcon /></ListItemIcon>
                 <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0, display: open ? 'block' : 'none' }} />
             </ListItemButton>
         </Tooltip>
