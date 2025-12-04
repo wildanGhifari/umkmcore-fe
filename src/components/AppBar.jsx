@@ -14,7 +14,6 @@ import {
   MenuRounded as MenuIcon,
   SearchRounded as SearchIcon,
   NotificationsNoneRounded as NotificationsIcon,
-  PointOfSaleRounded as PointOfSaleIcon,
 } from '@mui/icons-material';
 import { alpha, useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
@@ -65,15 +64,6 @@ const TopAppBar = ({ handleDrawerToggle }) => {
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<PointOfSaleIcon />}
-            onClick={() => navigate('/pos')}
-            sx={{ borderRadius: '24px' }}
-          >
-            Point of Sale
-          </Button>
           <IconButton color="inherit">
             <Badge badgeContent={4} color="primary">
               <NotificationsIcon />
