@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Drawer,
@@ -6,49 +6,97 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  IconButton,
   Divider,
   useTheme,
   Tooltip,
-  Collapse,
-  Typography,
-  ListSubheader,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from '@mui/material';
 import {
   MenuRounded as MenuIcon,
-  DashboardRounded as DashboardIcon,
-  Inventory2Rounded as Inventory2Icon,
-  CategoryRounded as CategoryIcon,
-  AssessmentRounded as AssessmentIcon,
-  GroupRounded as GroupIcon,
-  SettingsRounded as SettingsIcon,
-  LogoutRounded as LogoutIcon,
   ChevronLeftRounded as ChevronLeftIcon,
-  StyleRounded as StyleIcon,
-  ExpandLessRounded as ExpandLess,
-  ExpandMoreRounded as ExpandMore,
-  StoreRounded as StoreIcon,
-  AnalyticsRounded as AnalyticsIcon,
-  TrendingUpRounded as TrendingUpRoundedIcon,
-  TrendingDownRounded as TrendingDownRoundedIcon,
-  ShoppingCartRounded as ShoppingCartIcon,
-  AccountBalanceWalletRounded as MoneyIcon,
-  SecurityRounded as RolesIcon,
-  BusinessRounded as BusinessIcon,
-  NotificationsRounded as NotificationsIcon,
-  WarningRounded as AlertIcon,
-  AddCircleOutlineRounded as CashInIcon,
-  RemoveCircleOutlineRounded as CashOutIcon,
-  AccountBalanceWalletRounded as BalanceIcon,
-  ReceiptRounded as DailySalesIcon,
-  InventoryRounded as StockLevelsIcon,
-  PieChartRounded as MaterialUsageIcon,
-  StarRounded as BestSellersIcon,
+  ExpandMoreRounded as ExpandMoreIcon,
   DragIndicatorRounded as DragHandleIcon,
+
+  // Dashboard - Outline & Filled
+  DashboardOutlined as DashboardOutlinedIcon,
+  DashboardRounded as DashboardFilledIcon,
+
+  // POS - Outline & Filled
+  ShoppingCartOutlined as ShoppingCartOutlinedIcon,
+  ShoppingCartRounded as ShoppingCartFilledIcon,
+
+  // Materials - Outline & Filled
+  StyleOutlined as StyleOutlinedIcon,
+  StyleRounded as StyleFilledIcon,
+
+  // Products - Outline & Filled
+  Inventory2Outlined as Inventory2OutlinedIcon,
+  Inventory2Rounded as Inventory2FilledIcon,
+
+  // Categories - Outline & Filled
+  CategoryOutlined as CategoryOutlinedIcon,
+  CategoryRounded as CategoryFilledIcon,
+
+  // Low Stock Alerts - Outline & Filled
+  WarningAmberOutlined as WarningAmberOutlinedIcon,
+  WarningAmberRounded as WarningAmberFilledIcon,
+
+  // Cash In - Outline & Filled
+  AddCircleOutlineOutlined as AddCircleOutlineIcon,
+  AddCircleRounded as AddCircleFilledIcon,
+
+  // Cash Out - Outline & Filled
+  RemoveCircleOutlineOutlined as RemoveCircleOutlineIcon,
+  RemoveCircleOutlineRounded as RemoveCircleFilledIcon,
+
+  // Balance - Outline & Filled
+  AccountBalanceWalletOutlined as AccountBalanceWalletOutlinedIcon,
+  AccountBalanceWalletRounded as AccountBalanceWalletFilledIcon,
+
+  // Daily Sales - Outline & Filled
+  ReceiptLongOutlined as ReceiptLongOutlinedIcon,
+  ReceiptLongRounded as ReceiptLongFilledIcon,
+
+  // Stock Levels - Outline & Filled
+  InventoryOutlined as InventoryOutlinedIcon,
+  InventoryRounded as InventoryFilledIcon,
+
+  // Material Usage - Outline & Filled
+  PieChartOutlineOutlined as PieChartOutlineOutlinedIcon,
+  PieChartRounded as PieChartFilledIcon,
+
+  // Best Sellers - Outline & Filled
+  StarBorderRounded as StarBorderOutlinedIcon,
+  StarRounded as StarFilledIcon,
+
+  // Users - Outline & Filled
+  GroupOutlined as GroupOutlinedIcon,
+  GroupRounded as GroupFilledIcon,
+
+  // Roles - Outline & Filled
+  SecurityOutlined as SecurityOutlinedIcon,
+  SecurityRounded as SecurityFilledIcon,
+
+  // Business Info - Outline & Filled
+  BusinessOutlined as BusinessOutlinedIcon,
+  BusinessRounded as BusinessFilledIcon,
+
+  // Notifications - Outline & Filled
+  NotificationsNoneOutlined as NotificationsNoneOutlinedIcon,
+  NotificationsRounded as NotificationsFilledIcon,
+
+  // Logout - Outline & Filled
+  LogoutOutlined as LogoutOutlinedIcon,
+  LogoutRounded as LogoutFilledIcon,
+
+  // Section representative icons (when collapsed)
+  AssessmentRounded as AssessmentFilledIcon,
+  SettingsRounded as SettingsFilledIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { alpha } from '@mui/material/styles';
 import {
   DndContext,
   closestCenter,
@@ -74,14 +122,14 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
   const { pathname } = useLocation();
   const { user, logout } = useAuth();
 
-  // State for collapseable sections
+  // State for accordion expansion (default: STOCK MANAGEMENT and MONEY TRACKER expanded)
   const [sectionStates, setSectionStates] = useState(() => {
     const saved = localStorage.getItem('sectionCollapseStates');
     return saved ? JSON.parse(saved) : {
       stockManagement: true,
       moneyTracker: true,
-      reports: true,
-      settings: true,
+      reports: false,
+      settings: false,
     };
   });
 
@@ -133,65 +181,67 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
     }
   };
 
-  const NavItem = ({ item, open, isChild = false }) => {
+  // NavItem component - displays individual navigation items
+  const NavItem = ({ item, open }) => {
     const isSelected = pathname === item.path;
     if (item.adminOnly && user?.role !== 'admin') return null;
 
+    // Choose icon variant based on selection state
+    const IconComponent = isSelected ? item.iconFilled : item.iconOutline;
+
     return (
-        <Tooltip title={!open ? item.text : ''} placement="right" arrow>
-            <ListItemButton
-                selected={isSelected}
-                onClick={() => item.path && navigate(item.path)}
-                sx={{
-                    flexDirection: open ? 'row' : 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    px: open ? 2 : 0,
-                    ...(open && isChild && { pl: 4 }),
-                    height: open ? 'auto' : 56,
-                    width: open ? 'auto' : 56,
-                    minHeight: open ? 48 : 56,
-                    py: open ? 0.75 : 0,
-                    borderRadius: '24px',
-                    mx: open ? 0 : 'auto',
-                    '&.Mui-selected': {
-                        backgroundColor: theme.palette.primaryContainer.main,
-                        color: theme.palette.primaryContainer.contrastText,
-                        '& .MuiListItemIcon-root, & .MuiTypography-root': {
-                        color: theme.palette.primaryContainer.contrastText,
-                        },
-                        '&:hover': {
-                        backgroundColor: theme.palette.primary.main,
-                        }
-                    }
-                }}
-            >
-                {item.icon && (
-                    <ListItemIcon sx={{
-                        minWidth: 0,
-                        justifyContent: 'center',
-                        mb: 0,
-                        mr: open ? 2 : 0,
-                        '& .MuiSvgIcon-root': {
-                            fontSize: isChild ? '1.25rem' : '1.1rem'
-                        }
-                    }}>
-                        {item.icon}
-                    </ListItemIcon>
-                )}
-                <ListItemText
-                    primary={item.text}
-                    sx={{ opacity: open ? 1 : 0, display: open ? 'block' : 'none' }}
-                    primaryTypographyProps={{
-                        fontSize: '0.875rem',
-                        fontWeight: '500',
-                    }}
-                />
-            </ListItemButton>
-        </Tooltip>
+      <Tooltip title={!open ? item.text : ''} placement="right" arrow>
+        <ListItemButton
+          selected={isSelected}
+          onClick={() => item.path && navigate(item.path)}
+          sx={{
+            flexDirection: open ? 'row' : 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            px: open ? 2 : 0,
+            height: open ? 'auto' : 56,
+            width: open ? 'auto' : 56,
+            minHeight: open ? 48 : 56,
+            py: open ? 0.75 : 0,
+            borderRadius: '24px',
+            mx: open ? 0 : 'auto',
+            '&.Mui-selected': {
+              backgroundColor: theme.palette.primaryContainer.main,
+              color: theme.palette.primaryContainer.contrastText,
+              '& .MuiListItemIcon-root, & .MuiTypography-root': {
+                color: theme.palette.primaryContainer.contrastText,
+              },
+              '&:hover': {
+                backgroundColor: theme.palette.primary.main,
+              }
+            }
+          }}
+        >
+          <ListItemIcon sx={{
+            minWidth: 0,
+            justifyContent: 'center',
+            mb: 0,
+            mr: open ? 2 : 0,
+            '& .MuiSvgIcon-root': {
+              fontSize: '1.1rem'
+            }
+          }}>
+            <IconComponent />
+          </ListItemIcon>
+          <ListItemText
+            primary={item.text}
+            sx={{ opacity: open ? 1 : 0, display: open ? 'block' : 'none' }}
+            primaryTypographyProps={{
+              fontSize: '0.875rem',
+              fontWeight: '500',
+            }}
+          />
+        </ListItemButton>
+      </Tooltip>
     );
   };
 
+  // SortableSectionWrapper - makes Accordion draggable
   const SortableSectionWrapper = ({ id, children }) => {
     const {
       attributes,
@@ -210,285 +260,397 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
 
     return (
       <Box ref={setNodeRef} style={style}>
-        {React.cloneElement(children, { dragHandleProps: { ...attributes, ...listeners }, isDragging })}
+        {React.cloneElement(children, {
+          dragHandleProps: { ...attributes, ...listeners },
+          isDragging
+        })}
       </Box>
     );
   };
 
+  // CollapsibleSection - uses MUI Accordion for sections
   const CollapsibleSection = ({ section, config, open, isDragging = false, dragHandleProps }) => {
-    const isOpen = sectionStates[section];
+    const isExpanded = sectionStates[section];
 
+    // When sidebar is collapsed, show representative icon
     if (!open) {
-        return (
-            <Tooltip title={config.text} placement="right" arrow>
-                 <ListItemButton sx={{
-                     justifyContent: 'center',
-                     alignItems: 'center',
-                     flexDirection: 'column',
-                     height: 56,
-                     width: 56,
-                     p: 0,
-                     borderRadius: '24px',
-                     mx: 'auto',
-                     opacity: isDragging ? 0.5 : 1,
-                 }}>
-                    {config.icon && (
-                        <ListItemIcon sx={{
-                            minWidth: 0,
-                            justifyContent: 'center',
-                            mb: 0,
-                            mr: 0,
-                            '& .MuiSvgIcon-root': {
-                                fontSize: '1.1rem'
-                            }
-                        }}>
-                            {config.icon}
-                        </ListItemIcon>
-                    )}
-                </ListItemButton>
-            </Tooltip>
-        );
+      return (
+        <Tooltip title={config.text} placement="right" arrow>
+          <ListItemButton sx={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexDirection: 'column',
+            height: 56,
+            width: 56,
+            p: 0,
+            borderRadius: '24px',
+            mx: 'auto',
+            opacity: isDragging ? 0.5 : 1,
+          }}>
+            <ListItemIcon sx={{
+              minWidth: 0,
+              justifyContent: 'center',
+              mb: 0,
+              mr: 0,
+              '& .MuiSvgIcon-root': {
+                fontSize: '1.1rem'
+              }
+            }}>
+              {config.collapsedIcon}
+            </ListItemIcon>
+          </ListItemButton>
+        </Tooltip>
+      );
     }
 
+    // When sidebar is expanded, show Accordion
     return (
-        <>
-            <ListItemButton onClick={() => toggleSection(section)} sx={{
-                px: 2,
-                py: 0.75,
-                height: 'auto',
-                borderRadius: '24px',
-                opacity: isDragging ? 0.5 : 1,
-            }}>
-                {open && (
-                    <Box
-                        {...dragHandleProps}
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            mr: 1,
-                            cursor: 'grab',
-                            '&:active': { cursor: 'grabbing' },
-                            color: 'text.secondary',
-                            opacity: 0.6,
-                            '&:hover': { opacity: 1 },
-                        }}
-                    >
-                        <DragHandleIcon sx={{ fontSize: '1.1rem' }} />
-                    </Box>
-                )}
-                {config.icon && (
-                    <ListItemIcon sx={{
-                        minWidth: 0,
-                        mr: open ? 2 : 'auto',
-                        justifyContent: 'center',
-                        '& .MuiSvgIcon-root': {
-                            fontSize: '1.1rem'
-                        }
-                    }}>
-                        {config.icon}
-                    </ListItemIcon>
-                )}
-                <ListItemText
-                    primary={config.text}
-                    sx={{ opacity: open ? 1 : 0, display: open ? 'block' : 'none' }}
-                    primaryTypographyProps={{
-                        fontSize: '0.75rem',
-                        fontWeight: '600',
-                        letterSpacing: '0.5px',
-                        textTransform: 'uppercase',
-                        color: 'text.secondary',
-                    }}
-                />
-                {open ? (
-                    <Box sx={{ '& .MuiSvgIcon-root': { fontSize: '1.1rem' } }}>
-                        {isOpen ? <ExpandLess /> : <ExpandMore />}
-                    </Box>
-                ) : null}
-            </ListItemButton>
-            <Collapse in={isOpen && open} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
-                    {config.children.map((child, index) => (
-                       <NavItem key={index} item={child} open={open} isChild={true} />
-                    ))}
-                </List>
-            </Collapse>
-        </>
+      <Accordion
+        expanded={isExpanded}
+        onChange={() => toggleSection(section)}
+        disableGutters
+        elevation={0}
+        square
+        sx={{
+          backgroundColor: 'transparent',
+          '&:before': { display: 'none' },
+          '&.Mui-expanded': { margin: 0 },
+          opacity: isDragging ? 0.5 : 1,
+        }}
+      >
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon sx={{ fontSize: '1.1rem' }} />}
+          sx={{
+            px: 2,
+            py: 0.75,
+            minHeight: 48,
+            borderRadius: '24px',
+            '&.Mui-expanded': { minHeight: 48 },
+            '& .MuiAccordionSummary-content': {
+              margin: 0,
+              display: 'flex',
+              alignItems: 'center',
+              '&.Mui-expanded': { margin: 0 },
+            },
+            '&:hover': {
+              backgroundColor: theme.palette.action.hover,
+            },
+          }}
+        >
+          {/* Drag handle - only visible when sidebar is expanded */}
+          <Box
+            {...dragHandleProps}
+            onClick={(e) => e.stopPropagation()} // Prevent accordion toggle when dragging
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              mr: 1,
+              cursor: 'grab',
+              '&:active': { cursor: 'grabbing' },
+              color: 'text.secondary',
+              opacity: 0.6,
+              '&:hover': { opacity: 1 },
+            }}
+          >
+            <DragHandleIcon sx={{ fontSize: '1.1rem' }} />
+          </Box>
+
+          {/* Section title - NO ICON */}
+          <ListItemText
+            primary={config.text}
+            primaryTypographyProps={{
+              fontSize: '0.75rem',
+              fontWeight: '600',
+              letterSpacing: '0.5px',
+              textTransform: 'uppercase',
+              color: 'text.secondary',
+            }}
+          />
+        </AccordionSummary>
+
+        <AccordionDetails sx={{ p: 0 }}>
+          <List component="div" disablePadding sx={{ px: 1 }}>
+            {config.children.map((child, index) => (
+              <NavItem key={index} item={child} open={open} />
+            ))}
+          </List>
+        </AccordionDetails>
+      </Accordion>
     );
   };
 
-  // Define section configurations
+  // Define section configurations with nav items
   const sectionConfigs = {
     stockManagement: {
       text: 'Stock Management',
-      icon: <Inventory2Icon />,
+      collapsedIcon: <Inventory2FilledIcon />,
       children: [
-        { text: 'Materials', path: '/materials', icon: <StyleIcon /> },
-        { text: 'Products', path: '/products', icon: <Inventory2Icon /> },
-        { text: 'Categories', path: '/categories', icon: <CategoryIcon /> },
-        { text: 'Low Stock Alerts', path: '/stock/alerts', icon: <AlertIcon /> },
+        {
+          text: 'Products',
+          path: '/products',
+          iconOutline: <Inventory2OutlinedIcon />,
+          iconFilled: <Inventory2FilledIcon />
+        },
+        {
+          text: 'Materials',
+          path: '/materials',
+          iconOutline: <StyleOutlinedIcon />,
+          iconFilled: <StyleFilledIcon />
+        },
+        {
+          text: 'Categories',
+          path: '/categories',
+          iconOutline: <CategoryOutlinedIcon />,
+          iconFilled: <CategoryFilledIcon />
+        },
+        {
+          text: 'Low Stock Alerts',
+          path: '/stock/alerts',
+          iconOutline: <WarningAmberOutlinedIcon />,
+          iconFilled: <WarningAmberFilledIcon />
+        },
       ]
     },
     moneyTracker: {
       text: 'Money Tracker',
-      icon: <MoneyIcon />,
+      collapsedIcon: <AccountBalanceWalletFilledIcon />,
       children: [
-        { text: 'Cash In', path: '/money/cash-in', icon: <CashInIcon /> },
-        { text: 'Cash Out', path: '/money/cash-out', icon: <CashOutIcon /> },
-        { text: 'Balance', path: '/money/balance', icon: <BalanceIcon /> },
+        {
+          text: 'Cash In',
+          path: '/money/cash-in',
+          iconOutline: <AddCircleOutlineIcon />,
+          iconFilled: <AddCircleFilledIcon />
+        },
+        {
+          text: 'Cash Out',
+          path: '/money/cash-out',
+          iconOutline: <RemoveCircleOutlineIcon />,
+          iconFilled: <RemoveCircleFilledIcon />
+        },
+        {
+          text: 'Balance',
+          path: '/money/balance',
+          iconOutline: <AccountBalanceWalletOutlinedIcon />,
+          iconFilled: <AccountBalanceWalletFilledIcon />
+        },
       ]
     },
     reports: {
       text: 'Reports',
-      icon: <AssessmentIcon />,
+      collapsedIcon: <AssessmentFilledIcon />,
       children: [
-        { text: 'Daily Sales', path: '/reports/daily-sales', icon: <DailySalesIcon /> },
-        { text: 'Stock Levels', path: '/reports/stock-levels', icon: <StockLevelsIcon /> },
-        { text: 'Material Usage', path: '/reports/material-usage', icon: <MaterialUsageIcon /> },
-        { text: 'Best Sellers', path: '/reports/best-sellers', icon: <BestSellersIcon /> },
+        {
+          text: 'Daily Sales',
+          path: '/reports/daily-sales',
+          iconOutline: <ReceiptLongOutlinedIcon />,
+          iconFilled: <ReceiptLongFilledIcon />
+        },
+        {
+          text: 'Stock Levels',
+          path: '/reports/stock-levels',
+          iconOutline: <InventoryOutlinedIcon />,
+          iconFilled: <InventoryFilledIcon />
+        },
+        {
+          text: 'Material Usage',
+          path: '/reports/material-usage',
+          iconOutline: <PieChartOutlineOutlinedIcon />,
+          iconFilled: <PieChartFilledIcon />
+        },
+        {
+          text: 'Best Sellers',
+          path: '/reports/best-sellers',
+          iconOutline: <StarBorderOutlinedIcon />,
+          iconFilled: <StarFilledIcon />
+        },
       ]
     },
     settings: {
       text: 'Settings',
-      icon: <SettingsIcon />,
+      collapsedIcon: <SettingsFilledIcon />,
       children: [
-        { text: 'Users', path: '/users', icon: <GroupIcon />, adminOnly: true },
-        { text: 'Roles', path: '/roles', icon: <RolesIcon />, adminOnly: true },
-        { text: 'Business Info', path: '/settings/business', icon: <BusinessIcon /> },
-        { text: 'Notifications', path: '/settings/notifications', icon: <NotificationsIcon /> },
+        {
+          text: 'Users',
+          path: '/users',
+          iconOutline: <GroupOutlinedIcon />,
+          iconFilled: <GroupFilledIcon />,
+          adminOnly: true
+        },
+        {
+          text: 'Roles',
+          path: '/roles',
+          iconOutline: <SecurityOutlinedIcon />,
+          iconFilled: <SecurityFilledIcon />,
+          adminOnly: true
+        },
+        {
+          text: 'Business Info',
+          path: '/settings/business',
+          iconOutline: <BusinessOutlinedIcon />,
+          iconFilled: <BusinessFilledIcon />
+        },
+        {
+          text: 'Notifications',
+          path: '/settings/notifications',
+          iconOutline: <NotificationsNoneOutlinedIcon />,
+          iconFilled: <NotificationsFilledIcon />
+        },
       ]
     },
   };
 
   const mainRailContent = (
     <Box sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
     }}>
-        {/* Logo Section - visible in both states, height matches AppBar */}
+      {/* Logo Section - fixed at top */}
+      <Box sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        height: 64, // Match AppBar Toolbar height
+        px: open ? 2 : 1.5,
+        py: 2,
+        mb: open ? 0 : 1,
+        position: 'sticky',
+        top: 0,
+        backgroundColor: theme.palette.background.paper,
+        borderBottom: 1,
+        borderColor: 'divider',
+        zIndex: 1,
+      }}>
         <Box sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'flex-start',
-            height: 64, // Match AppBar Toolbar height
-            px: open ? 2 : 1.5,
-            py: 2,
-            mb: open ? 0 : 1, // Add margin-bottom when collapsed
-            position: 'sticky',
-            top: 0,
-            backgroundColor: theme.palette.background.paper,
-            borderBottom: 1,
-            borderColor: 'divider',
-            zIndex: 1,
+          width: 40,
+          height: 40,
+          borderRadius: '50%',
+          backgroundColor: theme.palette.primary.main,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontWeight: 'bold',
+          fontSize: '1.25rem',
+          color: theme.palette.primary.contrastText,
         }}>
-            <Box sx={{
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                backgroundColor: theme.palette.primary.main,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 'bold',
-                fontSize: '1.25rem',
-                color: theme.palette.primary.contrastText,
+          U
+        </Box>
+      </Box>
+
+      {/* Scrollable content area with custom scrollbar */}
+      <Box sx={{
+        flexGrow: 1,
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        '&::-webkit-scrollbar': {
+          width: '4px',
+        },
+        '&::-webkit-scrollbar-track': {
+          backgroundColor: 'transparent',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          backgroundColor: 'transparent',
+          borderRadius: '16px',
+        },
+        '&:hover::-webkit-scrollbar-thumb': {
+          backgroundColor: theme.palette.primary.main,
+        },
+        '&:hover::-webkit-scrollbar-thumb:hover': {
+          backgroundColor: theme.palette.primary.dark,
+        },
+      }}>
+        {/* Dashboard - Fixed (not draggable) */}
+        <List sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}>
+          <NavItem
+            item={{
+              text: 'Dashboard',
+              path: '/',
+              iconOutline: <DashboardOutlinedIcon />,
+              iconFilled: <DashboardFilledIcon />
+            }}
+            open={open}
+          />
+        </List>
+
+        {/* POS - Fixed (not draggable) */}
+        <List sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}>
+          <NavItem
+            item={{
+              text: 'POS',
+              path: '/pos',
+              iconOutline: <ShoppingCartOutlinedIcon />,
+              iconFilled: <ShoppingCartFilledIcon />
+            }}
+            open={open}
+          />
+        </List>
+
+        <Divider sx={{ my: 1 }} />
+
+        {/* Draggable Sections Area */}
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={sectionOrder}
+            strategy={verticalListSortingStrategy}
+            disabled={!open}
+          >
+            {sectionOrder.map((sectionKey) => (
+              <SortableSectionWrapper key={sectionKey} id={sectionKey}>
+                <List sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}>
+                  <CollapsibleSection
+                    section={sectionKey}
+                    config={sectionConfigs[sectionKey]}
+                    open={open}
+                  />
+                </List>
+              </SortableSectionWrapper>
+            ))}
+          </SortableContext>
+        </DndContext>
+
+        <Divider sx={{ my: 1 }} />
+
+        {/* Logout - Fixed at bottom (not draggable) */}
+        <List sx={{ p: open ? 1 : 0, px: open ? 1 : 1, pb: 2 }}>
+          <Tooltip title={!open ? "Logout" : ''} placement="right" arrow>
+            <ListItemButton onClick={handleLogout} sx={{
+              px: open ? 2 : 0,
+              py: open ? 0.75 : 0,
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: open ? 'auto' : 56,
+              width: open ? 'auto' : 56,
+              minHeight: open ? 48 : 56,
+              borderRadius: '24px',
+              mx: open ? 0 : 'auto',
             }}>
-                U
-            </Box>
-        </Box>
-
-        {/* Scrollable content area with custom scrollbar */}
-        <Box sx={{
-            flexGrow: 1,
-            overflowY: 'auto',
-            overflowX: 'hidden',
-            '&::-webkit-scrollbar': {
-                width: '4px',
-            },
-            '&::-webkit-scrollbar-track': {
-                backgroundColor: 'transparent',
-            },
-            '&::-webkit-scrollbar-thumb': {
-                backgroundColor: 'transparent',
-                borderRadius: '16px',
-            },
-            '&:hover::-webkit-scrollbar-thumb': {
-                backgroundColor: theme.palette.primary.main,
-            },
-            '&:hover::-webkit-scrollbar-thumb:hover': {
-                backgroundColor: theme.palette.primary.dark,
-            },
-        }}>
-            {/* Dashboard */}
-            <List sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}>
-                <NavItem item={{ text: 'Dashboard', path: '/', icon: <DashboardIcon /> }} open={open} />
-            </List>
-
-            <Divider sx={{ my: 1 }} />
-
-            {/* POS (Point of Sale) */}
-            <List sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}>
-                <NavItem item={{ text: 'POS', path: '/pos', icon: <ShoppingCartIcon /> }} open={open} />
-            </List>
-
-            <Divider sx={{ my: 1 }} />
-
-            {/* Draggable Sections */}
-            <DndContext
-                sensors={sensors}
-                collisionDetection={closestCenter}
-                onDragEnd={handleDragEnd}
-            >
-                <SortableContext
-                    items={sectionOrder}
-                    strategy={verticalListSortingStrategy}
-                    disabled={!open}
-                >
-                    {sectionOrder.map((sectionKey) => (
-                        <React.Fragment key={sectionKey}>
-                            <SortableSectionWrapper id={sectionKey}>
-                                <List sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}>
-                                    <CollapsibleSection
-                                        section={sectionKey}
-                                        config={sectionConfigs[sectionKey]}
-                                        open={open}
-                                    />
-                                </List>
-                            </SortableSectionWrapper>
-                            <Divider sx={{ my: 1 }} />
-                        </React.Fragment>
-                    ))}
-                </SortableContext>
-            </DndContext>
-
-            {/* LOGOUT */}
-            <List sx={{ p: open ? 1 : 0, px: open ? 1 : 1, pb: 2 }}>
-                <Tooltip title={!open ? "Logout" : ''} placement="right" arrow>
-                    <ListItemButton onClick={handleLogout} sx={{
-                        px: open ? 2 : 0,
-                        py: open ? 0.75 : 0,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        height: open ? 'auto' : 56,
-                        width: open ? 'auto' : 56,
-                        minHeight: open ? 48 : 56,
-                        borderRadius: '24px',
-                        mx: open ? 0 : 'auto',
-                    }}>
-                        <ListItemIcon sx={{
-                            minWidth: 0,
-                            mr: open ? 2 : 0,
-                            justifyContent: 'center',
-                            mb: 0,
-                            '& .MuiSvgIcon-root': {
-                                fontSize: '1.1rem'
-                            }
-                        }}><LogoutIcon /></ListItemIcon>
-                        <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0, display: open ? 'block' : 'none' }} />
-                    </ListItemButton>
-                </Tooltip>
-            </List>
-        </Box>
+              <ListItemIcon sx={{
+                minWidth: 0,
+                mr: open ? 2 : 0,
+                justifyContent: 'center',
+                mb: 0,
+                '& .MuiSvgIcon-root': {
+                  fontSize: '1.1rem'
+                }
+              }}>
+                <LogoutOutlinedIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="Logout"
+                sx={{ opacity: open ? 1 : 0, display: open ? 'block' : 'none' }}
+                primaryTypographyProps={{
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                }}
+              />
+            </ListItemButton>
+          </Tooltip>
+        </List>
+      </Box>
     </Box>
   );
 
