@@ -226,7 +226,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
               fontSize: '1.1rem'
             }
           }}>
-            <IconComponent />
+            {IconComponent}
           </ListItemIcon>
           <ListItemText
             primary={item.text}
