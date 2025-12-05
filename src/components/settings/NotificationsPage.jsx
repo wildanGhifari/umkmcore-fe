@@ -43,16 +43,16 @@ function NotificationsPage() {
       {/* Header */}
       <Box sx={{ mb: 3 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          Pengaturan Notifikasi
+          Notification Settings
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Atur notifikasi yang ingin Anda terima
+          Configure which notifications you want to receive
         </Typography>
       </Box>
 
       {saved && (
         <Alert severity="success" sx={{ mb: 3 }}>
-          Pengaturan notifikasi berhasil disimpan!
+          Notification settings saved successfully!
         </Alert>
       )}
 
@@ -60,16 +60,16 @@ function NotificationsPage() {
       <Card>
         <CardContent>
           <Typography variant="h6" gutterBottom>
-            Notifikasi Bisnis
+            Business Notifications
           </Typography>
           <Box sx={{ mt: 2 }}>
             <FormControlLabel
               control={<Switch checked={settings.lowStockAlert} onChange={handleChange('lowStockAlert')} />}
               label={
                 <Box>
-                  <Typography variant="body1">Peringatan Stok Rendah</Typography>
+                  <Typography variant="body1">Low Stock Alert</Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Notifikasi ketika stok bahan hampir habis
+                    Get notified when material stock is running low
                   </Typography>
                 </Box>
               }
@@ -80,9 +80,9 @@ function NotificationsPage() {
               control={<Switch checked={settings.dailySalesReport} onChange={handleChange('dailySalesReport')} />}
               label={
                 <Box>
-                  <Typography variant="body1">Laporan Penjualan Harian</Typography>
+                  <Typography variant="body1">Daily Sales Report</Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Ringkasan penjualan dikirim setiap hari jam 10 malam
+                    Sales summary sent daily at 10 PM
                   </Typography>
                 </Box>
               }
@@ -93,9 +93,9 @@ function NotificationsPage() {
               control={<Switch checked={settings.newOrderNotification} onChange={handleChange('newOrderNotification')} />}
               label={
                 <Box>
-                  <Typography variant="body1">Pesanan Baru</Typography>
+                  <Typography variant="body1">New Order</Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Notifikasi setiap ada pesanan baru masuk
+                    Get notified for every new order
                   </Typography>
                 </Box>
               }
@@ -106,9 +106,9 @@ function NotificationsPage() {
               control={<Switch checked={settings.paymentReminder} onChange={handleChange('paymentReminder')} />}
               label={
                 <Box>
-                  <Typography variant="body1">Pengingat Pembayaran</Typography>
+                  <Typography variant="body1">Payment Reminder</Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Notifikasi untuk pembayaran yang jatuh tempo
+                    Notifications for due payments
                   </Typography>
                 </Box>
               }
@@ -118,7 +118,7 @@ function NotificationsPage() {
           <Divider sx={{ my: 3 }} />
 
           <Typography variant="h6" gutterBottom>
-            Channel Notifikasi
+            Notification Channels
           </Typography>
           <Box sx={{ mt: 2 }}>
             <FormControlLabel
@@ -127,7 +127,7 @@ function NotificationsPage() {
                 <Box>
                   <Typography variant="body1">WhatsApp</Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Terima notifikasi via WhatsApp
+                    Receive notifications via WhatsApp
                   </Typography>
                 </Box>
               }
@@ -140,7 +140,7 @@ function NotificationsPage() {
                 <Box>
                   <Typography variant="body1">Email</Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Terima notifikasi via email
+                    Receive notifications via email
                   </Typography>
                 </Box>
               }
@@ -154,7 +154,7 @@ function NotificationsPage() {
               onClick={handleSave}
               sx={{ borderRadius: '24px' }}
             >
-              Simpan Pengaturan
+              Save Settings
             </Button>
           </Box>
         </CardContent>

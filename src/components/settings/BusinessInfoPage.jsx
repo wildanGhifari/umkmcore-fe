@@ -42,16 +42,16 @@ function BusinessInfoPage() {
       {/* Header */}
       <Box sx={{ mb: 3 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          Informasi Bisnis
+          Business Information
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Kelola informasi toko dan pemilik bisnis
+          Manage your store and business owner information
         </Typography>
       </Box>
 
       {saved && (
         <Alert severity="success" sx={{ mb: 3 }}>
-          Informasi bisnis berhasil disimpan!
+          Business information saved successfully!
         </Alert>
       )}
 
@@ -59,12 +59,12 @@ function BusinessInfoPage() {
       <Card>
         <CardContent>
           <Typography variant="h6" gutterBottom>
-            Detail Bisnis
+            Business Details
           </Typography>
           <Grid container spacing={3} sx={{ mt: 1 }}>
             <Grid item xs={12} sm={6}>
               <TextField
-                label="Nama Toko"
+                label="Store Name"
                 value={formData.storeName}
                 onChange={handleChange('storeName')}
                 fullWidth
@@ -72,7 +72,7 @@ function BusinessInfoPage() {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                label="Nama Pemilik"
+                label="Owner Name"
                 value={formData.ownerName}
                 onChange={handleChange('ownerName')}
                 fullWidth
@@ -80,7 +80,7 @@ function BusinessInfoPage() {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                label="Nomor Telepon"
+                label="Phone Number"
                 value={formData.phone}
                 onChange={handleChange('phone')}
                 fullWidth
@@ -97,7 +97,7 @@ function BusinessInfoPage() {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                label="Alamat Lengkap"
+                label="Full Address"
                 value={formData.address}
                 onChange={handleChange('address')}
                 fullWidth
@@ -107,7 +107,7 @@ function BusinessInfoPage() {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                label="NPWP (Opsional)"
+                label="Tax ID (Optional)"
                 value={formData.taxNumber}
                 onChange={handleChange('taxNumber')}
                 fullWidth
@@ -122,7 +122,7 @@ function BusinessInfoPage() {
               onClick={handleSave}
               sx={{ borderRadius: '24px' }}
             >
-              Simpan Perubahan
+              Save Changes
             </Button>
           </Box>
         </CardContent>
