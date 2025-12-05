@@ -74,10 +74,10 @@ function CashInPage() {
       <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
         <Box>
           <Typography variant="h4" component="h1" gutterBottom>
-            Uang Masuk (Cash In)
+            Cash In
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Catat semua uang yang masuk ke bisnis Anda
+            Record all income for your business
           </Typography>
         </Box>
         <Button
@@ -86,7 +86,7 @@ function CashInPage() {
           onClick={handleOpenDialog}
           sx={{ borderRadius: '24px' }}
         >
-          Tambah Uang Masuk
+          Add Cash In
         </Button>
       </Box>
 
@@ -97,7 +97,7 @@ function CashInPage() {
             <MoneyInIcon sx={{ fontSize: 48, color: 'white' }} />
             <Box>
               <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.9)' }}>
-                Total Uang Masuk (Bulan Ini)
+                Total Cash In (This Month)
               </Typography>
               <Typography variant="h4" sx={{ color: 'white', fontWeight: 'bold' }}>
                 Rp {totalCashIn.toLocaleString('id-ID')}
@@ -111,22 +111,22 @@ function CashInPage() {
       <Card>
         <CardContent>
           <Typography variant="h6" gutterBottom>
-            Riwayat Uang Masuk
+            Cash In History
           </Typography>
           <TableContainer component={Paper} elevation={0}>
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Tanggal</TableCell>
-                  <TableCell>Sumber</TableCell>
-                  <TableCell>Keterangan</TableCell>
-                  <TableCell align="right">Jumlah</TableCell>
+                  <TableCell>Date</TableCell>
+                  <TableCell>Source</TableCell>
+                  <TableCell>Notes</TableCell>
+                  <TableCell align="right">Amount</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {mockCashInData.map((item) => (
                   <TableRow key={item.id} hover>
-                    <TableCell>{new Date(item.date).toLocaleDateString('id-ID')}</TableCell>
+                    <TableCell>{new Date(item.date).toLocaleDateString('en-US')}</TableCell>
                     <TableCell>
                       <Chip
                         label={item.source}
@@ -150,11 +150,11 @@ function CashInPage() {
 
       {/* Add Cash In Dialog */}
       <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
-        <DialogTitle>Tambah Uang Masuk</DialogTitle>
+        <DialogTitle>Add Cash In</DialogTitle>
         <DialogContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
             <TextField
-              label="Tanggal"
+              label="Date"
               type="date"
               value={formData.date}
               onChange={handleChange('date')}
@@ -162,20 +162,20 @@ function CashInPage() {
               InputLabelProps={{ shrink: true }}
             />
             <TextField
-              label="Sumber"
+              label="Source"
               select
               value={formData.source}
               onChange={handleChange('source')}
               fullWidth
             >
-              <MenuItem value="Sales">Penjualan (Sales)</MenuItem>
-              <MenuItem value="Customer Payment">Pembayaran Customer</MenuItem>
-              <MenuItem value="Loan">Pinjaman</MenuItem>
-              <MenuItem value="Investment">Modal</MenuItem>
-              <MenuItem value="Other">Lainnya</MenuItem>
+              <MenuItem value="Sales">Sales</MenuItem>
+              <MenuItem value="Customer Payment">Customer Payment</MenuItem>
+              <MenuItem value="Loan">Loan</MenuItem>
+              <MenuItem value="Investment">Investment</MenuItem>
+              <MenuItem value="Other">Other</MenuItem>
             </TextField>
             <TextField
-              label="Jumlah (Rp)"
+              label="Amount (Rp)"
               type="number"
               value={formData.amount}
               onChange={handleChange('amount')}
@@ -183,27 +183,27 @@ function CashInPage() {
               placeholder="0"
             />
             <TextField
-              label="Keterangan"
+              label="Notes"
               value={formData.notes}
               onChange={handleChange('notes')}
               fullWidth
               multiline
               rows={3}
-              placeholder="Catatan tambahan (opsional)"
+              placeholder="Additional notes (optional)"
             />
             <Alert severity="info" sx={{ mt: 1 }}>
-              Uang dari POS otomatis tercatat. Anda hanya perlu menambahkan uang masuk dari sumber lain.
+              POS transactions are automatically recorded. You only need to add income from other sources.
             </Alert>
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>Batal</Button>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
           <Button
             onClick={handleSubmit}
             variant="contained"
             disabled={!formData.amount}
           >
-            Simpan
+            Save
           </Button>
         </DialogActions>
       </Dialog>

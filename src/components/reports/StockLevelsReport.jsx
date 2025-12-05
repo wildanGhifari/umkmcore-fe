@@ -83,10 +83,10 @@ function StockLevelsReport() {
       {/* Header */}
       <Box sx={{ mb: 3 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          Laporan Level Stok
+          Stock Levels Report
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Pantau ketersediaan semua bahan
+          Monitor availability of all materials
         </Typography>
       </Box>
 
@@ -94,7 +94,7 @@ function StockLevelsReport() {
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={3}>
           <StatCard
-            title="Total Bahan"
+            title="Total Materials"
             value={data.totalMaterials}
             icon={InventoryIcon}
             color={theme.palette.primary.main}
@@ -103,7 +103,7 @@ function StockLevelsReport() {
         </Grid>
         <Grid item xs={12} sm={3}>
           <StatCard
-            title="Stok Aman"
+            title="Safe Stock"
             value={data.goodStockCount}
             icon={CheckIcon}
             color={theme.palette.success.main}
@@ -112,7 +112,7 @@ function StockLevelsReport() {
         </Grid>
         <Grid item xs={12} sm={3}>
           <StatCard
-            title="Stok Rendah"
+            title="Low Stock"
             value={data.lowStockCount}
             icon={WarningIcon}
             color={theme.palette.warning.main}
@@ -121,7 +121,7 @@ function StockLevelsReport() {
         </Grid>
         <Grid item xs={12} sm={3}>
           <StatCard
-            title="Stok Habis"
+            title="Out of Stock"
             value={data.outOfStockCount}
             icon={WarningIcon}
             color={theme.palette.error.main}
@@ -134,17 +134,17 @@ function StockLevelsReport() {
       <Card>
         <CardContent>
           <Typography variant="h6" gutterBottom>
-            Detail Level Stok
+            Stock Level Details
           </Typography>
           <TableContainer component={Paper} elevation={0}>
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Nama Bahan</TableCell>
+                  <TableCell>Material Name</TableCell>
                   <TableCell>Status</TableCell>
-                  <TableCell align="center">Stok Saat Ini</TableCell>
-                  <TableCell align="center">Stok Minimum</TableCell>
-                  <TableCell>Level Stok</TableCell>
+                  <TableCell align="center">Current Stock</TableCell>
+                  <TableCell align="center">Minimum Stock</TableCell>
+                  <TableCell>Stock Level</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>

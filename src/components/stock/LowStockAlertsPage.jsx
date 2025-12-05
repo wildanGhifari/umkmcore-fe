@@ -25,7 +25,7 @@ import {
 const mockLowStockData = [
   {
     id: 1,
-    name: 'Kopi Arabica',
+    name: 'Arabica Coffee',
     sku: 'MAT-001',
     currentStock: 0,
     minimumStock: 10,
@@ -34,7 +34,7 @@ const mockLowStockData = [
   },
   {
     id: 2,
-    name: 'Susu UHT',
+    name: 'UHT Milk',
     sku: 'MAT-002',
     currentStock: 5,
     minimumStock: 20,
@@ -43,7 +43,7 @@ const mockLowStockData = [
   },
   {
     id: 3,
-    name: 'Gula Pasir',
+    name: 'Sugar',
     sku: 'MAT-003',
     currentStock: 8,
     minimumStock: 15,
@@ -69,11 +69,11 @@ function LowStockAlertsPage() {
   const getStatusChip = (status) => {
     switch (status) {
       case 'out-of-stock':
-        return <Chip label="Habis" color="error" size="small" />;
+        return <Chip label="Out of Stock" color="error" size="small" />;
       case 'critical':
-        return <Chip label="Kritis" color="warning" size="small" />;
+        return <Chip label="Critical" color="warning" size="small" />;
       case 'low':
-        return <Chip label="Rendah" color="info" size="small" />;
+        return <Chip label="Low" color="info" size="small" />;
       default:
         return null;
     }
@@ -87,21 +87,21 @@ function LowStockAlertsPage() {
     <Box>
       {/* Header */}
       <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 1 }}>
-        Peringatan Stok Rendah
+        Low Stock Alerts
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
-        Bahan yang perlu segera dibeli
+        Materials that need to be restocked soon
       </Typography>
 
       {/* Summary Alert */}
       {outOfStockCount > 0 && (
         <Alert severity="error" icon={<ErrorIcon />} sx={{ mb: 3 }}>
-          <strong>{outOfStockCount} bahan sudah habis!</strong> Segera lakukan pembelian untuk menghindari gangguan operasional.
+          <strong>{outOfStockCount} materials out of stock!</strong> Please restock immediately to avoid operational disruptions.
         </Alert>
       )}
       {criticalCount > 0 && (
         <Alert severity="warning" icon={<WarningIcon />} sx={{ mb: 3 }}>
-          <strong>{criticalCount} bahan dalam status kritis!</strong> Stok hampir habis, rencanakan pembelian segera.
+          <strong>{criticalCount} materials at critical level!</strong> Stock almost depleted, plan restocking soon.
         </Alert>
       )}
 
@@ -110,7 +110,7 @@ function LowStockAlertsPage() {
         <Card sx={{ flex: 1, borderLeft: 4, borderColor: 'error.main' }}>
           <CardContent>
             <Typography variant="body2" color="text.secondary">
-              Stok Habis
+              Out of Stock
             </Typography>
             <Typography variant="h4" sx={{ color: 'error.main' }}>
               {outOfStockCount}
@@ -120,7 +120,7 @@ function LowStockAlertsPage() {
         <Card sx={{ flex: 1, borderLeft: 4, borderColor: 'warning.main' }}>
           <CardContent>
             <Typography variant="body2" color="text.secondary">
-              Stok Kritis
+              Critical Stock
             </Typography>
             <Typography variant="h4" sx={{ color: 'warning.main' }}>
               {criticalCount}
@@ -130,7 +130,7 @@ function LowStockAlertsPage() {
         <Card sx={{ flex: 1, borderLeft: 4, borderColor: 'info.main' }}>
           <CardContent>
             <Typography variant="body2" color="text.secondary">
-              Stok Rendah
+              Low Stock
             </Typography>
             <Typography variant="h4" sx={{ color: 'info.main' }}>
               {lowCount}
@@ -143,18 +143,18 @@ function LowStockAlertsPage() {
       <Card>
         <CardContent>
           <Typography variant="h6" gutterBottom>
-            Daftar Bahan yang Perlu Dibeli
+            Materials to Restock
           </Typography>
           <TableContainer component={Paper} elevation={0}>
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Nama Bahan</TableCell>
+                  <TableCell>Material Name</TableCell>
                   <TableCell>SKU</TableCell>
                   <TableCell>Status</TableCell>
-                  <TableCell align="center">Stok Saat Ini</TableCell>
-                  <TableCell align="center">Stok Minimum</TableCell>
-                  <TableCell>Level Stok</TableCell>
+                  <TableCell align="center">Current Stock</TableCell>
+                  <TableCell align="center">Minimum Stock</TableCell>
+                  <TableCell>Stock Level</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>

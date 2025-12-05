@@ -30,9 +30,9 @@ import { useTheme } from '@mui/material/styles';
 
 // Placeholder data - will be replaced with API
 const mockCashOutData = [
-  { id: 1, date: '2025-12-03', category: 'Purchase', amount: 800000, notes: 'Beli bahan baku kopi' },
-  { id: 2, date: '2025-12-02', category: 'Salary', amount: 500000, notes: 'Gaji karyawan' },
-  { id: 3, date: '2025-12-01', category: 'Utilities', amount: 150000, notes: 'Listrik & air' },
+  { id: 1, date: '2025-12-03', category: 'Purchase', amount: 800000, notes: 'Coffee beans purchase' },
+  { id: 2, date: '2025-12-02', category: 'Salary', amount: 500000, notes: 'Employee salary' },
+  { id: 3, date: '2025-12-01', category: 'Utilities', amount: 150000, notes: 'Electricity and water' },
 ];
 
 function CashOutPage() {
@@ -83,10 +83,10 @@ function CashOutPage() {
       <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
         <Box>
           <Typography variant="h4" component="h1" gutterBottom>
-            Uang Keluar (Cash Out)
+            Cash Out
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Catat semua pengeluaran bisnis Anda
+            Record all business expenses
           </Typography>
         </Box>
         <Button
@@ -95,7 +95,7 @@ function CashOutPage() {
           onClick={handleOpenDialog}
           sx={{ borderRadius: '24px' }}
         >
-          Tambah Pengeluaran
+          Add Expense
         </Button>
       </Box>
 
@@ -106,7 +106,7 @@ function CashOutPage() {
             <MoneyOutIcon sx={{ fontSize: 48, color: 'white' }} />
             <Box>
               <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.9)' }}>
-                Total Pengeluaran (Bulan Ini)
+                Total Expenses (This Month)
               </Typography>
               <Typography variant="h4" sx={{ color: 'white', fontWeight: 'bold' }}>
                 Rp {totalCashOut.toLocaleString('id-ID')}
@@ -120,22 +120,22 @@ function CashOutPage() {
       <Card>
         <CardContent>
           <Typography variant="h6" gutterBottom>
-            Riwayat Pengeluaran
+            Expense History
           </Typography>
           <TableContainer component={Paper} elevation={0}>
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Tanggal</TableCell>
-                  <TableCell>Kategori</TableCell>
-                  <TableCell>Keterangan</TableCell>
-                  <TableCell align="right">Jumlah</TableCell>
+                  <TableCell>Date</TableCell>
+                  <TableCell>Category</TableCell>
+                  <TableCell>Notes</TableCell>
+                  <TableCell align="right">Amount</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {mockCashOutData.map((item) => (
                   <TableRow key={item.id} hover>
-                    <TableCell>{new Date(item.date).toLocaleDateString('id-ID')}</TableCell>
+                    <TableCell>{new Date(item.date).toLocaleDateString('en-US')}</TableCell>
                     <TableCell>
                       <Chip
                         label={item.category}
@@ -159,11 +159,11 @@ function CashOutPage() {
 
       {/* Add Cash Out Dialog */}
       <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
-        <DialogTitle>Tambah Pengeluaran</DialogTitle>
+        <DialogTitle>Add Expense</DialogTitle>
         <DialogContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
             <TextField
-              label="Tanggal"
+              label="Date"
               type="date"
               value={formData.date}
               onChange={handleChange('date')}
@@ -171,23 +171,23 @@ function CashOutPage() {
               InputLabelProps={{ shrink: true }}
             />
             <TextField
-              label="Kategori"
+              label="Category"
               select
               value={formData.category}
               onChange={handleChange('category')}
               fullWidth
             >
-              <MenuItem value="Purchase">Pembelian Bahan</MenuItem>
-              <MenuItem value="Salary">Gaji Karyawan</MenuItem>
-              <MenuItem value="Utilities">Utilitas (Listrik, Air)</MenuItem>
-              <MenuItem value="Rent">Sewa Tempat</MenuItem>
-              <MenuItem value="Marketing">Promosi & Marketing</MenuItem>
-              <MenuItem value="Maintenance">Perawatan & Perbaikan</MenuItem>
-              <MenuItem value="Transportation">Transport & Logistik</MenuItem>
-              <MenuItem value="Other">Lainnya</MenuItem>
+              <MenuItem value="Purchase">Material Purchase</MenuItem>
+              <MenuItem value="Salary">Employee Salary</MenuItem>
+              <MenuItem value="Utilities">Utilities (Electricity, Water)</MenuItem>
+              <MenuItem value="Rent">Rent</MenuItem>
+              <MenuItem value="Marketing">Marketing & Promotion</MenuItem>
+              <MenuItem value="Maintenance">Maintenance & Repairs</MenuItem>
+              <MenuItem value="Transportation">Transportation & Logistics</MenuItem>
+              <MenuItem value="Other">Other</MenuItem>
             </TextField>
             <TextField
-              label="Jumlah (Rp)"
+              label="Amount (Rp)"
               type="number"
               value={formData.amount}
               onChange={handleChange('amount')}
@@ -195,27 +195,27 @@ function CashOutPage() {
               placeholder="0"
             />
             <TextField
-              label="Keterangan"
+              label="Notes"
               value={formData.notes}
               onChange={handleChange('notes')}
               fullWidth
               multiline
               rows={3}
-              placeholder="Catatan tambahan (opsional)"
+              placeholder="Additional notes (optional)"
             />
             <Alert severity="warning" sx={{ mt: 1 }}>
-              Pastikan setiap pengeluaran dicatat untuk laporan keuangan yang akurat.
+              Make sure to record every expense for accurate financial reports.
             </Alert>
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>Batal</Button>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
           <Button
             onClick={handleSubmit}
             variant="contained"
             disabled={!formData.amount}
           >
-            Simpan
+            Save
           </Button>
         </DialogActions>
       </Dialog>

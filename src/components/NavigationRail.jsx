@@ -9,15 +9,11 @@ import {
   Divider,
   useTheme,
   Tooltip,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
+  Collapse,
 } from '@mui/material';
 import {
-  MenuRounded as MenuIcon,
-  ChevronLeftRounded as ChevronLeftIcon,
-  ExpandMoreRounded as ExpandMoreIcon,
-  DragIndicatorRounded as DragHandleIcon,
+  ExpandLess,
+  ExpandMore,
 
   // Dashboard - Outline & Filled
   DashboardOutlined as DashboardOutlinedIcon,
@@ -97,22 +93,6 @@ import {
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  useSortable,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 
 const drawerWidth = 260;
 
@@ -122,7 +102,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
   const { pathname } = useLocation();
   const { user, logout } = useAuth();
 
-  // State for accordion expansion (default: STOCK MANAGEMENT and MONEY TRACKER expanded)
+  // State for section expansion (default: STOCK MANAGEMENT and MONEY TRACKER expanded)
   const [sectionStates, setSectionStates] = useState(() => {
     const saved = localStorage.getItem('sectionCollapseStates');
     return saved ? JSON.parse(saved) : {
@@ -133,21 +113,10 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
     };
   });
 
-  // State for section order
-  const [sectionOrder, setSectionOrder] = useState(() => {
-    const saved = localStorage.getItem('sectionOrder');
-    return saved ? JSON.parse(saved) : ['stockManagement', 'moneyTracker', 'reports', 'settings'];
-  });
-
   // Save section collapse states to localStorage
   useEffect(() => {
     localStorage.setItem('sectionCollapseStates', JSON.stringify(sectionStates));
   }, [sectionStates]);
-
-  // Save section order to localStorage
-  useEffect(() => {
-    localStorage.setItem('sectionOrder', JSON.stringify(sectionOrder));
-  }, [sectionOrder]);
 
   const toggleSection = (section) => {
     setSectionStates(prev => ({
@@ -156,29 +125,21 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
     }));
   };
 
+  const handleSectionClick = (sectionKey) => {
+    if (!open) {
+      // If sidebar collapsed, expand it first
+      handleDrawerToggle();
+      // Then expand this section
+      setSectionStates(prev => ({ ...prev, [sectionKey]: true }));
+    } else {
+      // If sidebar already open, just toggle section
+      toggleSection(sectionKey);
+    }
+  };
+
   const handleLogout = () => {
     logout();
     navigate('/login');
-  };
-
-  // Sensors for drag and drop
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
-
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
-
-    if (active.id !== over.id) {
-      setSectionOrder((items) => {
-        const oldIndex = items.indexOf(active.id);
-        const newIndex = items.indexOf(over.id);
-        return arrayMove(items, oldIndex, newIndex);
-      });
-    }
   };
 
   // NavItem component - displays individual navigation items
@@ -203,7 +164,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
             width: open ? 'auto' : 56,
             minHeight: open ? 48 : 56,
             py: open ? 0.75 : 0,
-            borderRadius: '24px',
+            borderRadius: open ? '24px' : '50%',
             mx: open ? 0 : 'auto',
             '&.Mui-selected': {
               backgroundColor: theme.palette.primaryContainer.main,
@@ -241,52 +202,27 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
     );
   };
 
-  // SortableSectionWrapper - makes Accordion draggable
-  const SortableSectionWrapper = ({ id, children }) => {
-    const {
-      attributes,
-      listeners,
-      setNodeRef,
-      transform,
-      transition,
-      isDragging,
-    } = useSortable({ id, disabled: !open });
-
-    const style = {
-      transform: CSS.Transform.toString(transform),
-      transition,
-      opacity: isDragging ? 0.5 : 1,
-    };
-
-    return (
-      <Box ref={setNodeRef} style={style}>
-        {React.cloneElement(children, {
-          dragHandleProps: { ...attributes, ...listeners },
-          isDragging
-        })}
-      </Box>
-    );
-  };
-
-  // CollapsibleSection - uses MUI Accordion for sections
-  const CollapsibleSection = ({ section, config, open, isDragging = false, dragHandleProps }) => {
-    const isExpanded = sectionStates[section];
+  // CollapsibleSection - uses MUI Collapse for sections
+  const CollapsibleSection = ({ sectionKey, config, open }) => {
+    const isExpanded = sectionStates[sectionKey];
 
     // When sidebar is collapsed, show representative icon
     if (!open) {
       return (
         <Tooltip title={config.text} placement="right" arrow>
-          <ListItemButton sx={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            flexDirection: 'column',
-            height: 56,
-            width: 56,
-            p: 0,
-            borderRadius: '24px',
-            mx: 'auto',
-            opacity: isDragging ? 0.5 : 1,
-          }}>
+          <ListItemButton
+            onClick={() => handleSectionClick(sectionKey)}
+            sx={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexDirection: 'column',
+              height: 56,
+              width: 56,
+              p: 0,
+              borderRadius: '50%',
+              mx: 'auto',
+            }}
+          >
             <ListItemIcon sx={{
               minWidth: 0,
               justifyContent: 'center',
@@ -303,59 +239,21 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
       );
     }
 
-    // When sidebar is expanded, show Accordion
+    // When sidebar is expanded, show collapsible section
     return (
-      <Accordion
-        expanded={isExpanded}
-        onChange={() => toggleSection(section)}
-        disableGutters
-        elevation={0}
-        square
-        sx={{
-          backgroundColor: 'transparent',
-          '&:before': { display: 'none' },
-          '&.Mui-expanded': { margin: 0 },
-          opacity: isDragging ? 0.5 : 1,
-        }}
-      >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon sx={{ fontSize: '1.1rem' }} />}
+      <Box>
+        <ListItemButton
+          onClick={() => handleSectionClick(sectionKey)}
           sx={{
             px: 2,
             py: 0.75,
             minHeight: 48,
             borderRadius: '24px',
-            '&.Mui-expanded': { minHeight: 48 },
-            '& .MuiAccordionSummary-content': {
-              margin: 0,
-              display: 'flex',
-              alignItems: 'center',
-              '&.Mui-expanded': { margin: 0 },
-            },
             '&:hover': {
               backgroundColor: theme.palette.action.hover,
             },
           }}
         >
-          {/* Drag handle - only visible when sidebar is expanded */}
-          <Box
-            {...dragHandleProps}
-            onClick={(e) => e.stopPropagation()} // Prevent accordion toggle when dragging
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              mr: 1,
-              cursor: 'grab',
-              '&:active': { cursor: 'grabbing' },
-              color: 'text.secondary',
-              opacity: 0.6,
-              '&:hover': { opacity: 1 },
-            }}
-          >
-            <DragHandleIcon sx={{ fontSize: '1.1rem' }} />
-          </Box>
-
-          {/* Section title - NO ICON */}
           <ListItemText
             primary={config.text}
             primaryTypographyProps={{
@@ -366,16 +264,17 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
               color: 'text.secondary',
             }}
           />
-        </AccordionSummary>
+          {isExpanded ? <ExpandLess sx={{ fontSize: '1.1rem' }} /> : <ExpandMore sx={{ fontSize: '1.1rem' }} />}
+        </ListItemButton>
 
-        <AccordionDetails sx={{ p: 0 }}>
-          <List component="div" disablePadding sx={{ px: 1 }}>
+        <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
             {config.children.map((child, index) => (
               <NavItem key={index} item={child} open={open} />
             ))}
           </List>
-        </AccordionDetails>
-      </Accordion>
+        </Collapse>
+      </Box>
     );
   };
 
@@ -537,11 +436,12 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
         </Box>
       </Box>
 
-      {/* Scrollable content area with custom scrollbar */}
+      {/* Scrollable content area with custom scrollbar and smooth scroll */}
       <Box sx={{
         flexGrow: 1,
         overflowY: 'auto',
         overflowX: 'hidden',
+        scrollBehavior: 'smooth',
         '&::-webkit-scrollbar': {
           width: '4px',
         },
@@ -587,34 +487,42 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
 
         <Divider sx={{ my: 1 }} />
 
-        {/* Draggable Sections Area */}
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={sectionOrder}
-            strategy={verticalListSortingStrategy}
-            disabled={!open}
-          >
-            {sectionOrder.map((sectionKey) => (
-              <SortableSectionWrapper key={sectionKey} id={sectionKey}>
-                <List sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}>
-                  <CollapsibleSection
-                    section={sectionKey}
-                    config={sectionConfigs[sectionKey]}
-                    open={open}
-                  />
-                </List>
-              </SortableSectionWrapper>
-            ))}
-          </SortableContext>
-        </DndContext>
+        {/* Collapsible Sections */}
+        <List sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}>
+          <CollapsibleSection
+            sectionKey="stockManagement"
+            config={sectionConfigs.stockManagement}
+            open={open}
+          />
+        </List>
+
+        <List sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}>
+          <CollapsibleSection
+            sectionKey="moneyTracker"
+            config={sectionConfigs.moneyTracker}
+            open={open}
+          />
+        </List>
+
+        <List sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}>
+          <CollapsibleSection
+            sectionKey="reports"
+            config={sectionConfigs.reports}
+            open={open}
+          />
+        </List>
+
+        <List sx={{ p: open ? 1 : 0, px: open ? 1 : 1 }}>
+          <CollapsibleSection
+            sectionKey="settings"
+            config={sectionConfigs.settings}
+            open={open}
+          />
+        </List>
 
         <Divider sx={{ my: 1 }} />
 
-        {/* Logout - Fixed at bottom (not draggable) */}
+        {/* Logout - Fixed at bottom */}
         <List sx={{ p: open ? 1 : 0, px: open ? 1 : 1, pb: 2 }}>
           <Tooltip title={!open ? "Logout" : ''} placement="right" arrow>
             <ListItemButton onClick={handleLogout} sx={{
@@ -625,7 +533,7 @@ const NavigationRail = ({ open, handleDrawerToggle }) => {
               height: open ? 'auto' : 56,
               width: open ? 'auto' : 56,
               minHeight: open ? 48 : 56,
-              borderRadius: '24px',
+              borderRadius: open ? '24px' : '50%',
               mx: open ? 0 : 'auto',
             }}>
               <ListItemIcon sx={{

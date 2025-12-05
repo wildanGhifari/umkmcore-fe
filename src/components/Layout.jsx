@@ -21,6 +21,9 @@ const Layout = ({ children }) => {
           width: `calc(100% - ${open ? 280 : 72}px)`, // Adjust width based on rail state
           display: 'flex',
           flexDirection: 'column',
+          height: '100vh',
+          overflowY: 'auto',
+          scrollBehavior: 'smooth',
         }}
       >
         <TopAppBar handleDrawerToggle={handleDrawerToggle} />

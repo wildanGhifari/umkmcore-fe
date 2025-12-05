@@ -71,17 +71,17 @@ function DailySalesReport() {
       {/* Header */}
       <Box sx={{ mb: 3 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          Laporan Penjualan Harian
+          Daily Sales Report
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Pantau performa penjualan setiap hari
+          Monitor sales performance every day
         </Typography>
       </Box>
 
       {/* Date Picker */}
       <Box sx={{ mb: 3 }}>
         <TextField
-          label="Pilih Tanggal"
+          label="Select Date"
           type="date"
           value={selectedDate}
           onChange={(e) => setSelectedDate(e.target.value)}
@@ -94,9 +94,9 @@ function DailySalesReport() {
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={4}>
           <StatCard
-            title="Total Penjualan"
+            title="Total Sales"
             value={`Rp ${data.totalRevenue.toLocaleString('id-ID')}`}
-            subtitle={new Date(selectedDate).toLocaleDateString('id-ID', { weekday: 'long' })}
+            subtitle={new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long' })}
             icon={TrendingUpIcon}
             color={theme.palette.success.main}
             bgColor={theme.palette.success.light}
@@ -104,9 +104,9 @@ function DailySalesReport() {
         </Grid>
         <Grid item xs={12} sm={4}>
           <StatCard
-            title="Jumlah Transaksi"
+            title="Total Transactions"
             value={data.totalTransactions}
-            subtitle="Total pesanan"
+            subtitle="Total orders"
             icon={ReceiptIcon}
             color={theme.palette.primary.main}
             bgColor={theme.palette.primaryContainer.main}
@@ -114,9 +114,9 @@ function DailySalesReport() {
         </Grid>
         <Grid item xs={12} sm={4}>
           <StatCard
-            title="Rata-rata per Transaksi"
+            title="Average per Transaction"
             value={`Rp ${data.avgTransactionValue.toLocaleString('id-ID')}`}
-            subtitle="Nilai rata-rata"
+            subtitle="Average value"
             icon={CartIcon}
             color={theme.palette.info.main}
             bgColor={theme.palette.info.light}
@@ -128,16 +128,16 @@ function DailySalesReport() {
       <Card>
         <CardContent>
           <Typography variant="h6" gutterBottom>
-            Produk Terlaris Hari Ini
+            Today's Best Sellers
           </Typography>
           <TableContainer component={Paper} elevation={0}>
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Ranking</TableCell>
-                  <TableCell>Nama Produk</TableCell>
-                  <TableCell align="center">Jumlah Terjual</TableCell>
-                  <TableCell align="right">Total Penjualan</TableCell>
+                  <TableCell>Rank</TableCell>
+                  <TableCell>Product Name</TableCell>
+                  <TableCell align="center">Quantity Sold</TableCell>
+                  <TableCell align="right">Total Sales</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>

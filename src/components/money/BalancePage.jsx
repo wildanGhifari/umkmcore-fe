@@ -75,10 +75,10 @@ function BalancePage() {
     <Box>
       {/* Header */}
       <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 3 }}>
-        Saldo & Ringkasan Uang
+        Balance & Summary
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
-        Lihat kondisi keuangan bisnis Anda dengan mudah
+        View your business financial condition at a glance
       </Typography>
 
       {/* Current Balance - Large Card */}
@@ -93,13 +93,13 @@ function BalancePage() {
             <BalanceIcon sx={{ fontSize: 64, color: 'white' }} />
             <Box>
               <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.9)', mb: 1 }}>
-                Saldo Saat Ini
+                Current Balance
               </Typography>
               <Typography variant="h3" sx={{ color: 'white', fontWeight: 'bold' }}>
                 Rp {data.currentBalance.toLocaleString('id-ID')}
               </Typography>
               <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)', mt: 1 }}>
-                Update: {new Date().toLocaleString('id-ID')}
+                Updated: {new Date().toLocaleString('en-US')}
               </Typography>
             </Box>
           </Box>
@@ -108,12 +108,12 @@ function BalancePage() {
 
       {/* Today's Summary */}
       <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
-        Ringkasan Hari Ini
+        Today's Summary
       </Typography>
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={4}>
           <StatCard
-            title="Uang Masuk Hari Ini"
+            title="Cash In Today"
             value={data.cashIn.today}
             icon={MoneyInIcon}
             color={theme.palette.success.main}
@@ -122,7 +122,7 @@ function BalancePage() {
         </Grid>
         <Grid item xs={12} sm={4}>
           <StatCard
-            title="Uang Keluar Hari Ini"
+            title="Cash Out Today"
             value={data.cashOut.today}
             icon={MoneyOutIcon}
             color={theme.palette.error.main}
@@ -131,7 +131,7 @@ function BalancePage() {
         </Grid>
         <Grid item xs={12} sm={4}>
           <StatCard
-            title="Keuntungan Hari Ini"
+            title="Profit Today"
             value={data.profit.today}
             icon={ChartIcon}
             color={theme.palette.info.main}
@@ -142,19 +142,19 @@ function BalancePage() {
 
       {/* This Month Summary */}
       <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
-        Ringkasan Bulan Ini
+        This Month Summary
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                Uang Masuk & Keluar
+                Income & Expenses
               </Typography>
               <Box sx={{ mb: 3 }}>
                 <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
                   <Typography variant="body2" color="text.secondary">
-                    Uang Masuk
+                    Cash In
                   </Typography>
                   <Typography variant="body1" sx={{ fontWeight: 'bold', color: 'success.main' }}>
                     Rp {data.cashIn.thisMonth.toLocaleString('id-ID')}
@@ -169,7 +169,7 @@ function BalancePage() {
               <Box sx={{ mb: 2 }}>
                 <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
                   <Typography variant="body2" color="text.secondary">
-                    Uang Keluar
+                    Cash Out
                   </Typography>
                   <Typography variant="body1" sx={{ fontWeight: 'bold', color: 'error.main' }}>
                     Rp {data.cashOut.thisMonth.toLocaleString('id-ID')}
@@ -184,7 +184,7 @@ function BalancePage() {
               <Divider sx={{ my: 2 }} />
               <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                  Keuntungan Bersih
+                  Net Profit
                 </Typography>
                 <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
                   Rp {data.profit.thisMonth.toLocaleString('id-ID')}
@@ -198,11 +198,11 @@ function BalancePage() {
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                Analisis Keuntungan
+                Profit Analysis
               </Typography>
               <Box sx={{ textAlign: 'center', py: 3 }}>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
-                  Margin Keuntungan
+                  Profit Margin
                 </Typography>
                 <Typography
                   variant="h2"
@@ -215,22 +215,22 @@ function BalancePage() {
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
                   {profitMargin > 20
-                    ? '✓ Sangat Baik - Bisnis Anda sehat!'
+                    ? '✓ Excellent - Your business is healthy!'
                     : profitMargin > 10
-                    ? '⚠ Cukup Baik - Bisa ditingkatkan'
-                    : '✗ Perhatian - Perlu evaluasi biaya'}
+                    ? '⚠ Good - Can be improved'
+                    : '✗ Attention - Cost evaluation needed'}
                 </Typography>
               </Box>
               <Divider sx={{ my: 2 }} />
               <Box>
                 <Box display="flex" justifyContent="space-between" sx={{ mb: 1 }}>
-                  <Typography variant="body2">Minggu Ini</Typography>
+                  <Typography variant="body2">This Week</Typography>
                   <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
                     Rp {data.profit.thisWeek.toLocaleString('id-ID')}
                   </Typography>
                 </Box>
                 <Box display="flex" justifyContent="space-between">
-                  <Typography variant="body2">Hari Ini</Typography>
+                  <Typography variant="body2">Today</Typography>
                   <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
                     Rp {data.profit.today.toLocaleString('id-ID')}
                   </Typography>
