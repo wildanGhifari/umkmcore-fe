@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { ThemeProvider, CssBaseline, useMediaQuery } from '@mui/material';
+import { ThemeProvider, CssBaseline, GlobalStyles, useMediaQuery } from '@mui/material';
 import { lightTheme, darkTheme } from './theme';
 import { useAuth } from './context/AuthContext';
 import LoginPage from './components/LoginPage';
@@ -65,6 +65,14 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      <GlobalStyles
+        styles={{
+          html: {
+            backgroundColor: theme.palette.background.default,
+            overscrollBehavior: 'none',
+          },
+        }}
+      />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegistrationPage />} />

@@ -25,6 +25,7 @@ const Layout = ({ children }) => {
           overflowY: 'auto',
           scrollBehavior: 'smooth',
           scrollbarGutter: 'stable', // Reserve space for scrollbar to prevent layout shift
+          overscrollBehavior: 'none', // Prevent overscroll bounce/rubber-band effect
         }}
       >
         <TopAppBar handleDrawerToggle={handleDrawerToggle} />
