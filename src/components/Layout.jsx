@@ -24,7 +24,6 @@ const Layout = ({ children }) => {
           height: '100vh',
           overflowY: 'auto',
           scrollBehavior: 'smooth',
-          scrollbarGutter: 'stable', // Reserve space for scrollbar to prevent layout shift
           overscrollBehavior: 'none', // Prevent overscroll bounce/rubber-band effect
         }}
       >
