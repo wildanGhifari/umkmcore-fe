@@ -50,9 +50,14 @@ function DashboardPage() {
   const navigate = useNavigate();
 
   // Fetch dashboard data
-  const { data: stockReport, isLoading: stockLoading } = useQuery({
-    queryKey: ['stockReport'],
-    queryFn: () => reportService.getStockReport({}),
+  const { data: valuationData, isLoading: valuationLoading } = useQuery({
+    queryKey: ['inventoryValuation'],
+    queryFn: () => materialService.getInventoryValuation(),
+  });
+
+  const { data: outOfStockData } = useQuery({
+    queryKey: ['outOfStockCount'],
+    queryFn: () => materialService.getMaterials(1, 1, '', '', 'Out of Stock'),
   });
 
   const { data: lowStockReport, isLoading: lowStockLoading } = useQuery({
@@ -75,7 +80,7 @@ function DashboardPage() {
     queryFn: () => salesOrderService.getSalesOrders(1, 10),
   });
 
-  const isLoading = stockLoading || lowStockLoading;
+  const isLoading = valuationLoading || lowStockLoading;
 
   if (isLoading) {
     return (
@@ -85,11 +90,12 @@ function DashboardPage() {
     );
   }
 
-  const stockSummary = stockReport?.data?.summary || {};
-  const lowStockItems = lowStockReport?.data?.materials || [];
-  const totalMaterials = materialsData?.pagination?.total || 0;
-  const totalProducts = productsData?.pagination?.total || 0;
-  const totalSalesCount = salesData?.pagination?.total || 0;
+  const stockValuation = valuationData?.data || {};
+  const lowStockItems = lowStockReport?.data || [];
+  const totalMaterials = materialsData?.pagination?.totalRecords || 0;
+  const totalProducts = productsData?.pagination?.totalRecords || 0;
+  const totalSalesCount = salesData?.pagination?.totalRecords || 0;
+  const outOfStockCount = outOfStockData?.pagination?.totalRecords || 0;
   const recentSales = salesData?.data || [];
 
   // Mock data for charts (until APIs are fully ready for historical data)
@@ -104,9 +110,9 @@ function DashboardPage() {
   ];
 
   const stockStatusData = [
-    { name: 'In Stock', value: totalMaterials - lowStockItems.length, color: theme.palette.success.main },
+    { name: 'In Stock', value: totalMaterials - lowStockItems.length - outOfStockCount, color: theme.palette.success.main },
     { name: 'Low Stock', value: lowStockItems.length, color: theme.palette.warning.main },
-    { name: 'Out of Stock', value: stockSummary.outOfStockCount || 0, color: theme.palette.error.main },
+    { name: 'Out of Stock', value: outOfStockCount, color: theme.palette.error.main },
   ];
 
   const StatCard = ({ title, value, icon: Icon, color, subtitle, trend }) => (
@@ -198,7 +204,7 @@ function DashboardPage() {
             value={totalMaterials}
             icon={InventoryIcon}
             color="secondary"
-            subtitle={`Valued at Rp ${(stockSummary.totalValue || 0).toLocaleString()}`}
+            subtitle={`Valued at Rp ${(stockValuation.totalValue || 0).toLocaleString()}`}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>

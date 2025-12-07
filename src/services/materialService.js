@@ -16,18 +16,14 @@ const getAuthHeaders = () => {
   };
 };
 
-const getMaterials = async (page = 1, limit = 10, search = '', category = '', stockStatus = '') => {
+const getMaterials = async (page = 1, limit = 20, search = '', category = '', stockStatus = '') => {
   const queryParams = {
     page: page.toString(),
     limit: limit.toString(),
   };
 
-  if (search) {
-    queryParams.search = search;
-  }
-  if (category) {
-    queryParams.category = category;
-  }
+  if (search) queryParams.search = search;
+  if (category) queryParams.category = category;
   if (stockStatus === 'Low' || stockStatus === 'Out of Stock') {
     queryParams.lowStockOnly = 'true';
   }
@@ -91,8 +87,10 @@ const deleteMaterial = async (id) => {
   return { success: true };
 };
 
+// Stock Transactions
+
 const createStockTransaction = async (transactionData) => {
-  const response = await fetch(`${API_BASE_URL}/stock-transactions`, { // Using direct URL as API_URL is for /materials
+  const response = await fetch(`${API_BASE_URL}/stock-transactions`, {
     method: 'POST',
     headers: getAuthHeaders(),
     body: JSON.stringify(transactionData),
@@ -104,6 +102,68 @@ const createStockTransaction = async (transactionData) => {
   return await response.json();
 };
 
+const getMaterialTransactions = async (materialId) => {
+  const response = await fetch(`${API_URL}/${materialId}/transactions`, {
+    headers: getAuthHeaders(),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to fetch material transactions');
+  }
+  return await response.json();
+};
+
+// Inventory Management
+
+const recordStockCount = async (materialId, physicalCount, notes) => {
+  const response = await fetch(`${API_BASE_URL}/inventory/stock-count`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ materialId, physicalCount, notes }),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to record stock count');
+  }
+  return await response.json();
+};
+
+const recordDamage = async (materialId, quantity, reason, notes) => {
+  const response = await fetch(`${API_BASE_URL}/inventory/damage`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ materialId, quantity, reason, notes }),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to record damage');
+  }
+  return await response.json();
+};
+
+const getInventoryValuation = async () => {
+  const response = await fetch(`${API_BASE_URL}/inventory/valuation`, {
+    headers: getAuthHeaders(),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to fetch inventory valuation');
+  }
+  return await response.json();
+};
+
+const getStockLevels = async (lowStockOnly = false, category = '') => {
+  const query = new URLSearchParams();
+  if (lowStockOnly) query.append('lowStockOnly', 'true');
+  if (category) query.append('category', category);
+
+  const response = await fetch(`${API_BASE_URL}/inventory/stock-levels?${query}`, {
+    headers: getAuthHeaders(),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to fetch stock levels');
+  }
+  return await response.json();
+};
+
 const materialService = {
   getMaterials,
   createMaterial,
@@ -111,6 +171,11 @@ const materialService = {
   updateMaterial,
   deleteMaterial,
   createStockTransaction,
+  getMaterialTransactions,
+  recordStockCount,
+  recordDamage,
+  getInventoryValuation,
+  getStockLevels,
 };
 
 export default materialService;

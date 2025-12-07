@@ -21,8 +21,8 @@ const getSalesOrders = async (page = 1, limit = 10, search = '') => {
   const params = new URLSearchParams({
     page: page.toString(),
     limit: limit.toString(),
-    ...(search && { search }),
   });
+  if (search) params.append('search', search);
 
   const response = await fetch(`${API_URL}?${params}`, {
     headers: getAuthHeaders(),

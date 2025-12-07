@@ -16,18 +16,14 @@ const getAuthHeaders = () => {
   };
 };
 
-const getProducts = async (page = 1, limit = 10, search = '', category = '') => {
-  const offset = (page - 1) * limit;
+const getProducts = async (page = 1, limit = 20, search = '', category = '', activeOnly = true) => {
   const query = new URLSearchParams({
-    offset: offset.toString(),
+    page: page.toString(),
     limit: limit.toString(),
   });
-  if (search) {
-    query.append('search', search);
-  }
-  if (category) {
-    query.append('category', category);
-  }
+  if (search) query.append('search', search);
+  if (category) query.append('category', category);
+  if (activeOnly !== null) query.append('activeOnly', activeOnly.toString());
 
   const response = await fetch(`${API_URL}?${query.toString()}`, {
     headers: getAuthHeaders(),
@@ -97,11 +93,11 @@ const getProductBOM = async (productId) => {
   return await response.json();
 };
 
-const addMaterialToBOM = async (productId, materialId, quantity, unit) => {
+const addMaterialToBOM = async (productId, materialId, quantity, unit, notes = '') => {
   const response = await fetch(`${API_URL}/${productId}/materials`, {
     method: 'POST',
     headers: getAuthHeaders(),
-    body: JSON.stringify({ materialId, quantity, unit }),
+    body: JSON.stringify({ materialId, quantity, unit, notes }),
   });
   if (!response.ok) {
     const errorData = await response.json();
@@ -110,11 +106,11 @@ const addMaterialToBOM = async (productId, materialId, quantity, unit) => {
   return await response.json();
 };
 
-const updateBOMEntry = async (bomId, quantity) => {
-  const response = await fetch(`${API_BASE_URL}/bom/${bomId}`, { // Direct URL as API_URL is for /products
+const updateBOMEntry = async (bomId, quantity, notes) => {
+  const response = await fetch(`${API_BASE_URL}/bom/${bomId}`, {
     method: 'PUT',
     headers: getAuthHeaders(),
-    body: JSON.stringify({ quantity }),
+    body: JSON.stringify({ quantity, notes }),
   });
   if (!response.ok) {
     const errorData = await response.json();
@@ -124,7 +120,7 @@ const updateBOMEntry = async (bomId, quantity) => {
 };
 
 const removeMaterialFromBOM = async (bomId) => {
-  const response = await fetch(`${API_BASE_URL}/bom/${bomId}`, { // Direct URL as API_URL is for /products
+  const response = await fetch(`${API_BASE_URL}/bom/${bomId}`, {
     method: 'DELETE',
     headers: getAuthHeaders(),
   });
@@ -135,6 +131,20 @@ const removeMaterialFromBOM = async (bomId) => {
   return { success: true };
 };
 
+const replaceEntireBOM = async (productId, materials) => {
+  // materials: [{ materialId, quantity, unit }]
+  const response = await fetch(`${API_URL}/${productId}/materials`, {
+    method: 'PUT',
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ materials }),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to replace BOM');
+  }
+  return await response.json();
+};
+
 const calculateProductCost = async (productId) => {
   const response = await fetch(`${API_URL}/${productId}/cost`, {
     headers: getAuthHeaders(),
@@ -142,18 +152,6 @@ const calculateProductCost = async (productId) => {
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.message || 'Failed to calculate product cost');
-  }
-  return await response.json();
-};
-
-const updateProductCost = async (productId) => {
-  const response = await fetch(`${API_URL}/${productId}/update-cost`, {
-    method: 'POST',
-    headers: getAuthHeaders(),
-  });
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || 'Failed to update product cost');
   }
   return await response.json();
 };
@@ -168,8 +166,8 @@ const productService = {
   addMaterialToBOM,
   updateBOMEntry,
   removeMaterialFromBOM,
+  replaceEntireBOM,
   calculateProductCost,
-  updateProductCost,
 };
 
 export default productService;

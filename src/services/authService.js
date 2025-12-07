@@ -28,13 +28,19 @@ const login = async (username, password) => {
   throw new Error('Invalid login response format');
 };
 
-const register = async (storeName, storeCode, fullName, username, email, password) => {
-  const response = await fetch(`${API_URL}/register`, {
+const register = async (registrationData) => {
+  // registrationData should match the structure:
+  // {
+  //   company: { companyName, ... },
+  //   store: { name, ... },
+  //   admin: { username, password, fullName, email }
+  // }
+  const response = await fetch(`${API_URL}/register-company`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ storeName, storeCode, fullName, username, email, password }),
+    body: JSON.stringify(registrationData),
   });
 
   if (!response.ok) {
@@ -42,6 +48,36 @@ const register = async (storeName, storeCode, fullName, username, email, passwor
     throw new Error(errorData.message || 'Registration failed');
   }
 
+  return response.json();
+};
+
+const checkUsername = async (username) => {
+  const response = await fetch(`${API_URL}/check-username/${username}`);
+  if (!response.ok) {
+    throw new Error('Failed to check username');
+  }
+  return response.json();
+};
+
+const checkCompanyCode = async (code) => {
+  const response = await fetch(`${API_URL}/check-company-code/${code}`);
+  if (!response.ok) {
+    throw new Error('Failed to check company code');
+  }
+  return response.json();
+};
+
+const suggestCompanyCode = async (companyName) => {
+  const response = await fetch(`${API_URL}/suggest-company-code`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ companyName }),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to suggest company code');
+  }
   return response.json();
 };
 
@@ -56,6 +92,9 @@ const getCurrentUser = () => {
 const authService = {
   login,
   register,
+  checkUsername,
+  checkCompanyCode,
+  suggestCompanyCode,
   logout,
   getCurrentUser,
 };

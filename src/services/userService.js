@@ -17,14 +17,15 @@ const getAuthHeaders = () => {
   };
 };
 
-const getUsers = async (page = 1, limit = 10, search = '') => {
+const getUsers = async (page = 1, limit = 10, search = '', role = '', isActive = '', sortBy = '') => {
   const query = new URLSearchParams({
     page: page.toString(),
     limit: limit.toString(),
   });
-  if (search) {
-    query.append('search', search);
-  }
+  if (search) query.append('search', search);
+  if (role) query.append('role', role);
+  if (isActive !== '') query.append('isActive', isActive.toString());
+  if (sortBy) query.append('sortBy', sortBy);
 
   const response = await fetch(`${API_URL}?${query.toString()}`, {
     headers: getAuthHeaders(),
@@ -135,6 +136,17 @@ const deactivateUser = async (id) => {
   return { success: true };
 };
 
+const getUserStats = async () => {
+  const response = await fetch(`${API_URL}/stats`, {
+    headers: getAuthHeaders(),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to fetch user stats');
+  }
+  return await response.json();
+};
+
 const userService = {
   getUsers,
   createUser,
@@ -145,6 +157,7 @@ const userService = {
   resetUserPassword,
   activateUser,
   deactivateUser,
+  getUserStats,
 };
 
 export default userService;
