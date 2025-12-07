@@ -12,38 +12,135 @@ import {
   Stepper,
   Step,
   StepLabel,
+  Paper,
+  MenuItem,
+  CircularProgress
 } from '@mui/material';
 import authService from '../services/authService';
 
-const steps = ['Store Information', 'Admin Information'];
+const steps = ['Company Details', 'Store Details', 'Admin Account'];
 
 function RegistrationPage() {
   const [activeStep, setActiveStep] = useState(0);
-  const [storeName, setStoreName] = useState('');
-  const [storeCode, setStoreCode] = useState('');
-  const [fullName, setFullName] = useState('');
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  // Form State
+  const [formData, setFormData] = useState({
+    // Company
+    companyName: '',
+    companyCode: '', // Optional/Auto-generated
+    ownerName: '',
+    ownerEmail: '',
+    ownerPhone: '',
+    companyAddress: '',
+    companyCity: '',
+    companyProvince: '',
+    companyPostalCode: '',
+    
+    // Store
+    storeName: '',
+    storePhone: '',
+    storeAddress: '',
+    storeCity: '',
+    storeProvince: '',
+    storePostalCode: '',
+
+    // Admin
+    fullName: '',
+    username: '',
+    email: '',
+    password: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setError(null);
+    if (!validateStep(activeStep)) return;
+    setActiveStep((prev) => prev + 1);
   };
 
   const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    setActiveStep((prev) => prev - 1);
+  };
+
+  const validateStep = (step) => {
+    if (step === 0) {
+      if (!formData.companyName) {
+        setError("Company Name is required.");
+        return false;
+      }
+    }
+    if (step === 1) {
+      if (!formData.storeName) {
+        setError("Store Name is required.");
+        return false;
+      }
+    }
+    if (step === 2) {
+      if (!formData.fullName || !formData.username || !formData.email || !formData.password) {
+        setError("All Admin fields are required.");
+        return false;
+      }
+      if (formData.password.length < 8) {
+        setError("Password must be at least 8 characters.");
+        return false;
+      }
+    }
+    return true;
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (!validateStep(activeStep)) return;
+    
+    setLoading(true);
     setError(null);
+
+    // Construct Payload
+    const payload = {
+      company: {
+        companyName: formData.companyName,
+        companyCode: formData.companyCode || undefined,
+        ownerName: formData.ownerName,
+        ownerEmail: formData.ownerEmail,
+        ownerPhone: formData.ownerPhone,
+        address: formData.companyAddress,
+        city: formData.companyCity,
+        province: formData.companyProvince,
+        postalCode: formData.companyPostalCode,
+      },
+      store: {
+        name: formData.storeName,
+        phone: formData.storePhone,
+        address: formData.storeAddress,
+        city: formData.storeCity,
+        province: formData.storeProvince,
+        postalCode: formData.storePostalCode,
+      },
+      admin: {
+        username: formData.username,
+        password: formData.password,
+        fullName: formData.fullName,
+        email: formData.email,
+      }
+    };
+
     try {
-      await authService.register(storeName, storeCode, fullName, username, email, password);
+      await authService.register(payload);
       navigate('/login');
     } catch (e) {
       setError(e.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -51,81 +148,137 @@ function RegistrationPage() {
     switch (step) {
       case 0:
         return (
-          <>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="storeName"
-              label="Store Name"
-              name="storeName"
-              autoComplete="store-name"
-              autoFocus
-              value={storeName}
-              onChange={(e) => setStoreName(e.target.value)}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="storeCode"
-              label="Store Code"
-              name="storeCode"
-              autoComplete="store-code"
-              value={storeCode}
-              onChange={(e) => setStoreCode(e.target.value)}
-            />
-          </>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Typography variant="h6" gutterBottom>Company Information</Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                required fullWidth label="Company Name" name="companyName"
+                value={formData.companyName} onChange={handleChange} autoFocus
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth label="Company Code (Optional/Auto)" name="companyCode"
+                value={formData.companyCode} onChange={handleChange}
+                helperText="Leave empty to auto-generate"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth label="Owner Name" name="ownerName"
+                value={formData.ownerName} onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth label="Owner Phone" name="ownerPhone"
+                value={formData.ownerPhone} onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth label="Address" name="companyAddress"
+                value={formData.companyAddress} onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                fullWidth label="City" name="companyCity"
+                value={formData.companyCity} onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                fullWidth label="Province" name="companyProvince"
+                value={formData.companyProvince} onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                fullWidth label="Postal Code" name="companyPostalCode"
+                value={formData.companyPostalCode} onChange={handleChange}
+              />
+            </Grid>
+          </Grid>
         );
       case 1:
         return (
-          <>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="fullName"
-              label="Admin Full Name"
-              name="fullName"
-              autoComplete="name"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="username"
-              label="Admin Username"
-              name="username"
-              autoComplete="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Admin Email"
-              name="email"
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Admin Password"
-              type="password"
-              id="password"
-              autoComplete="new-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Typography variant="h6" gutterBottom>First Store Details</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                required fullWidth label="Store Name" name="storeName"
+                value={formData.storeName} onChange={handleChange} autoFocus
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth label="Store Phone" name="storePhone"
+                value={formData.storePhone} onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth label="Address" name="storeAddress"
+                value={formData.storeAddress} onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                fullWidth label="City" name="storeCity"
+                value={formData.storeCity} onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                fullWidth label="Province" name="storeProvince"
+                value={formData.storeProvince} onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                fullWidth label="Postal Code" name="storePostalCode"
+                value={formData.storePostalCode} onChange={handleChange}
+              />
+            </Grid>
+          </Grid>
+        );
+      case 2:
+        return (
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Typography variant="h6" gutterBottom>Create Admin Account</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                required fullWidth label="Full Name" name="fullName"
+                value={formData.fullName} onChange={handleChange} autoFocus
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                required fullWidth label="Username" name="username"
+                value={formData.username} onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                required fullWidth label="Email" name="email"
+                value={formData.email} onChange={handleChange} type="email"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                required fullWidth label="Password" name="password"
+                value={formData.password} onChange={handleChange} type="password"
+                helperText="Min. 8 characters, uppercase, lowercase, & number"
+              />
+            </Grid>
+          </Grid>
         );
       default:
         return 'Unknown step';
@@ -133,71 +286,51 @@ function RegistrationPage() {
   }
 
   return (
-    <Container
-      maxWidth="xs"
-      sx={{
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          p: 3,
-          border: '1px solid #e0e0e0',
-          borderRadius: '8px',
-          boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-          width: '100%',
-        }}
-      >
-        <Typography component="h1" variant="h5">
-          Register New Store
+    <Container component="main" maxWidth="sm" sx={{ mb: 4, height: '100vh', display: 'flex', alignItems: 'center' }}>
+      <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 }, width: '100%', borderRadius: 3 }}>
+        <Typography component="h1" variant="h4" align="center" gutterBottom fontWeight="bold">
+          Register Company
         </Typography>
-        <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5, width: '100%' }}>
+        <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
           {steps.map((label) => (
             <Step key={label}>
               <StepLabel>{label}</StepLabel>
             </Step>
           ))}
         </Stepper>
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          noValidate
-          sx={{ mt: 1, width: '100%' }}
-        >
+        
+        {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
+
+        <Box component="form" onSubmit={handleSubmit}>
           {getStepContent(activeStep)}
+          
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
             {activeStep !== 0 && (
               <Button onClick={handleBack} sx={{ mr: 1 }}>
                 Back
               </Button>
             )}
-
             <Button
               variant="contained"
-              onClick={
-                activeStep === steps.length - 1 ? handleSubmit : handleNext
-              }
+              onClick={activeStep === steps.length - 1 ? handleSubmit : handleNext}
+              disabled={loading}
+              sx={{ minWidth: 100 }}
             >
-              {activeStep === steps.length - 1 ? 'Register' : 'Next'}
+              {loading ? <CircularProgress size={24} /> : (activeStep === steps.length - 1 ? 'Register' : 'Next')}
             </Button>
           </Box>
-          {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
-          <Grid container justifyContent="flex-end" sx={{ mt: 2 }}>
+          
+           <Grid container justifyContent="center" sx={{ mt: 2 }}>
             <Grid item>
-              <Link to="/login" variant="body2">
-                Already have an account? Sign in
+              <Link to="/login" style={{ textDecoration: 'none' }}>
+                <Typography variant="body2" color="primary">
+                  Already have an account? Sign in
+                </Typography>
               </Link>
             </Grid>
           </Grid>
         </Box>
-      </Box>
+      </Paper>
     </Container>
   );
 }

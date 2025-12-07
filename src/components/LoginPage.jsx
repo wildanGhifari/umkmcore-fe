@@ -52,10 +52,11 @@ function LoginPage() {
           boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
         }}
       >
-        <Typography component="h1" variant="h5">
-          Login
+        <Typography component="h1" variant="h5" fontWeight="bold" sx={{ mb: 3 }}>
+          Welcome Back
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        {error && <Alert severity="error" sx={{ width: '100%', mb: 2 }}>{error}</Alert>}
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1, width: '100%' }}>
           <TextField
             margin="normal"
             required

@@ -2,6 +2,26 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/v1';
 const API_URL = `${API_BASE_URL}/auth`;
 
+const handleResponse = async (response) => {
+  const contentType = response.headers.get("content-type");
+  let data;
+  
+  try {
+    const text = await response.text();
+    data = text ? JSON.parse(text) : {};
+  } catch (error) {
+    // If parsing fails, we assume it's not JSON
+    data = {};
+  }
+
+  if (!response.ok) {
+    const errorMessage = data.message || data.error || response.statusText || 'Request failed';
+    throw new Error(errorMessage);
+  }
+
+  return data;
+};
+
 const login = async (username, password) => {
   const response = await fetch(`${API_URL}/login`, {
     method: 'POST',
@@ -11,12 +31,8 @@ const login = async (username, password) => {
     body: JSON.stringify({ username, password }),
   });
 
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || 'Login failed');
-  }
-
-  const responseData = await response.json();
+  const responseData = await handleResponse(response);
+  
   // Backend returns: { success: true, data: { user, token } }
   const { data } = responseData;
   if (data && data.token) {
@@ -29,12 +45,6 @@ const login = async (username, password) => {
 };
 
 const register = async (registrationData) => {
-  // registrationData should match the structure:
-  // {
-  //   company: { companyName, ... },
-  //   store: { name, ... },
-  //   admin: { username, password, fullName, email }
-  // }
   const response = await fetch(`${API_URL}/register-company`, {
     method: 'POST',
     headers: {
@@ -43,28 +53,17 @@ const register = async (registrationData) => {
     body: JSON.stringify(registrationData),
   });
 
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || 'Registration failed');
-  }
-
-  return response.json();
+  return handleResponse(response);
 };
 
 const checkUsername = async (username) => {
   const response = await fetch(`${API_URL}/check-username/${username}`);
-  if (!response.ok) {
-    throw new Error('Failed to check username');
-  }
-  return response.json();
+  return handleResponse(response);
 };
 
 const checkCompanyCode = async (code) => {
   const response = await fetch(`${API_URL}/check-company-code/${code}`);
-  if (!response.ok) {
-    throw new Error('Failed to check company code');
-  }
-  return response.json();
+  return handleResponse(response);
 };
 
 const suggestCompanyCode = async (companyName) => {
@@ -75,10 +74,7 @@ const suggestCompanyCode = async (companyName) => {
     },
     body: JSON.stringify({ companyName }),
   });
-  if (!response.ok) {
-    throw new Error('Failed to suggest company code');
-  }
-  return response.json();
+  return handleResponse(response);
 };
 
 const logout = () => {
