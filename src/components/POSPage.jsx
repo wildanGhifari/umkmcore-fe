@@ -29,17 +29,29 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Paper,
+  Chip,
 } from '@mui/material';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Search as SearchIcon, AddCircle as AddIcon, RemoveCircle as RemoveIcon, Delete as DeleteIcon, Person as PersonIcon } from '@mui/icons-material';
+import {
+  Search as SearchIcon,
+  Add as AddIcon,
+  Remove as RemoveIcon,
+  DeleteOutline as DeleteIcon,
+  Person as PersonIcon,
+  ReceiptLong as ReceiptIcon,
+  ShoppingCartCheckout as CheckoutIcon,
+} from '@mui/icons-material';
 import productService from '../services/productService';
 import salesOrderService from '../services/salesOrderService';
 import customerService from '../services/customerService';
 import { useSnackbar } from '../context/SnackbarContext';
+import { useTheme } from '@mui/material/styles';
 
 const POSPage = () => {
   const { showSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
+  const theme = useTheme();
   const [search, setSearch] = useState('');
   const [cart, setCart] = useState([]);
   const [isCheckoutModalOpen, setCheckoutModalOpen] = useState(false);
@@ -66,7 +78,6 @@ const POSPage = () => {
 
   const customers = customerData?.data || [];
 
-
   const createSalesOrderMutation = useMutation({
     mutationFn: salesOrderService.createSalesOrder,
     onSuccess: () => {
@@ -74,6 +85,7 @@ const POSPage = () => {
       setCart([]);
       setCheckoutModalOpen(false);
       setAmountReceived('');
+      setSelectedCustomer(null);
       queryClient.invalidateQueries(['products']); // Refetch products to update stock info
     },
     onError: (err) => {
@@ -147,15 +159,18 @@ const POSPage = () => {
   };
 
   return (
-    <Container maxWidth={false} sx={{ height: 'calc(100vh - 64px)', display: 'flex', p: '0 !important' }}>
+    <Container maxWidth={false} sx={{ height: 'calc(100vh - 64px)', display: 'flex', gap: 3, p: 3 }}>
       {/* Product Grid */}
-      <Box sx={{ flex: 3, p: 2, overflowY: 'auto' }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Point of Sale
-        </Typography>
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+          <Typography variant="h5" fontWeight="bold">
+            Products
+          </Typography>
+        </Box>
+        
         <TextField
           fullWidth
-          label="Search Products"
+          placeholder="Search products by name or SKU..."
           variant="outlined"
           value={search}
           onChange={handleSearchChange}
@@ -163,120 +178,202 @@ const POSPage = () => {
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <SearchIcon />
+                <SearchIcon color="action" />
               </InputAdornment>
             ),
+            sx: { borderRadius: 3, bgcolor: 'background.paper' }
           }}
         />
-        {isLoading && <CircularProgress />}
-        {error && <Alert severity="error">Error fetching products: {error.message}</Alert>}
-        <Grid container spacing={2}>
-          {products.map((product) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
-              <Card>
-                <CardActionArea onClick={() => addToCart(product)}>
-                  <CardMedia
-                    component="img"
-                    height="140"
-                    image={product.image || 'https://via.placeholder.com/150'}
-                    alt={product.name}
-                  />
-                  <CardContent>
-                    <Typography gutterBottom variant="h6" component="div">
-                      {product.name}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {`Rp ${product.sellingPrice}`}
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
+
+        <Box sx={{ flexGrow: 1, overflowY: 'auto', pr: 1 }}>
+          {isLoading && (
+            <Box display="flex" justifyContent="center" p={4}>
+              <CircularProgress />
+            </Box>
+          )}
+          {error && <Alert severity="error">Error fetching products: {error.message}</Alert>}
+          
+          <Grid container spacing={2}>
+            {products.map((product) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
+                <Card 
+                  elevation={0}
+                  sx={{ 
+                    height: '100%',
+                    borderRadius: 3,
+                    border: `1px solid ${theme.palette.divider}`,
+                    transition: 'all 0.2s',
+                    '&:hover': {
+                      transform: 'translateY(-4px)',
+                      boxShadow: theme.shadows[4],
+                      borderColor: theme.palette.primary.main,
+                    }
+                  }}
+                >
+                  <CardActionArea onClick={() => addToCart(product)} sx={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                    <CardMedia
+                      component="img"
+                      height="120"
+                      image={product.image || 'https://via.placeholder.com/150'}
+                      alt={product.name}
+                      sx={{ objectFit: 'cover' }}
+                    />
+                    <CardContent sx={{ flexGrow: 1, width: '100%' }}>
+                      <Typography gutterBottom variant="subtitle1" fontWeight="bold" noWrap>
+                        {product.name}
+                      </Typography>
+                      <Box display="flex" justifyContent="space-between" alignItems="center" mt={1}>
+                        <Typography variant="body1" color="primary.main" fontWeight="bold">
+                          Rp {product.sellingPrice.toLocaleString()}
+                        </Typography>
+                        {/* You could add stock count here later */}
+                      </Box>
+                    </CardContent>
+                  </CardActionArea>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
       </Box>
 
       {/* Cart Sidebar */}
-      <Box sx={{ flex: 1, p: 2, borderLeft: '1px solid #e0e0e0', display: 'flex', flexDirection: 'column' }}>
-        <Typography variant="h5" component="h2" gutterBottom>
-          Current Order
-        </Typography>
-        <List sx={{ flexGrow: 1, overflowY: 'auto' }}>
+      <Paper 
+        elevation={0}
+        sx={{ 
+          width: 400, 
+          display: 'flex', 
+          flexDirection: 'column',
+          border: `1px solid ${theme.palette.divider}`,
+          borderRadius: 4,
+          overflow: 'hidden',
+          bgcolor: 'background.paper'
+        }}
+      >
+        <Box sx={{ p: 2, borderBottom: `1px solid ${theme.palette.divider}`, bgcolor: theme.palette.primaryContainer.main, color: theme.palette.primaryContainer.contrastText }}>
+          <Box display="flex" alignItems="center" gap={1}>
+            <ReceiptIcon />
+            <Typography variant="h6" fontWeight="bold">
+              Current Order
+            </Typography>
+          </Box>
+          {selectedCustomer ? (
+            <Box display="flex" justifyContent="space-between" alignItems="center" mt={1} sx={{ bgcolor: 'rgba(255,255,255,0.2)', p: 1, borderRadius: 1 }}>
+              <Typography variant="body2" fontWeight="500">Customer: {selectedCustomer.name}</Typography>
+              <Button size="small" onClick={() => setSelectedCustomer(null)} sx={{ color: 'inherit', minWidth: 'auto' }}>Clear</Button>
+            </Box>
+          ) : (
+            <Button
+              variant="outlined"
+              size="small"
+              startIcon={<PersonIcon />}
+              onClick={() => setCustomerSearchOpen(true)}
+              sx={{ mt: 1, borderColor: 'inherit', color: 'inherit', '&:hover': { borderColor: 'inherit', bgcolor: 'rgba(255,255,255,0.1)' } }}
+            >
+              Add Customer
+            </Button>
+          )}
+        </Box>
+
+        <List sx={{ flexGrow: 1, overflowY: 'auto', px: 2 }}>
           {cart.length === 0 ? (
-            <ListItem>
-              <ListItemText primary="Cart is empty" />
-            </ListItem>
+            <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100%" opacity={0.5}>
+              <ShoppingCartCheckoutIcon sx={{ fontSize: 60, mb: 2 }} />
+              <Typography>Cart is empty</Typography>
+            </Box>
           ) : (
             cart.map((item) => (
-              <ListItem key={item.id} secondaryAction={
-                <IconButton edge="end" aria-label="delete" onClick={() => removeFromCart(item.id)}>
-                  <DeleteIcon />
-                </IconButton>
-              }>
-                <ListItemAvatar>
-                  <Avatar src={item.image || 'https://via.placeholder.com/40'} />
-                </ListItemAvatar>
-                <ListItemText
-                  primary={item.name}
-                  secondary={`Rp ${item.sellingPrice}`}
-                />
-                <Box sx={{ display: 'flex', alignItems: 'center', mr: 4 }}>
-                  <IconButton size="small" onClick={() => updateCartQuantity(item.id, item.quantity - 1)}>
-                    <RemoveIcon />
-                  </IconButton>
-                  <Typography sx={{ mx: 1 }}>{item.quantity}</Typography>
-                  <IconButton size="small" onClick={() => updateCartQuantity(item.id, item.quantity + 1)}>
-                    <AddIcon />
-                  </IconButton>
-                </Box>
-              </ListItem>
+              <React.Fragment key={item.id}>
+                <ListItem 
+                  alignItems="flex-start"
+                  secondaryAction={
+                    <IconButton edge="end" size="small" onClick={() => removeFromCart(item.id)} color="error">
+                      <DeleteIcon />
+                    </IconButton>
+                  }
+                  sx={{ px: 0, py: 2 }}
+                >
+                  <ListItemAvatar>
+                    <Avatar 
+                      src={item.image || 'https://via.placeholder.com/40'} 
+                      variant="rounded"
+                      sx={{ width: 48, height: 48 }}
+                    />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={
+                      <Typography variant="subtitle2" fontWeight="bold">
+                        {item.name}
+                      </Typography>
+                    }
+                    secondary={
+                      <Box display="flex" alignItems="center" justifyContent="space-between" mt={1}>
+                         <Typography variant="body2" color="text.secondary">
+                           Rp {item.sellingPrice.toLocaleString()}
+                         </Typography>
+                         <Box display="flex" alignItems="center" bgcolor={theme.palette.action.hover} borderRadius={2}>
+                           <IconButton size="small" onClick={() => updateCartQuantity(item.id, item.quantity - 1)}>
+                             <RemoveIcon fontSize="small"/>
+                           </IconButton>
+                           <Typography variant="body2" fontWeight="bold" sx={{ px: 1 }}>{item.quantity}</Typography>
+                           <IconButton size="small" onClick={() => updateCartQuantity(item.id, item.quantity + 1)}>
+                             <AddIcon fontSize="small"/>
+                           </IconButton>
+                         </Box>
+                      </Box>
+                    }
+                  />
+                </ListItem>
+                <Divider component="li" />
+              </React.Fragment>
             ))
           )}
         </List>
-        <Box>
-          <Divider sx={{ my: 2 }} />
-          <Typography variant="body1">Subtotal: Rp {subtotal.toFixed(2)}</Typography>
-          <Typography variant="body1">Tax (10%): Rp {tax.toFixed(2)}</Typography>
-          <Typography variant="h6" sx={{ mt: 1 }}>Total: Rp {total.toFixed(2)}</Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 2 }}>
-            {selectedCustomer ? (
-              <>
-                <Typography variant="body2">Customer: {selectedCustomer.name}</Typography>
-                <Button size="small" onClick={() => setSelectedCustomer(null)}>Clear</Button>
-              </>
-            ) : (
-              <Button
-                variant="outlined"
-                startIcon={<PersonIcon />}
-                onClick={() => setCustomerSearchOpen(true)}
-              >
-                Select Customer
-              </Button>
-            )}
+
+        {/* Summary Section */}
+        <Box sx={{ p: 3, bgcolor: theme.palette.background.default, borderTop: `1px solid ${theme.palette.divider}` }}>
+          <Box display="flex" justifyContent="space-between" mb={1}>
+            <Typography variant="body2" color="text.secondary">Subtotal</Typography>
+            <Typography variant="body2">Rp {subtotal.toLocaleString()}</Typography>
           </Box>
+          <Box display="flex" justifyContent="space-between" mb={2}>
+            <Typography variant="body2" color="text.secondary">Tax (10%)</Typography>
+            <Typography variant="body2">Rp {tax.toLocaleString()}</Typography>
+          </Box>
+          <Box display="flex" justifyContent="space-between" mb={2}>
+            <Typography variant="h6" fontWeight="bold">Total</Typography>
+            <Typography variant="h5" fontWeight="bold" color="primary">Rp {total.toLocaleString()}</Typography>
+          </Box>
+          
           <Button
             fullWidth
             variant="contained"
             color="primary"
-            sx={{ mt: 2 }}
+            size="large"
             onClick={handleOpenCheckout}
             disabled={cart.length === 0}
+            startIcon={<CheckoutIcon />}
+            sx={{ borderRadius: 3, py: 1.5, fontSize: '1rem', fontWeight: 'bold' }}
           >
             Checkout
           </Button>
         </Box>
-      </Box>
+      </Paper>
+
       {/* Checkout Modal */}
-      <Dialog open={isCheckoutModalOpen} onClose={() => setCheckoutModalOpen(false)}>
-        <DialogTitle>Complete Sale</DialogTitle>
+      <Dialog open={isCheckoutModalOpen} onClose={() => setCheckoutModalOpen(false)} maxWidth="xs" fullWidth>
+        <DialogTitle sx={{ textAlign: 'center', pb: 0 }}>
+          <Typography variant="h5" fontWeight="bold">Complete Sale</Typography>
+        </DialogTitle>
         <DialogContent>
-          {selectedCustomer && (
-            <Typography variant="subtitle1" gutterBottom>
-              Customer: {selectedCustomer.name}
+          <Box sx={{ my: 3, textAlign: 'center' }}>
+            <Typography variant="h3" color="primary" fontWeight="bold">
+              Rp {total.toLocaleString()}
             </Typography>
-          )}
-          <Typography variant="h6" gutterBottom>Total: Rp {total.toFixed(2)}</Typography>
-          <FormControl fullWidth margin="dense" required>
+            <Typography variant="caption" color="text.secondary">Total Amount Due</Typography>
+          </Box>
+
+          <FormControl fullWidth margin="normal">
             <InputLabel>Payment Method</InputLabel>
             <Select
               value={paymentMethod}
@@ -290,28 +387,44 @@ const POSPage = () => {
               <MenuItem value="qris">QRIS</MenuItem>
             </Select>
           </FormControl>
+          
           <TextField
-            margin="dense"
+            margin="normal"
             label="Amount Received"
             type="number"
             fullWidth
             variant="outlined"
             value={amountReceived}
             onChange={(e) => setAmountReceived(e.target.value)}
-            required
+            InputProps={{
+              startAdornment: <InputAdornment position="start">Rp</InputAdornment>,
+            }}
           />
-          <Typography variant="body2" sx={{ mt: 2 }}>
-            Change: Rp {Math.max(0, amountReceived - total).toFixed(2)}
-          </Typography>
+          
+          {parseFloat(amountReceived) > total && (
+             <Alert severity="success" sx={{ mt: 2 }}>
+               Change Due: Rp {(parseFloat(amountReceived) - total).toLocaleString()}
+             </Alert>
+          )}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setCheckoutModalOpen(false)} disabled={createSalesOrderMutation.isLoading}>Cancel</Button>
-          <Button onClick={handleCompleteSale} variant="contained" disabled={createSalesOrderMutation.isLoading}>
-            {createSalesOrderMutation.isLoading ? <CircularProgress size={24} /> : 'Complete Sale'}
+        <DialogActions sx={{ p: 3, pt: 0 }}>
+          <Button onClick={() => setCheckoutModalOpen(false)} size="large" fullWidth variant="outlined" sx={{ borderRadius: 2 }}>
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleCompleteSale} 
+            variant="contained" 
+            size="large"
+            disabled={createSalesOrderMutation.isLoading || !amountReceived}
+            fullWidth
+            sx={{ borderRadius: 2 }}
+          >
+            {createSalesOrderMutation.isLoading ? <CircularProgress size={24} /> : 'Complete Payment'}
           </Button>
         </DialogActions>
       </Dialog>
-      {/* Customer Search Modal */}
+      
+      {/* Search Customer Modal */}
       <Dialog open={isCustomerSearchOpen} onClose={() => setCustomerSearchOpen(false)} fullWidth maxWidth="sm">
         <DialogTitle>Select Customer</DialogTitle>
         <DialogContent>
@@ -321,7 +434,7 @@ const POSPage = () => {
             variant="outlined"
             value={customerSearch}
             onChange={(e) => setCustomerSearch(e.target.value)}
-            sx={{ mb: 2 }}
+            sx={{ mb: 2, mt: 1 }}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -330,8 +443,6 @@ const POSPage = () => {
               ),
             }}
           />
-          {customersLoading && <CircularProgress />}
-          {customersError && <Alert severity="error">Error fetching customers: {customersError.message}</Alert>}
           <List>
             {customers.map((customer) => (
               <ListItem
@@ -340,25 +451,27 @@ const POSPage = () => {
                 onClick={() => {
                   setSelectedCustomer(customer);
                   setCustomerSearchOpen(false);
-                  setCustomerSearch(''); // Clear search after selection
+                  setCustomerSearch('');
                 }}
               >
-                <ListItemText primary={customer.name} secondary={customer.email} />
+                <ListItemAvatar>
+                   <Avatar><PersonIcon /></Avatar>
+                </ListItemAvatar>
+                <ListItemText primary={customer.name} secondary={customer.email || customer.phone} />
               </ListItem>
             ))}
-            {customers.length === 0 && customerSearch.length > 0 && !customersLoading && (
-              <ListItem>
-                <ListItemText primary="No customers found." />
-              </ListItem>
-            )}
           </List>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setCustomerSearchOpen(false)}>Cancel</Button>
+          <Button onClick={() => setCustomerSearchOpen(false)}>Close</Button>
         </DialogActions>
       </Dialog>
     </Container>
   );
 };
+function ShoppingCartCheckoutIcon(props) {
+  return <CheckoutIcon {...props} />;
+}
+
 
 export default POSPage;
